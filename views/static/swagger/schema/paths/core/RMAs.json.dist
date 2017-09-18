@@ -17,7 +17,7 @@
                     "name": "data",
                     "description": "TODO",
                     "schema": {
-                        "$ref": "#/definitions/Customer"
+                        "$ref": "#/definitions/Rmas"
                     }
                 }
             ],
@@ -26,7 +26,10 @@
                     "description": "Query executed successfully."
                 },
                 "400": {
-                    "description": "Bad input parameter."
+                    "description": "Bad input parameter.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
                 },
                 "401": {
                     "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."

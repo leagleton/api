@@ -1,80 +1,107 @@
 {
     "Contact": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty arrays: not allowed",
+        "required": [
+            "CrmContactGuid",
+            "CrmContactId",
+            "FirstName",
+            "LastName",
+            "PhoneNumberWork",
+            "PhoneNumberHome",
+            "FaxNumber",
+            "EmailAddressWork",
+            "EmailAddressHome",
+            "PortalUserName",
+            "JobTitle",
+            "AllowCommunication"
+        ],           
         "xml": {
             "name": "Contact"
         },
         "properties": {
             "CrmContactGuid": {
                 "type": "string",
+                "format": "uuid",
+                "minLength": 36,
                 "maxLength": 36,
-                "example": "",
-                "description": "Maps to the field <em>CRMContacts.CRMContactGUID</em> in your WinMan database."
+                "example": "44FB332D-85F7-4E85-A66B-B0CEC5F3900B",
+                "description": "Maps to the field <em>CRMContacts.CRMContactGUID</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CrmContactId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
-                "example": "",
-                "description": "Maps to the field <em>CRMContacts.CRMContactId</em> in your WinMan database."
+                "example": "CT000123",
+                "description": "Maps to the field <em>CRMContacts.CRMContactId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "FirstName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 25,
-                "example": "Joe",
-                "description": "Maps to the field <em>CRMContacts.FirstName</em> in your WinMan database."
+                "example": "John",
+                "description": "Maps to the field <em>CRMContacts.FirstName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "LastName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 25,
-                "example": "Bloggs",
-                "description": "Maps to the field <em>CRMContacts.LastName</em> in your WinMan database."
+                "example": "Smith",
+                "description": "Maps to the field <em>CRMContacts.LastName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "PhoneNumberWork": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 30,
-                "example": "0121 1234 567",
+                "example": "+44 (0)121 123 4567",
                 "description": "Maps to the field <em>CRMContacts.PhoneNumberWork</em> in your WinMan database."
             },
             "PhoneNumberHome": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 30,
-                "example": "0121 1234 567",
-                "description": "Maps to the field <em>CRMContacts.PhoneNumberHome</em> in your WinMan database."
+                "example": "+44 (0)121 123 4568",
+                "description": "Maps to the field <em>CRMContacts.PhoneNumberHome</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "FaxNumber": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 30,
-                "example": "0121 1234 568",
-                "description": "Maps to the field <em>CRMContacts.FaxNumber</em> in your WinMan database."
+                "example": "+44 (0)121 123 4569",
+                "description": "Maps to the field <em>CRMContacts.FaxNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "EmailAddressWork": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
                 "example": "jsmith@email.com",
-                "description": "Maps to the field <em>CRMContacts.EmailAddressWork</em> in your WinMan database."
+                "description": "Maps to the field <em>CRMContacts.EmailAddressWork</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             }, 
-            "EmailAddressWorkHome": {
+            "EmailAddressHome": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
                 "example": "jsmith@email.com",
-                "description": "Maps to the field <em>CRMContacts.EmailAddressHome</em> in your WinMan database."
+                "description": "Maps to the field <em>CRMContacts.EmailAddressHome</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "PortalUserName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 50,
                 "example": "jsmith@email.com",
-                "description": "Maps to the field <em>CRMContacts.PortalUserName</em> in your WinMan database."
+                "description": "Maps to the field <em>CRMContacts.PortalUserName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },                                                                        
             "JobTitle": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
-                "example": "",
-                "description": "Maps to the field <em>CRMContacts.JobTitle</em> in your WinMan database."
+                "example": "Buying Assistant",
+                "description": "Maps to the field <em>CRMContacts.JobTitle</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "AllowCommunication": {
                 "type": "boolean",
                 "example": true,
-                "description": "Maps to the field <em>CRMContacts.AllowCommunication</em> in your WinMan database."
+                "description": "Maps to the field <em>CRMContacts.AllowCommunication</em> in your WinMan database.<br/>Null values: not allowed"
             }                                                                                     
         }
     }

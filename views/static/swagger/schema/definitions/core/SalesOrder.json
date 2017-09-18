@@ -4,12 +4,8 @@
         "required": [
             "Website",
             "CustomerOrderNumber", 
-            "TotlaOrderValue",
-            "CustomerContact", 
-            "DeliveryName", 
-            "DeliveryAddress", 
-            "DeliveryPostalCode", 
-            "DeliveryCountryCode", 
+            "TotalOrderValue",
+            "CustomerContact",
             "CurrencyCode", 
             "WebsiteUserName",
             "SalesOrderItems",
@@ -22,81 +18,93 @@
         "properties": {
             "Website": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
                 "example": "www.example.co.uk",
-                "description": "Maps to the field <em>EcommerceWebsites.EcommerceWebsiteId</em> in your WinMan database."
+                "description": "Maps to the field <em>EcommerceWebsites.EcommerceWebsiteId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },            
             "SiteName": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 20,
                 "example": "Dudley",
-                "description": "Maps to the field <em>Sites.SiteName</em> in your WinMan database."
+                "description": "Maps to the field <em>Sites.SiteName</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "CustomerGuid": {
                 "type": "string",
+                "format": "uuid",
                 "minLength": 36,
                 "maxLength": 36,
                 "example": "5A0D8842-9C33-45A2-90F1-82FF07120947",
-                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database."
+                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database.<br/>Null values: allowed if both <em>CustomerId</em> and <em>CustomerBranch</em> are not null or empty.<br/>Empty strings: allowed if both <em>CustomerId</em> and <em>CustomerBranch</em> are not null or empty."
             },
             "CustomerId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 10,
                 "example": "C000123",
-                "description": "Maps to the field <em>Customers.CustomerId</em> in your WinMan database."
+                "description": "Maps to the field <em>Customers.CustomerId</em> in your WinMan database.<br/>Null values: allowed if <em>CustomerGuid</em> is not null or empty<br/>Empty strings: allowed if <em>CustomerGuid</em> is not null or empty"
             },
             "CustomerBranch": {
                 "type": "string",
-                "maxLength": 10,
-                "example": "ABC",
-                "description": "Maps to the field <em>Customers.Branch</em> in your WinMan database."
+                "minLength": 1,
+                "maxLength": 4,
+                "example": "0000",
+                "description": "Maps to the field <em>Customers.Branch</em> in your WinMan database.<br/>Null values: allowed if <em>CustomerGuid</em> is not null or empty<br/>Empty strings: allowed if <em>CustomerGuid</em> is not null or empty"
             },
             "TotalOrderValue": {
                 "type": "number",
-                "example": 26.97,
-                "description": "The total order value after discounts are applied, including tax, including delivery."
+                "format": "double",
+                "example": 72.48,
+                "description": "The total order value after discounts are applied, including tax, including delivery.<br/>Null values: not allowed<br/>Zero values: not allowed"
             },            
             "CreditTermsId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
                 "example": "30 DAYS",
-                "description": "Maps to the field <em>CreditTerms.CreditTermsId</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditTerms.CreditTermsId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "EffectiveDate": {
                 "type": "string",
                 "format": "date-time",
                 "example": "2017-07-31T10:48:06.200",
-                "description": "Maps to the field <em>SalesOrders.EffectiveDate</em> in your WinMan database."
+                "description": "Maps to the field <em>SalesOrders.EffectiveDate</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "CustomerOrderNumber": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 50,
                 "example": "WEB000123",
-                "description": "Maps to the field <em>SalesOrders.CustomerOrderNumber</em> in your WinMan database."
+                "description": "Maps to the field <em>SalesOrders.CustomerOrderNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CustomerContact": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 50,
-                "example": "John Doe",
-                "description": "Maps to the field <em>SalesOrders.CustomerContact</em> in your WinMan database."
+                "example": "John Smith",
+                "description": "Maps to the field <em>SalesOrders.CustomerContact</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CurrencyCode": {
                 "type": "string",
+                "minLength": 3,
                 "maxLength": 3,
                 "example": "GBP",
-                "description": "Maps to the field <em>Currencies.CurrencyId</em> in your WinMan database."
+                "description": "Maps to the field <em>Currencies.CurrencyId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "WebsiteUserName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 50,
-                "example": "jane.doe@example.com",
-                "description": "Maps to the field <em>CRMContacts.PortalUserName</em> in your WinMan database."
+                "example": "jsmith@example.com",
+                "description": "Maps to the field <em>CRMContacts.PortalUserName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "SalesOrderPrefixId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
-                "example": "SOP",
-                "description": "Maps to the field <em>SalesOrderPrefixes.SalesOrderPrefixId</em> in your WinMan database."
+                "example": "SO-",
+                "description": "Maps to the field <em>SalesOrderPrefixes.SalesOrderPrefixId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "SalesOrderItems": {
                 "type": "array",

@@ -1,27 +1,36 @@
 {
     "UnitOfMeasure": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty objects: not allowed",
+        "required": [
+            "MeasureName",
+            "MeasureDescription",
+            "MeasurePrintText"
+        ],         
         "xml": {
             "name": "UnitOfMeasure"
         },
         "properties": {
             "MeasureName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
                 "example": "KILO",
-                "description": "Maps to the field <em>UnitsOfMeasure.UnitOfMeasureId</em> in your WinMan database."
+                "description": "Maps to the field <em>UnitsOfMeasure.UnitOfMeasureId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "MeasureDescription": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
                 "example": "Kilogram",
-                "description": "Maps to the field <em>UnitsOfMeasure.UnitOfMeasureDescription</em> in your WinMan database."
+                "description": "Maps to the field <em>UnitsOfMeasure.UnitOfMeasureDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "MeasurePrintText": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 20,
                 "example": "Kg",
-                "description": "Maps to the field <em>UnitsOfMeasure.UnitOfMeasurePrintText</em> in your WinMan database."
+                "description": "Maps to the field <em>UnitsOfMeasure.UnitOfMeasurePrintText</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             }
         }
     }

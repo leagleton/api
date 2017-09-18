@@ -1,21 +1,28 @@
 {
     "AlternativeProduct": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty arrays: allowed",
+        "required": [
+            "AlternativeProductSku",
+            "AlternativeProductName"
+        ],          
         "xml": {
             "name": "AlternativeProduct"
         },
         "properties": {
-            "AlternativeProductSKU": {
+            "AlternativeProductSku": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
-                "example": "ABC00123",
-                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+                "example": "DEF00456",
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "AlternativeProductName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 300,
-                "example": "Super awesome product",
-                "description": "Maps to the field <em>Products.ProductDescription</em> in your WinMan database."
+                "example": "Display stand with 3 shelves",
+                "description": "Maps to the field <em>Products.ProductDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             }
         }
     }

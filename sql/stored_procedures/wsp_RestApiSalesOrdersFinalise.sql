@@ -41,7 +41,7 @@ BEGIN
 
 	IF @totalOrderValue <> @systemOrderValue
 		BEGIN
-			SET @error = @error + CHAR(13) + CHAR(10) + 'Website order total does not match system order total.'			
+			SET @error = @error + CHAR(13) + CHAR(10) + 'Website order total does not match system order total of ' + CAST(@systemOrderValue AS NVARCHAR(max)) + '.'			
 		END
 
 	DECLARE 

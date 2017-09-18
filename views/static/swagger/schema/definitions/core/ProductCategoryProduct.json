@@ -1,14 +1,20 @@
 {
     "ProductCategoryProduct": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty arrays: not allowed",
+        "required": [
+            "ProductSku"
+        ],             
         "xml": {
             "name": "Product"
         },
         "properties": {
-            "SKU": {
+            "ProductSku": {
+                "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
                 "example": "ABC00123",
-                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             }
         }
     }

@@ -6,7 +6,6 @@ exports.connection = {
   "server": "SQL2012SANDBOX",
   "userName": "winman",
   "password": "winman",
-  "requestTimeout": 0,
   "options": { "encrypt": true, "database": "WinManLEClean", "requestTimeout": 0 }
 };
 
@@ -14,7 +13,6 @@ exports.connectionTraining = {
   "server": "SQL2012SANDBOX",
   "userName": "winman",
   "password": "winman",
-  "requestTimeout": 0,
   "options": { "encrypt": true, "database": "WinManLE", "requestTimeout": 0 }
 };
 

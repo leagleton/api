@@ -1,37 +1,52 @@
 {
     "DiscountBreak": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty arrays: allowed",
+        "required": [
+            "DiscountBreakId",
+            "TriggerType",
+            "TriggerValue",
+            "DiscountBreakType",
+            "DiscountBreakValue"
+        ],        
         "xml": {
             "name": "DiscountBreak"
         },
         "properties": {
-            "DicountBreakId": {
+            "DiscountBreakId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
-                "example": "",
-                "description": "Maps to the field <em>DiscountBreaks.DiscountBreakId</em> in your WinMan database."
+                "example": "1-10",
+                "description": "Maps to the field <em>DiscountBreaks.DiscountBreakId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "TriggerType": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 10,
-                "example": "",
-                "description": "Maps to the field <em>DiscountBreaks.TriggerType</em> in your WinMan database."
+                "example": "Quantity",
+                "description": "Maps to the field <em>DiscountBreaks.TriggerType</em> in your WinMan database with possible values of <em>Quantity</em> or <em>Value</em>.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "TriggerValue": {
                 "type": "number",
-                "example": 10.5,
-                "description": "Maps to the field <em>DiscountBreaks.TriggerValue</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 1.00000,
+                "description": "Maps to the field <em>DiscountBreaks.TriggerValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },                        
             "DiscountBreakType": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 10,
-                "example": "",
-                "description": "Maps to the field <em>DiscountBreaks.DiscountBreakType</em> in your WinMan database."
+                "example": "Percentage",
+                "description": "Maps to the field <em>DiscountBreaks.DiscountBreakType</em> in your WinMan database with possible values of <em>Percentage</em> or <em>Value</em>.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "DiscountBreakValue": {
                 "type": "number",
-                "example": 10.5,
-                "description": "Maps to the field <em>DiscountBreaks.DiscountBreakValue</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 10.00000,
+                "description": "Maps to the field <em>DiscountBreaks.DiscountBreakValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             }
         }
     }

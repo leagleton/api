@@ -1,5 +1,5 @@
 
-CREATE NONCLUSTERED INDEX [IX_REST_Inventory]
+CREATE NONCLUSTERED INDEX [IX_RestApiInventory]
 ON [dbo].[Inventory] ([Product])
 INCLUDE ([Site])
 GO

@@ -15,17 +15,19 @@
                 {
                     "in": "query",
                     "name": "sku",
-                    "description": "Fetch inventory information for a single web-enabled product with the supplied <em>sku</em>.",
+                    "description": "<p>Fetch inventory information for a single web-enabled product with the supplied <em>sku</em>.</p>",
                     "required": false,
                     "type": "string",
+                    "minLength": 1,
                     "maxLength": 100
                 },
                 {
                     "in": "query",
                     "name": "website",
-                    "description": "Fetch only inventory information for web-enabled products which are attached to the supplied <em>website</em>.",
+                    "description": "<p>Fetch only inventory information for web-enabled products which are attached to the supplied <em>website</em>.</p>",
                     "required": true,
                     "type": "string",
+                    "minLength": 1,
                     "maxLength": 100
                 }
             ],
@@ -44,7 +46,10 @@
                     }
                 },
                 "400": {
-                    "description": "Bad input parameter."
+                    "description": "Bad input parameter.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
                 },
                 "401": {
                     "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."

@@ -1,27 +1,36 @@
 {
     "Attachment": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty arrays: allowed",
+        "required": [
+            "Type",
+            "FileName",
+            "Data"
+        ],         
         "xml": {
             "name": "Attachment"
         },
         "properties": {
             "Type": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 50,
                 "example": "WebImage",
-                "description": "Maps to the field <em>Documents.TableName/em> in your WinMan database."
+                "description": "Maps to the field <em>Documents.TableName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "FileName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 500,
-                "example": "example.png",
-                "description": "Maps to the field <em>Documents.DocumentFileName</em> in your WinMan database."
+                "example": "product-main-image.png",
+                "description": "Maps to the field <em>Documents.DocumentFileName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "Data": {
                 "type": "string",
-                "maxLength": 100,
-                "example": "",
-                "description": "Maps to the field <em>Documents.DocumentData</em> in your WinMan database."
+                "format": "byte",
+                "minLength": 1,
+                "example": "R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=",
+                "description": "Maps to the field <em>Documents.DocumentData</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             }            
         }
     }

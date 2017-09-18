@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "A REST API to retrieve data from and insert data into your WinMan ERP system. The default response content type is JSON, but XML can be retrieved by setting the <em>accept</em> request header to <em>application/xml</em>.",
-        "version": "0.0.1",
+        "version": "",
         "title": "WinMan REST API",
         "contact": {
             "email": "lynn.eagleton@winman.com"
@@ -19,10 +19,7 @@
     },
     "security": [
         {
-            "OAuth2": [
-                "write",
-                "read"
-            ]
+            "OAuth2": []
         }
     ],
     "tags": [],

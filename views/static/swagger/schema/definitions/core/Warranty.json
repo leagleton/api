@@ -1,33 +1,44 @@
 {
     "Warranty": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty arrays: allowed",
+        "required": [
+            "WarrantyId",
+            "WarrantyDescription",
+            "WarrantyPeriod",
+            "WarrantyUnit"
+        ],        
         "xml": {
             "name": "Warranty"
         },
         "properties": {
             "WarrantyId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 20,
-                "example": "",
-                "description": "Maps to the field <em>Warranties.WarrantyId</em> in your WinMan database."
+                "example": "12 MONTHS",
+                "description": "Maps to the field <em>Warranties.WarrantyId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "WarrantyDescription": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 400,
-                "example": "",
-                "description": "Maps to the field <em>Warranties.WarrantyDescription</em> in your WinMan database."
+                "example": "Standard 12 month warranty",
+                "description": "Maps to the field <em>Warranties.WarrantyDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "WarrantyPeriod": {
                 "type": "integer",
+                "format": "int32",
                 "example": 30,
-                "description": "Maps to the field <em>Warranties.WarrantyPeriod</em> in your WinMan database."
+                "description": "Maps to the field <em>Warranties.WarrantyPeriod</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "WarrantyUnit": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 1,
                 "example": "M",
-                "description": "Maps to the field <em>Warranties.WarrantyUnit</em> in your WinMan database."
-            }                                                           
+                "description": "Maps to the field <em>Warranties.WarrantyUnit</em> in your WinMan database where <em>D</em> = <em>Days</em>, <em>W</em> = <em>Weeks</em>, <em>M</em> = <em>Months</em>, <em>Y</em> = <em>Years</em>.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            }
         }
     }
 }

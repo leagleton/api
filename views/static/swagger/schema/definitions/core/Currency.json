@@ -1,31 +1,44 @@
 {
     "Currency": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty objects: not allowed",
+        "required": [
+            "CurrencyId",
+            "CurrencyDescription",
+            "ActualRate",
+            "StandardRate"
+        ],        
         "xml": {
             "name": "Currency"
         },
         "properties": {
             "CurrencyId": {
                 "type": "string",
+                "minLength": 3,
                 "maxLength": 3,
                 "example": "GBP",
-                "description": "Maps to the field <em>Currencies.CurrencyId</em> in your WinMan database."
+                "description": "Maps to the field <em>Currencies.CurrencyId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CurrencyDescription": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
-                "example": "",
-                "description": "Maps to the field <em>Currencies.CurrencyDescription</em> in your WinMan database."
+                "example": "Pounds Sterling",
+                "description": "Maps to the field <em>Currencies.CurrencyDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "ActualRate": {
                 "type": "number",
-                "example": 123.456789,
-                "description": "Maps to the field <em>Currencies.ActualRate</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.000001,
+                "example": 1.000005,
+                "description": "Maps to the field <em>Currencies.ActualRate</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: not allowed"
             },
             "StandardRate": {
                 "type": "number",
-                "example": 123.456789,
-                "description": "Maps to the field <em>Currencies.StandardRate</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.000001,
+                "example": 1.000003,
+                "description": "Maps to the field <em>Currencies.StandardRate</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: not allowed"
             }            
         }
     }

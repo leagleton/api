@@ -1,21 +1,28 @@
 {
     "CustomerPricingClassification": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty objects: allowed",
+        "required": [
+            "CustomerPricingClassificationName",
+            "CustomerPricingClassificationDescription"
+        ],            
         "xml": {
             "name": "CustomerPricingClassification"
         },
         "properties": {
             "CustomerPricingClassificationName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
-                "example": "",
-                "description": "Maps to the field <em>CustomerPricingClassifications.CustomerPricingClassificationId</em> in your WinMan database."
+                "example": "GENERAL",
+                "description": "Maps to the field <em>CustomerPricingClassifications.CustomerPricingClassificationId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CustomerPricingClassificationDescription": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 100,
-                "example": "",
-                "description": "Maps to the field <em>CustomerPricingClassifications.CustomerPricingClassificationDescription</em> in your WinMan database."
+                "example": "General pricing classification.",
+                "description": "Maps to the field <em>CustomerPricingClassifications.CustomerPricingClassificationDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             }
         }
     }

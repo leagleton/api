@@ -11,14 +11,16 @@
         "properties": {
             "Status": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 5,
                 "example": "Success",
-                "description": "The resulting status of the request."
+                "description": "The resulting status of the request.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "StatusMessage": {
                 "type": "string",
+                "minLength": 1,
                 "example": "CRM Contact has been successfully created.",
-                "description": "The success message."
+                "description": "The success message.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             }                                                                                                                                          
         }
     }

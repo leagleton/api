@@ -1,6 +1,7 @@
 {
     "SalesOrderBilling": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty objects: not allowed",
         "required": [
             "PaymentType",
             "CardPaymentReceived"
@@ -11,98 +12,110 @@
         "properties": {
             "PaymentType": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 20,
                 "example": "VISA",
-                "description": "Maps to the field <em>CreditCardTypes.CreditCardTypeId</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCardTypes.CreditCardTypeId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CardName": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
                 "example": "Mrs Jane Doe",
-                "description": "Maps to the field <em>CreditCards.CardName</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.CardName</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "CardNumber": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 100,
                 "example": "4612 5836 9563 2658",
-                "description": "Maps to the field <em>CreditCards.CardNumber</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.CardNumber</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "CardStartMonth": {
-                "type": "number",
-                "format": "integer",
+                "type": "integer",
+                "format": "int32",
                 "example": 10,
-                "description": "Maps to the field <em>CreditCards.StartMonth</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.StartMonth</em> in your WinMan database.<br/>Null values: allowed<br/>Zero values: allowed"
             },
             "CardStartYear": {
-                "type": "number",
-                "format": "integer",
+                "type": "integer",
+                "format": "int32",
                 "example": 15,
-                "description": "Maps to the field <em>CreditCards.StartYear</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.StartYear</em> in your WinMan database.<br/>Null values: allowed<br/>Zero values: allowed"
             },
             "CardExpiryMonth": {
-                "type": "number",
-                "format": "integer",
+                "type": "integer",
+                "format": "int32",
                 "example": 4,
-                "description": "Maps to the field <em>CreditCards.ExpiryMonth</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.ExpiryMonth</em> in your WinMan database.<br/>Null values: allowed<br/>Zero values: allowed"
             },
             "CardExpiryYear": {
-                "type": "number",
-                "format": "integer",
+                "type": "integer",
+                "format": "int32",
                 "example": 17,
-                "description": "Maps to the field <em>CreditCards.ExpiryYear</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.ExpiryYear</em> in your WinMan database.<br/>Null values: allowed<br/>Zero values: allowed"
             },
             "CardIssue": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 10,
                 "example": "01",
-                "description": "Maps to the field <em>CreditCards.Issue</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.Issue</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "BillingAddress": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
                 "example": "22 Acacia Avenue",
-                "description": "Maps to the field <em>CreditCards.Address</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.Address</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: not allowed"
             },
             "BillingCity": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
                 "example": "Birmingham",
-                "description": "Maps to the field <em>CreditCards.City</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.City</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "BillingRegion": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
                 "example": "West Midlands",
-                "description": "Maps to the field <em>CreditCards.Region</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.Region</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "BillingPostalCode": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 20,
                 "example": "B21 1SB",
-                "description": "Maps to the field <em>CreditCards.PostalCode</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.PostalCode</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: not allowed"
             },
             "BillingCountryCode": {
                 "type": "string",
+                "minLength": 3,
                 "maxLength": 3,
                 "example": "GBR",
-                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database."
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: not allowed"
             },
             "CardLastDigits": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 4,
                 "example": "030",
-                "description": "Maps to the field <em>CreditCards.LastDigits</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCards.LastDigits</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "CardAuthorisation": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
                 "example": "PDQ",
-                "description": "Maps to the field <em>CreditCardTransactions.Authorisation</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditCardTransactions.Authorisation</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "CardPaymentReceived": {
                 "type": "number",
-                "example": 7.35,
-                "description": "The total payment amount received for this order."
+                "format": "double",
+                "example": 72.48,
+                "description": "The total payment amount received for this order.<br/>Null values: not allowed<br/>Zero values: not allowed"
             }                                                                                                                                               
         }
     }

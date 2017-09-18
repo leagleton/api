@@ -1,26 +1,35 @@
 {
     "Discount": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty objects: not allowed",
+        "required": [
+            "DiscountId",
+            "DiscountDescription",
+            "DiscountPercentage"
+        ],             
         "xml": {
             "name": "Discount"
         },
         "properties": {
-            "DicountId": {
+            "DiscountId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
-                "example": "",
-                "description": "Maps to the field <em>Discounts.DiscountId</em> in your WinMan database."
+                "example": "ZERO",
+                "description": "Maps to the field <em>Discounts.DiscountId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
-            "DicountDescription": {
+            "DiscountDescription": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 100,
-                "example": "",
-                "description": "Maps to the field <em>Discounts.DiscountDescription</em> in your WinMan database."
+                "example": "No discount",
+                "description": "Maps to the field <em>Discounts.DiscountDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
-            "DicountPercentage": {
+            "DiscountPercentage": {
                 "type": "number",
-                "example": 25.15,
-                "description": "Maps to the field <em>Discounts.DiscountPercentage</em> in your WinMan database."
+                "format": "double",
+                "example": 0.00,
+                "description": "Maps to the field <em>Discounts.DiscountPercentage</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },                        
             "DiscountBreaks": {
                 "type": "array",

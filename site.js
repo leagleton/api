@@ -10,6 +10,11 @@ const logger = require('./middleware/logger');
 const tp = require('tedious-promises');
 tp.setPromiseLibrary('es6');
 
+/**
+ * Set the appropriate DB connection config based on user session.
+ * @constructor
+ * @param   {Object} req - The request.
+ */
 exports.system = (req) => {
   if (typeof req.session.system != 'undefined' && req.session.system === 'training') {
     tp.setConnectionConfig(config.connectionTraining);
@@ -20,9 +25,9 @@ exports.system = (req) => {
 
 /**
  * Render the main documentation page after ensuring the user is logged in.
- * @param   {Object} req - The request
- * @param   {Object} res - The response
- * @returns {undefined}
+ * @param   {Object} req - The request.
+ * @param   {Object} res - The response.
+ * @returns {void}
  */
 exports.index = [
   login.ensureLoggedIn(),
@@ -35,9 +40,9 @@ exports.index = [
 
 /**
  * Render the oauth2 redirect page.
- * @param   {Object} req - The request
- * @param   {Object} res - The response
- * @returns {undefined}
+ * @param   {Object} req - The request.
+ * @param   {Object} res - The response.
+ * @returns {void}
  */
 exports.oauth2redirect = (req, res) => {
   try {
@@ -51,9 +56,9 @@ exports.oauth2redirect = (req, res) => {
 
 /**
  * Render the login page.
- * @param   {Object} req - The request
- * @param   {Object} res - The response
- * @returns {undefined}
+ * @param   {Object} req - The request.
+ * @param   {Object} res - The response.
+ * @returns {void}
  */
 exports.loginForm = (req, res) => {
   if (req.user) {
@@ -68,7 +73,7 @@ exports.loginForm = (req, res) => {
 };
 
 /**
- * Authenticate normal login page using strategy of authenticate
+ * Authenticate normal login page using strategy of authenticate.
  */
 exports.login = [
   passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login', failureFlash: true }),
@@ -76,9 +81,9 @@ exports.login = [
 
 /**
  * Log out of the system and redirect to home page.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.logout = (req, res) => {
   req.session.destroy(function (err) {
@@ -89,10 +94,10 @@ exports.logout = (req, res) => {
 };
 
 /**
- * Render account.ejs but ensure the user is logged in before rendering.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * Render account page but ensure the user is logged in first.
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.account = [
   login.ensureLoggedIn(),
@@ -111,9 +116,9 @@ exports.account = [
 
 /**
  * Randomly generate a new client ID and secret but ensure the user is logged in first.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.create = [
   login.ensureLoggedIn(),
@@ -138,9 +143,9 @@ exports.create = [
 
 /**
  * Fetch scopes from DB to display on account page.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.scopes = [
   login.ensureLoggedIn(),
@@ -154,9 +159,9 @@ exports.scopes = [
 
 /**
  * Fetch clients from DB to display on account page.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.clients = [
   login.ensureLoggedIn(),
@@ -167,7 +172,6 @@ exports.clients = [
         .then(() => res.send("Success"))
         .catch(err => next(err));
     } else {
-      // Select all clients for the specified user.
       tp.sql("EXEC wsp_RestApiClientsSelect @user = " + req.user.id)
         .execute()
         .then((results) => res.send(results))
@@ -178,9 +182,9 @@ exports.clients = [
 
 /**
  * Fetch access tokens from DB to display on account page.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.userAccessTokens = [
   login.ensureLoggedIn(),
@@ -191,7 +195,6 @@ exports.userAccessTokens = [
         .then(() => res.send("Success"))
         .catch(err => next(err));
     } else {
-      // Select all access tokens for the specified user.
       tp.sql("EXEC wsp_RestApiUserAccessTokensSelect @user = " + req.user.id)
         .execute()
         .then((results) => res.send(results))
@@ -202,9 +205,9 @@ exports.userAccessTokens = [
 
 /**
  * Change the password of a REST API User.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.passwordChange = [
   login.ensureLoggedIn(),

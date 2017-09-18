@@ -1,6 +1,4 @@
 'use strict';
-// Update the URLs in swagger.json so that the file validates correctly.
-// Better to add URLs this way because we only need to specify once in our app's config file then :).
 
 const logger = require('./logger');
 const fs = require('fs');
@@ -33,6 +31,12 @@ function fetchScopes(system) {
         .catch(err => logger.error(err.stack));
 }
 
+/**
+ * Helper function to sort array items into alphabetical order.
+ * @param   {Object} a - An array item.
+ * @param   {Object} b - Another array item to compare against.
+ * @returns {Integer}
+ */
 function compare(a, b) {
     if (a.filename < b.filename)
         return -1;
@@ -41,6 +45,12 @@ function compare(a, b) {
     return 0;
 }
 
+/**
+ * Read contents of core and local swagger files into an array.
+ * @param   {String} coreDir - The path to the core directory.
+ * @param   {String} localDir - The path to the local directory.
+ * @returns {Promise} resolved with the array of file contents.
+ */
 function read(coreDir, localDir) {
     const fileContents = [];
 
@@ -100,6 +110,13 @@ function read(coreDir, localDir) {
         .then(() => fileContents);
 }
 
+/**
+ * Dynamically generate the swagger schema based on which system has been
+ * logged into.
+ * 
+ * Dynamic generation ensures that attributes such as URLs only need to
+ * be defined once in the system config file, and nowhere else.
+ */
 exports.build = function (req) {
     if (typeof req.session.system == 'undefined' || typeof req.session.generating != 'undefined') {
         return;

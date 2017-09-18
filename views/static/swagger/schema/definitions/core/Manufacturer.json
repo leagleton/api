@@ -1,27 +1,35 @@
 {
     "Manufacturer": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty objects: allowed",
+        "required": [
+            "ManufacturerId",
+            "ManufacturerDescription"
+        ],          
         "xml": {
             "name": "Brand"
         },
         "properties": {
             "ManufacturerId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 20,
-                "example": "ABC123",
-                "description": "Maps to the field <em>Manufacturers.ManufacturerId</em> in your WinMan database."
+                "example": "ICOM",
+                "description": "Maps to the field <em>Manufacturers.ManufacturerId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "ManufacturerDescription": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 500,
                 "example": "Radios",
-                "description": "Maps to the field <em>Manufacturers.ManufacturerDescription</em> in your WinMan database."
+                "description": "Maps to the field <em>Manufacturers.ManufacturerDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "ManufacturerLogo": {
                 "type": "string",
-                "format": "base64",
+                "format": "byte",
+                "minLength": 1,
                 "example": "R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=",
-                "description": "Maps to the field <em>Manufacturers.ManufacturerLogo</em> in your WinMan database."
+                "description": "Maps to the field <em>Manufacturers.ManufacturerLogo</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: not allowed"
             }
         }
     }

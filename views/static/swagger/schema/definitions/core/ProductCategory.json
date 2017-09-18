@@ -1,51 +1,74 @@
 {
     "ProductCategory": {
         "type": "object",
+        "required": [
+            "CategoryGuid",
+            "CategoryPath",
+            "CategoryName",
+            "SortOrder",
+            "MetaTitle",
+            "MetaDescription",
+            "MetaKeywords",
+            "Level",
+            "Products"
+        ],             
         "xml": {
             "name": "ProductCategory"
         },
         "properties": {
             "CategoryGuid": {
                 "type": "string",
-                "example": "something",
-                "description": "Maps to the field <em>ProductCategories.CategoryGUID</em> in your WinMan database."
+                "format": "uuid",
+                "minLength": 36,
+                "maxLength": 36,
+                "example": "A4BAA1AD-5259-4918-A497-B02EB6EAEF6B",
+                "description": "Maps to the field <em>ProductCategories.ProductCategoryGUID</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CategoryPath": {
                 "type": "string",
-                "example": "something",
-                "description": "Maps to the field <em>ProductCategories.CategoryPath</em> in your WinMan database."
+                "minLength": 1,
+                "example": "Furniture/Bedroom",
+                "description": "Maps to the field <em>ProductCategories.FullPath</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CategoryName": {
                 "type": "string",
-                "example": "something",
-                "description": "Maps to the field <em>ProductCategories.CategoryName</em> in your WinMan database."
+                "minLength": 1,
+                "maxLength": 300,
+                "example": "Bedroom",
+                "description": "Maps to the field <em>ProductCategories.ProductCategoryDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "SortOrder": {
-                "type": "number",
-                "example": 1,
-                "description": "A calculated value from the field <em>ProductCategories.SortOrder</em> your WinMan database."
+                "type": "integer",
+                "format": "int32",
+                "example": 3,
+                "description": "A calculated value from the field <em>ProductCategories.SortOrder</em> your WinMan database.<br/>Null values: not allowed<br/>Zero valuess: not allowed"
             },
             "MetaTitle": {
                 "type": "string",
-                "example": "something",
-                "description": "Maps to the field <em>ProductCategories.MetaTitle</em> in your WinMan database."
+                "minLength": 0,
+                "example": "Bedroom furniture",
+                "description": "Maps to the field <em>ProductCategories.TitleTag</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "MetaDescription": {
                 "type": "string",
-                "example": "something",
-                "description": "Maps to the field <em>ProductCategories.MetaDescription</em> in your WinMan database."
+                "minLength": 0,
+                "example": "Furniture for the bedroom.",
+                "description": "Maps to the field <em>ProductCategories.DescriptionTag</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "MetaKeywords": {
                 "type": "string",
-                "example": "something",
-                "description": "Maps to the field <em>ProductCategories.MetaKeywords</em> in your WinMan database."
+                "minLength": 0,
+                "example": "bedroom, furniture",
+                "description": "Maps to the field <em>ProductCategories.KeywordsTag</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "Level": {
-                "type": "number",
+                "type": "integer",
+                "format": "int32",
                 "example": 2,
-                "description": "A calculated value from your WinMan database."
+                "description": "A calculated value from your WinMan database.<br/>Null values: not allowed<br/>Zero values: not allowed"
             },
             "Products": {
+                "type": "array",
                 "items": {
                     "$ref": "#/definitions/ProductCategoryProduct"
                 },

@@ -9,7 +9,7 @@ GO
 -- Description:	Table for storing RestApiUsers linked to RestApiScopes for the WinMan REST API.
 -- =============================================
 
-CREATE TABLE [dbo].[RestApiUsersScopes](
+CREATE TABLE [dbo].[RestApiUserScopes](
 	[RestApiUserScope] [bigint] IDENTITY(1,1) NOT NULL,
 	[RestApiUser] [bigint] NOT NULL,
 	[RestApiScope] [bigint] NOT NULL,
@@ -17,23 +17,23 @@ CREATE TABLE [dbo].[RestApiUsersScopes](
 	[CreatedDate] [datetime] NOT NULL,
 	[LastModifiedUser] [nvarchar](20) NOT NULL,
 	[LastModifiedDate] [datetime] NOT NULL,
- CONSTRAINT [PK_RestApiUsersScopes] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_RestApiUserScopes] PRIMARY KEY CLUSTERED 
 (
 	[RestApiUserScope] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[RestApiUsersScopes]  WITH CHECK ADD  CONSTRAINT [FK_RestApiUsersScopes_RestApiScopes] FOREIGN KEY([RestApiScope])
+ALTER TABLE [dbo].[RestApiUserScopes]  WITH CHECK ADD  CONSTRAINT [FK_RestApiUserScopes_RestApiScopes] FOREIGN KEY([RestApiScope])
 REFERENCES [dbo].[RestApiScopes] ([RestApiScope])
 GO
 
-ALTER TABLE [dbo].[RestApiUsersScopes] CHECK CONSTRAINT [FK_RestApiUsersScopes_RestApiScopes]
+ALTER TABLE [dbo].[RestApiUserScopes] CHECK CONSTRAINT [FK_RestApiUserScopes_RestApiScopes]
 GO
 
-ALTER TABLE [dbo].[RestApiUsersScopes]  WITH CHECK ADD  CONSTRAINT [FK_RestApiUsersScopes_RestApiUsers] FOREIGN KEY([RestApiUser])
+ALTER TABLE [dbo].[RestApiUserScopes]  WITH CHECK ADD  CONSTRAINT [FK_RestApiUserScopes_RestApiUsers] FOREIGN KEY([RestApiUser])
 REFERENCES [dbo].[RestApiUsers] ([RestApiUser])
 GO
 
-ALTER TABLE [dbo].[RestApiUsersScopes] CHECK CONSTRAINT [FK_RestApiUsersScopes_RestApiUsers]
+ALTER TABLE [dbo].[RestApiUserScopes] CHECK CONSTRAINT [FK_RestApiUserScopes_RestApiUsers]
 GO

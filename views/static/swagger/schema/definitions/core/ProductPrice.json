@@ -1,31 +1,42 @@
 {
     "ProductPrice": {
         "type": "object",
+        "description": "Null values: not allowed<br/>Empty arrays: not allowed",
+        "required": [
+            "Quantity",
+            "EffectiveDateStart",
+            "EffectiveDateEnd",
+            "PriceValue"
+        ],         
         "xml": {
             "name": "ProductPrice"
         },
         "properties": {
             "Quantity": {
                 "type": "number",
-                "example": "",
-                "description": "Maps to the field <em>Prices.Quantity</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 2.00000,
+                "description": "Maps to the field <em>Prices.Quantity</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: not allowed"
             },
             "EffectiveDateStart": {
                 "type": "string",
                 "format": "date-time",
                 "example": "2017-07-31T10:48:06.200",
-                "description": "Maps to the field <em>Prices.EffectiveDateStart</em> in your WinMan database."
+                "description": "Maps to the field <em>Prices.EffectiveDateStart</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "EffectiveDateEnd": {
                 "type": "string",
                 "format": "date-time",
                 "example": "2017-07-31T10:48:06.200",
-                "description": "Maps to the field <em>Prices.EffectiveDateEnd</em> in your WinMan database."
+                "description": "Maps to the field <em>Prices.EffectiveDateEnd</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "PriceValue": {
                 "type": "number",
-                "example": "",
-                "description": "Maps to the field <em>Prices.PriceValue</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 2.99999,
+                "description": "Maps to the field <em>Prices.PriceValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             }            
         }
     }

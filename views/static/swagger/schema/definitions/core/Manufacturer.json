@@ -1,0 +1,28 @@
+{
+    "Manufacturer": {
+        "type": "object",
+        "xml": {
+            "name": "Brand"
+        },
+        "properties": {
+            "ManufacturerId": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "ABC123",
+                "description": "Maps to the field <em>Manufacturers.ManufacturerId</em> in your WinMan database."
+            },
+            "ManufacturerDescription": {
+                "type": "string",
+                "maxLength": 500,
+                "example": "Radios",
+                "description": "Maps to the field <em>Manufacturers.ManufacturerDescription</em> in your WinMan database."
+            },
+            "ManufacturerLogo": {
+                "type": "string",
+                "format": "base64",
+                "example": "R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=",
+                "description": "Maps to the field <em>Manufacturers.ManufacturerLogo</em> in your WinMan database."
+            }
+        }
+    }
+}

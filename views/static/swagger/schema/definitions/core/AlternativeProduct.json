@@ -1,0 +1,22 @@
+{
+    "AlternativeProduct": {
+        "type": "object",
+        "xml": {
+            "name": "AlternativeProduct"
+        },
+        "properties": {
+            "AlternativeProductSKU": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "ABC00123",
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+            },
+            "AlternativeProductName": {
+                "type": "string",
+                "maxLength": 300,
+                "example": "Super awesome product",
+                "description": "Maps to the field <em>Products.ProductDescription</em> in your WinMan database."
+            }
+        }
+    }
+}

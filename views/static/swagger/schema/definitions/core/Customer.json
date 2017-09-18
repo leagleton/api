@@ -1,0 +1,169 @@
+{
+    "Customer": {
+        "type": "object",
+        "xml": {
+            "name": "Customer"
+        },
+        "properties": {
+            "Guid": {
+                "type": "string",
+                "minLength": 36,
+                "maxLength": 36,
+                "example": "CC5821D6-66C7-423B-A7EC-7EE1E838C69F",
+                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database."
+            },
+            "Site": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "Toronto",
+                "description": "Maps to the field <em>Sites.SiteName</em> in your WinMan database."
+            }, 
+            "CustomerId": {
+                "type": "string",
+                "maxLength": 10,
+                "example": "C00123",
+                "description": "Maps to the field <em>Customers.CustomerId</em> in your WinMan database."
+            },       
+            "Branch": {
+                "type": "string",
+                "maxLength": 4,
+                "example": "0000",
+                "description": "Maps to the field <em>Customers.Branch</em> in your WinMan database."
+            },
+            "Address": {
+                "type": "string",
+                "maxLength": 200,
+                "example": "1 Industrial Drive",
+                "description": "Maps to the field <em>Customers.Address</em> in your WinMan database."
+            },
+            "City": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "Birmingham",
+                "description": "Maps to the field <em>Customers.City</em> in your WinMan database."
+            },
+            "Region": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "WEST MIDLANDS",
+                "description": "Maps to the field <em>Customers.Region</em> in your WinMan database."
+            }, 
+            "PostalCode": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "B75 6GH",
+                "description": "Maps to the field <em>Customers.PostalCode</em> in your WinMan database."
+            },
+            "Country": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3,
+                "example": "GBR",
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database."
+            },
+            "PhoneNumber": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 1234 567",
+                "description": "Maps to the field <em>Customers.PhoneNumber</em> in your WinMan database."
+            },
+            "FaxNumber": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 1234 568",
+                "description": "Maps to the field <em>Customers.FaxNumber</em> in your WinMan database."
+            },
+            "Email": {
+                "type": "string",
+                "maxLength": 450,
+                "example": "jsmith@email.com",
+                "description": "Maps to the field <em>Customers.EmailAddress</em> in your WinMan database."
+            },                                                                                                                   
+            "WebSitee": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "www.example.com",
+                "description": "Maps to the field <em>Customers.WebSite</em> in your WinMan database."
+            },
+            "CustomerAlias": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "Smith",
+                "description": "Maps to the field <em>Customers.CustomerAlias</em> in your WinMan database."
+            },
+            "PreferredCulture": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "en-GB",
+                "description": "Maps to the fields <em>Customers.PreferredCulture</em> in your WinMan database."
+            },
+            "Currency": {
+                "$ref": "#/definitions/Currency"
+            },
+            "CreditTerms": {
+                "$ref": "#/definitions/CreditTerm"
+            },
+            "Dicount": {
+                "$ref": "#/definitions/Discount"
+            },
+            "TaxCode": {
+                "$ref": "#/definitions/TaxCode"
+            },
+            "TaxCodeSecondary": {
+                "$ref": "#/definitions/TaxCodeSecondary"
+            },
+            "Industry": {
+                "$ref": "#/definitions/Industry"
+            },
+            "CommissionAgents": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/CommissionAgent"
+                },
+                "xml": {
+                    "name": "CommissionAgents",
+                    "wrapped": true
+                }
+            },
+            "Contacts": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Contact"
+                },
+                "xml": {
+                    "name": "Contacts",
+                    "wrapped": true
+                }
+            },
+            "TheirIdentifier": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "A N Other",
+                "description": "Maps to the field <em>Customers.TheirIdentifier</em> in your WinMan database."
+            },
+            "CustomerPricingClassification": {
+                "$ref": "#/definitions/CustomerPricingClassification"
+            },
+            "CrossReferences": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/CrossReference"
+                },
+                "xml": {
+                    "name": "CrossReferences",
+                    "wrapped": true
+                }
+            },
+            "Notes": {
+                "type": "string",
+                "example": "",
+                "description": "Maps to the fields <em>Customers.Notes</em> in your WinMan database."
+            },
+            "PromptText": {
+                "type": "string",
+                "example": "",
+                "description": "Maps to the fields <em>Customers.PromptText</em> in your WinMan database."
+            }
+        }
+    }
+}

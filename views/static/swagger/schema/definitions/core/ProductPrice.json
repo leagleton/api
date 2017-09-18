@@ -1,0 +1,32 @@
+{
+    "ProductPrice": {
+        "type": "object",
+        "xml": {
+            "name": "ProductPrice"
+        },
+        "properties": {
+            "Quantity": {
+                "type": "number",
+                "example": "",
+                "description": "Maps to the field <em>Prices.Quantity</em> in your WinMan database."
+            },
+            "EffectiveDateStart": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2017-07-31T10:48:06.200",
+                "description": "Maps to the field <em>Prices.EffectiveDateStart</em> in your WinMan database."
+            },
+            "EffectiveDateEnd": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2017-07-31T10:48:06.200",
+                "description": "Maps to the field <em>Prices.EffectiveDateEnd</em> in your WinMan database."
+            },
+            "PriceValue": {
+                "type": "number",
+                "example": "",
+                "description": "Maps to the field <em>Prices.PriceValue</em> in your WinMan database."
+            }            
+        }
+    }
+}

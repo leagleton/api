@@ -1,0 +1,81 @@
+{
+    "Contact": {
+        "type": "object",
+        "xml": {
+            "name": "Contact"
+        },
+        "properties": {
+            "CrmContactGuid": {
+                "type": "string",
+                "maxLength": 36,
+                "example": "",
+                "description": "Maps to the field <em>CRMContacts.CRMContactGUID</em> in your WinMan database."
+            },
+            "CrmContactId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "",
+                "description": "Maps to the field <em>CRMContacts.CRMContactId</em> in your WinMan database."
+            },
+            "FirstName": {
+                "type": "string",
+                "maxLength": 25,
+                "example": "Joe",
+                "description": "Maps to the field <em>CRMContacts.FirstName</em> in your WinMan database."
+            },
+            "LastName": {
+                "type": "string",
+                "maxLength": 25,
+                "example": "Bloggs",
+                "description": "Maps to the field <em>CRMContacts.LastName</em> in your WinMan database."
+            },
+            "PhoneNumberWork": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 1234 567",
+                "description": "Maps to the field <em>CRMContacts.PhoneNumberWork</em> in your WinMan database."
+            },
+            "PhoneNumberHome": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 1234 567",
+                "description": "Maps to the field <em>CRMContacts.PhoneNumberHome</em> in your WinMan database."
+            },
+            "FaxNumber": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 1234 568",
+                "description": "Maps to the field <em>CRMContacts.FaxNumber</em> in your WinMan database."
+            },
+            "EmailAddressWork": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "jsmith@email.com",
+                "description": "Maps to the field <em>CRMContacts.EmailAddressWork</em> in your WinMan database."
+            }, 
+            "EmailAddressWorkHome": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "jsmith@email.com",
+                "description": "Maps to the field <em>CRMContacts.EmailAddressHome</em> in your WinMan database."
+            },
+            "PortalUserName": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "jsmith@email.com",
+                "description": "Maps to the field <em>CRMContacts.PortalUserName</em> in your WinMan database."
+            },                                                                        
+            "JobTitle": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "",
+                "description": "Maps to the field <em>CRMContacts.JobTitle</em> in your WinMan database."
+            },
+            "AllowCommunication": {
+                "type": "boolean",
+                "example": true,
+                "description": "Maps to the field <em>CRMContacts.AllowCommunication</em> in your WinMan database."
+            }                                                                                     
+        }
+    }
+}

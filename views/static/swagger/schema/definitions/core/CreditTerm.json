@@ -1,0 +1,49 @@
+{
+    "CreditTerm": {
+        "type": "object",
+        "xml": {
+            "name": "CreditTerm"
+        },
+        "properties": {
+            "CreditTermsId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "",
+                "description": "Maps to the field <em>CreditTerms.CreditTermsId</em> in your WinMan database."
+            },
+            "CreditTermsDescription": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "",
+                "description": "Maps to the field <em>CreditTerms.CreditTermsDescription</em> in your WinMan database."
+            },
+            "TriggerDate": {
+                "type": "string",
+                "maxLength": 1,
+                "example": "D",
+                "description": "Maps to the field <em>CreditTerms.TriggerDate</em> in your WinMan database."
+            },
+            "EndOfMonth": {
+                "type": "boolean",
+                "example": false,
+                "description": "Maps to the field <em>CreditTerms.EndOfMonth</em> in your WinMan database."
+            },
+            "PaymentPeriod": {
+                "type": "integer",
+                "example": 30,
+                "description": "Maps to the field <em>CreditTerms.PaymentUnits</em> in your WinMan database."
+            },
+            "PaymentUnit": {
+                "type": "string",
+                "maxLength": 1,
+                "example": "Y",
+                "description": "Maps to the field <em>CreditTerms.PaymentUnit</em> in your WinMan database."
+            },
+            "CreditCardRequired": {
+                "type": "boolean",
+                "example": true,
+                "description": "Maps to the field <em>CreditTerms.CreditCardRequired</em> in your WinMan database."
+            }                                                            
+        }
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "PriceList": {
+        "type": "object",
+        "xml": {
+            "name": "PriceList"
+        },
+        "properties": {
+            "PriceListId": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "",
+                "description": "Maps to the field <em>PriceLists.PriceListId</em> in your WinMan database."
+            },
+            "PriceListDescription": {
+                "type": "string",
+                "maxLength": 300,
+                "example": "",
+                "description": "Maps to the field <em>PriceLists.PriceListDescription</em> in your WinMan database."
+            },
+            "CustomerPrices": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/CustomerPrice"
+                },
+                "xml": {
+                    "name": "CustomerPrices",
+                    "wrapped": true
+                }
+            }            
+        }
+    }
+}

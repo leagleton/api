@@ -1,0 +1,27 @@
+{
+    "CustomerPriceList": {
+        "type": "object",
+        "xml": {
+            "name": "CustomerPriceList"
+        },
+        "properties": {
+            "Guid": {
+                "type": "string",
+                "minLength": 36,
+                "maxLength": 36,
+                "example": "CC5821D6-66C7-423B-A7EC-7EE1E838C69F",
+                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database."
+            },
+            "PriceLists": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/PriceList"
+                },
+                "xml": {
+                    "name": "PriceLists",
+                    "wrapped": true
+                }
+            }
+        }
+    }
+}

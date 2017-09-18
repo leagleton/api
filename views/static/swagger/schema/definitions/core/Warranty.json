@@ -1,0 +1,33 @@
+{
+    "Warranty": {
+        "type": "object",
+        "xml": {
+            "name": "Warranty"
+        },
+        "properties": {
+            "WarrantyId": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "",
+                "description": "Maps to the field <em>Warranties.WarrantyId</em> in your WinMan database."
+            },
+            "WarrantyDescription": {
+                "type": "string",
+                "maxLength": 400,
+                "example": "",
+                "description": "Maps to the field <em>Warranties.WarrantyDescription</em> in your WinMan database."
+            },
+            "WarrantyPeriod": {
+                "type": "integer",
+                "example": 30,
+                "description": "Maps to the field <em>Warranties.WarrantyPeriod</em> in your WinMan database."
+            },
+            "WarrantyUnit": {
+                "type": "string",
+                "maxLength": 1,
+                "example": "M",
+                "description": "Maps to the field <em>Warranties.WarrantyUnit</em> in your WinMan database."
+            }                                                           
+        }
+    }
+}

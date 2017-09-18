@@ -1,0 +1,15 @@
+{
+    "ProductCategoryProduct": {
+        "type": "object",
+        "xml": {
+            "name": "Product"
+        },
+        "properties": {
+            "SKU": {
+                "maxLength": 100,
+                "example": "ABC00123",
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+            }
+        }
+    }
+}

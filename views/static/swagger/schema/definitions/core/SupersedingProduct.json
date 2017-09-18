@@ -1,0 +1,22 @@
+{
+    "SupersedingProduct": {
+        "type": "object",
+        "xml": {
+            "name": "SupersedingProduct"
+        },
+        "properties": {
+            "SupersedingProductSKU": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "ABC00123",
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+            },
+            "SupersedingProductName": {
+                "type": "string",
+                "maxLength": 300,
+                "example": "Super awesome product",
+                "description": "Maps to the field <em>Products.ProductDescription</em> in your WinMan database."
+            }
+        }
+    }
+}

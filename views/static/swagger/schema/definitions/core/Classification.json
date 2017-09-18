@@ -1,0 +1,22 @@
+{
+    "Classification": {
+        "type": "object",
+        "xml": {
+            "name": "Classification"
+        },
+        "properties": {
+            "ClassificationName": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "General",
+                "description": "Maps to the field <em>Classifications.ClassificationId</em> in your WinMan database."
+            },
+            "ClassificationDescription": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "General product classification.",
+                "description": "Maps to the field <em>Classifications.ClassificationDescription</em> in your WinMan database."
+            }
+        }
+    }
+}

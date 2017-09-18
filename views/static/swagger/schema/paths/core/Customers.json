@@ -1,0 +1,63 @@
+{
+    "/customers": {
+        "get": {
+            "tags": [
+                "Customers"
+            ],
+            "summary": "Fetch a customer or customers from WinMan",
+            "operationId": "getCustomers",
+            "description": "<p>Fetch web-enabled customers from WinMan.</p>",
+            "produces": [
+                "application/json",
+                "application/xml"
+            ],
+            "parameters": [
+                {
+                    "in": "query",
+                    "name": "guid",
+                    "description": "Fetch a single web-enabled customer with the supplied <em>guid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "maxLength": 36
+                },
+                {
+                    "in": "query",
+                    "name": "website",
+                    "description": "Fetch only web-enabled customers which are attached to the supplied <em>website</em>.",
+                    "required": true,
+                    "type": "string",
+                    "maxLength": 100
+                },
+                {
+                    "in": "query",
+                    "name": "modified",
+                    "description": "Fetch web-enabled customers modified within the specified number of seconds.",
+                    "required": false,
+                    "type": "integer",
+                    "minimum": 0
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Query executed successfully.",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Customer"
+                        },
+                        "xml": {
+                            "name": "Customers",
+                            "wrapped": true
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad input parameter."
+                },
+                "401": {
+                    "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."
+                }                 
+            }
+        }
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "/salesorders": {
+        "post": {
+            "tags": [
+                "Sales Orders"
+            ],
+            "summary": "TODO",
+            "operationId": "postSalesOrders",
+            "description": "TODO",
+            "consumes": [
+                "application/json",
+                "application/xml"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "TODO",
+                    "schema": {
+                        "$ref": "#/definitions/Customer"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Query executed successfully."
+                },
+                "400": {
+                    "description": "Bad input parameter."
+                },
+                "401": {
+                    "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."
+                }                
+            }
+        }
+    }
+}

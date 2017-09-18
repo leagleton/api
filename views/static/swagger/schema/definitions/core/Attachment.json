@@ -1,0 +1,28 @@
+{
+    "Attachment": {
+        "type": "object",
+        "xml": {
+            "name": "Attachment"
+        },
+        "properties": {
+            "Type": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "WebImage",
+                "description": "Maps to the field <em>Documents.TableName/em> in your WinMan database."
+            },
+            "FileName": {
+                "type": "string",
+                "maxLength": 500,
+                "example": "example.png",
+                "description": "Maps to the field <em>Documents.DocumentFileName</em> in your WinMan database."
+            },
+            "Data": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "",
+                "description": "Maps to the field <em>Documents.DocumentData</em> in your WinMan database."
+            }            
+        }
+    }
+}

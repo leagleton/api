@@ -1,0 +1,37 @@
+{
+    "/examples": {
+        "post": {
+            "tags": [
+                "Examples"
+            ],
+            "summary": "Some summary.",
+            "operationId": "postExamples",
+            "description": "Lorem ipsum dolor sit amet.",
+            "consumes": [
+                "application/json",
+                "application/xml"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "TODO",
+                    "schema": {
+                        "$ref": "#/definitions/Example"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Query executed successfully."
+                },
+                "400": {
+                    "description": "Bad input parameter."
+                },
+                "401": {
+                    "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."
+                }                
+            }
+        }
+    }
+}

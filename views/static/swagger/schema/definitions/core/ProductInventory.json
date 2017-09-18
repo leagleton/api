@@ -1,0 +1,31 @@
+{
+    "ProductInventory": {
+        "type": "object",
+        "xml": {
+            "name": "ProductInventory"
+        },
+        "properties": {
+            "Site": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "Toronto",
+                "description": "Maps to the field <em>Sites.SiteName</em> in your WinMan database."
+            }, 
+            "QuantityInStock": {
+                "type": "number",
+                "example": 5.6549,
+                "description": "A calculated value from multiple fields in your WinMan database."
+            },
+            "QuantityHardAllocated": {
+                "type": "number",
+                "example": 2.6549,
+                "description": "A calculated value from multiple fields in your WinMan database."
+            },
+            "QuantitySoftAllocated": {
+                "type": "number",
+                "example": 1.547,
+                "description": "A calculated value from multiple fields in your WinMan database."
+            }
+        }
+    }
+}

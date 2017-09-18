@@ -1,0 +1,12 @@
+{
+        "tags": [
+        {
+            "name": "Customers",
+            "description": "Customer operations"
+        },
+        {
+            "name": "Products",
+            "description": "Product operations"
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "CustomerPricingClassification": {
+        "type": "object",
+        "xml": {
+            "name": "CustomerPricingClassification"
+        },
+        "properties": {
+            "CustomerPricingClassificationName": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "",
+                "description": "Maps to the field <em>CustomerPricingClassifications.CustomerPricingClassificationId</em> in your WinMan database."
+            },
+            "CustomerPricingClassificationDescription": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "",
+                "description": "Maps to the field <em>CustomerPricingClassifications.CustomerPricingClassificationDescription</em> in your WinMan database."
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "Example": {
+        "type": "object",
+        "xml": {
+            "name": "Example "
+        },
+        "properties": {
+            "ExampleId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "Here's an ID.",
+                "description": "Maps to the field <em>Some.Example</em> in your WinMan database."
+            },
+            "ExampleDescription": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "Here's a description.",
+                "description": "Maps to the field <em>Some.Example</em> in your WinMan database."
+            },
+            "ExampleValue": {
+                "type": "number",
+                "example": 123.456,
+                "description": "Maps to the field <em>Some.Example</em> in your WinMan database."
+            }
+        }
+    }
+}

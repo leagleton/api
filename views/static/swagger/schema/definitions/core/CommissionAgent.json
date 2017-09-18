@@ -1,0 +1,76 @@
+{
+    "CommissionAgent": {
+        "type": "object",
+        "xml": {
+            "name": "CommissionAgent"
+        },
+        "properties": {
+            "CommissionAgentId": {
+                "type": "string",
+                "maxLength": 10,
+                "example": "",
+                "description": "Maps to the field <em>CommissionAgents.CommissionAgentId</em> in your WinMan database."
+            },
+            "DefaultPercentage": {
+                "type": "number",
+                "example": 40.25,
+                "description": "Maps to the field <em>CustomerCommissionAgents.DefaultPercentage</em> in your WinMan database."
+            },
+            "SupplierName": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "",
+                "description": "Maps to the field <em>Suppliers.SupplierName</em> in your WinMan database."
+            },
+            "Address": {
+                "type": "string",
+                "maxLength": 200,
+                "example": "",
+                "description": "Maps to the field <em>Suppliers.Address</em> in your WinMan database."
+            },
+            "City": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "",
+                "description": "Maps to the field <em>Suppliers.City</em> in your WinMan database."
+            } ,
+            "Region": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "",
+                "description": "Maps to the field <em>Suppliers.Region</em> in your WinMan database."
+            } ,
+            "PostalCode": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "",
+                "description": "Maps to the field <em>Suppliers.PostalCode</em> in your WinMan database."
+            },
+            "Country": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3,
+                "example": "GBR",
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database."
+            },
+            "PhoneNumber": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 1234 567",
+                "description": "Maps to the field <em>Suppliers.PhoneNumber</em> in your WinMan database."
+            },
+            "FaxNumber": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 1234 568",
+                "description": "Maps to the field <em>Suppliers.FaxNumber</em> in your WinMan database."
+            },
+            "Email": {
+                "type": "string",
+                "maxLength": 450,
+                "example": "jsmith@email.com",
+                "description": "Maps to the field <em>Suppliers.EmailAddress</em> in your WinMan database."
+            }                                                                                      
+        }
+    }
+}

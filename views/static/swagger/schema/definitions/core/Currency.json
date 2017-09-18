@@ -1,0 +1,32 @@
+{
+    "Currency": {
+        "type": "object",
+        "xml": {
+            "name": "Currency"
+        },
+        "properties": {
+            "CurrencyId": {
+                "type": "string",
+                "maxLength": 3,
+                "example": "GBP",
+                "description": "Maps to the field <em>Currencies.CurrencyId</em> in your WinMan database."
+            },
+            "CurrencyDescription": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "",
+                "description": "Maps to the field <em>Currencies.CurrencyDescription</em> in your WinMan database."
+            },
+            "ActualRate": {
+                "type": "number",
+                "example": 123.456789,
+                "description": "Maps to the field <em>Currencies.ActualRate</em> in your WinMan database."
+            },
+            "StandardRate": {
+                "type": "number",
+                "example": 123.456789,
+                "description": "Maps to the field <em>Currencies.StandardRate</em> in your WinMan database."
+            }            
+        }
+    }
+}

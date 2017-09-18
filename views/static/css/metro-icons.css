@@ -1,0 +1,67 @@
+@font-face {
+  font-family: 'metro';
+  src: url('../fonts/metro.eot');
+  src: url('../fonts/metro.eot') format('embedded-opentype'), url('../fonts/metro.woff') format('woff'), url('../fonts/metro.ttf') format('truetype'), url('../fonts/metro.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.login-form {
+  width: 80%;
+  max-width: 33rem;
+  height: auto;
+  margin: 0 auto;
+  background-color: #ffffff;
+}
+		
+#logo {
+  width: 100%;
+  max-width: 300px;	
+}
+		
+#errorbox {
+  color: #CC0000;
+}
+
+[class^="mif-"],
+[class*=" mif-"] {
+  display: inline-block;
+  font: normal normal normal 1.5em/1;
+  font-family: metro, "Segoe UI", "Open Sans", serif;
+  line-height: 1 ;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-transform: translate(0, 0);
+          transform: translate(0, 0);
+  position: static;
+}
+
+[class^="mif-"]:before,
+[class*=" mif-"]:before {
+  font-family: metro, serif;
+}
+
+.mif-warning:before {
+  content: "\ea07";
+}
+
+.mif-user:before {
+  content: "\e971";
+}
+
+.mif-lock:before {
+  content: "\e660";
+}
+
+.block-shadow {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+}
+
+.full-size {
+  width: 100% !important;
+}
+
+.padding20 {
+  padding: 1.25rem;
+}

@@ -1,0 +1,14 @@
+{
+    "ProductStatus": {
+        "type": "object",
+        "xml": {
+            "name": "ProductStatus"
+        },
+        "properties": {
+            "ProductStatusName": {
+                "type": "string",
+                "example": "something"
+            }
+        }
+    }
+}

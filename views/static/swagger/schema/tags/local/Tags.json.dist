@@ -1,0 +1,20 @@
+{
+        "tags": [
+        {
+            "name": "Customers",
+            "description": "Customer operations"
+        },
+        {
+            "name": "Products",
+            "description": "Product operations"
+        },
+        {
+            "name": "RMAs",
+            "description": "RMA (Return Merchandise Authorisation) operations"
+        },
+        {
+            "name": "Sales Orders",
+            "description": "Sales Order operations"
+        }
+    ]
+}

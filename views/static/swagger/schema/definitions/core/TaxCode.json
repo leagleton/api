@@ -1,0 +1,27 @@
+{
+    "TaxCode": {
+        "type": "object",
+        "xml": {
+            "name": "TaxCode"
+        },
+        "properties": {
+            "TaxCodeId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "",
+                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database."
+            },
+            "TaxCodeDescription": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "",
+                "description": "Maps to the field <em>TaxCodes.TaxCodeDescription</em> in your WinMan database."
+            },
+            "TaxRate": {
+                "type": "number",
+                "example": "",
+                "description": "Maps to the field <em>TaxCodes.TaxRate</em> in your WinMan database."
+            }
+        }
+    }
+}

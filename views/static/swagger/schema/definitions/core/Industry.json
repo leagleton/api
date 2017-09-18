@@ -1,0 +1,22 @@
+{
+    "Industry": {
+        "type": "object",
+        "xml": {
+            "name": "Industry"
+        },
+        "properties": {
+            "IndustryId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "",
+                "description": "Maps to the field <em>Industries.IndustryId</em> in your WinMan database."
+            },
+            "IndustryDescription": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "",
+                "description": "Maps to the field <em>Industries.IndustryDescription</em> in your WinMan database."
+            }
+        }
+    }
+}

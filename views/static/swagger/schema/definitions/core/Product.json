@@ -1,0 +1,222 @@
+{
+    "Product": {
+        "type": "object",
+        "xml": {
+            "name": "Product"
+        },
+        "properties": {
+            "Guid": {
+                "type": "string",
+                "minLength": 36,
+                "maxLength": 36,
+                "example": "CC5821D6-66C7-423B-A7EC-7EE1E838C69F",
+                "description": "Maps to the field <em>Products.ProductGUID</em> in your WinMan database."
+            },            
+            "Sku": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "ABC00123",
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+            },
+            "Name": {
+                "type": "string",
+                "maxLength": 300,
+                "example": "Super awesome product",
+                "description": "Maps to the field <em>Products.ProductDescription</em> in your WinMan database."
+            },
+            "StandardPrice": {
+                "type": "number",
+                "example": 5.1654,
+                "description": "Maps to the field <em>Products.StandardPrice</em> in your WinMan database."
+            },
+            "WebPrice": {
+                "type": "number",
+                "example": 5.16,
+                "description": "Maps to the field <em>Products.WebPrice</em> in your WinMan database."
+            },
+            "Rrp": {
+                "type": "number",
+                "example": 5.99,
+                "description": "Maps to the field <em>Products.WebRRP</em> in your WinMan database."
+            },
+            "Surcharge": {
+                "type": "number",
+                "example": 0.5,
+                "description": "Maps to the field <em>Products.SurCharge</em> in your WinMan database."
+            },
+            "ProductPricingClassification": {
+                "$ref": "#/definitions/ProductPricingClassification"
+            },            
+            "LongDescription": {
+                "type": "string",
+                "example": "This is a super awesome product! You need to buy it because it's the bestest. :).",
+                "description": "Maps to the field <em>Products.WebDescription</em> in your WinMan database."
+            },
+            "ShortDescription": {
+                "type": "string",
+                "example": "Awesome product! Buy it :).",
+                "description": "Maps to the field <em>Products.WebSummary</em> in your WinMan database."
+            },
+            "Taxable": {
+                "type": "boolean",
+                "example": true,
+                "description": "Maps to the field <em>Products.Taxable</em> in your WinMan database."
+            },
+            "TaxCode": {
+                "$ref": "#/definitions/TaxCode"
+            },
+            "SalesDicount": {
+                "$ref": "#/definitions/SalesDiscount"
+            },
+            "PriceLists": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ProductPriceList"
+                },
+                "xml": {
+                    "name": "ProductPriceLists",
+                    "wrapped": true
+                }
+            },
+            "MetaTitle": {
+                "type": "string",
+                "example": "A meta title",
+                "description": "Maps to the field <em>Products.TitleTag</em> in your WinMan database."
+            },
+            "MetaKeywords": {
+                "type": "string",
+                "example": "Some meta keywords",
+                "description": "Maps to the field <em>Products.KeywordsTag</em> in your WinMan database."
+            },
+            "MetaDescription": {
+                "type": "string",
+                "example": "A meta description",
+                "description": "Maps to the field <em>Products.DescriptionTag</em> in your WinMan database."
+            },
+            "PackSize": {
+                "type": "integer",
+                "example": 12,
+                "description": "Maps to the field <em>Products.PackSize</em> in your WinMan database."
+            },
+            "Length": {
+                "type": "number",
+                "example": 123.456789,
+                "description": "Maps to the field <em>Products.Length</em> in your WinMan database."
+            },
+            "Width": {
+                "type": "number",
+                "example": 123.456789,
+                "description": "Maps to the field <em>Products.Weight</em> in your WinMan database."
+            },
+            "Height": {
+                "type": "number",
+                "example": 123.456789,
+                "description": "Maps to the field <em>Products.Height</em> in your WinMan database."
+            },
+            "Weight": {
+                "type": "number",
+                "example": 123.456789,
+                "description": "Maps to the field <em>Products.Weight</em> in your WinMan database."
+            },
+            "UnitOfMeasure": {
+                "$ref": "#/definitions/UnitOfMeasure"
+            },
+            "DimensionQuantity": {
+                "type": "integer",
+                "example": 1,
+                "description": "Maps to the field <em>Products.DimensionQuantity</em> in your WinMan database."
+            },
+            "ConfigurableProduct": {
+                "type": "boolean",
+                "example": false,
+                "description": "Maps to the field <em>Products.ConfiguratorOption</em> in your WinMan database."
+            },
+            "Brand": {
+                "$ref": "#/definitions/Manufacturer"
+            },
+            "Barcode": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "ABC123456",
+                "description": "Maps to the field <em>Products.Barcode</em> in your WinMan database."
+            },
+            "CrossReference": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "Some example",
+                "description": "Maps to the field <em>Products.CrossReference</em> in your WinMan database."
+            },
+            "SalesLeadTime": {
+                "type": "integer",
+                "example": 16,
+                "description": "Maps to the field <em>Products.SalesLeadTime</em> in your WinMan database."
+            },
+            "RoHS": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1,
+                "example": "C",
+                "description": "Maps to the field <em>Products.RoHS</em> in your WinMan database."
+            },
+            "Notes": {
+                "type": "string",
+                "example": "Some notes about this product",
+                "description": "Maps to the field <em>Products.Notes</em> in your WinMan database."
+            },
+            "PromptText": {
+                "type": "string",
+                "example": "Here's a prompt",
+                "description": "Maps to the field <em>Products.PromptText</em> in your WinMan database."
+            },
+            "Classification": {
+                "$ref": "#/definitions/Classification"
+            },
+            "AlternativeProducts": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AlternativeProduct"
+                },
+                "xml": {
+                    "name": "AlternativeProducts",
+                    "wrapped": true
+                }
+            },
+            "RelatedProducts": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/RelatedProduct"
+                },
+                "xml": {
+                    "name": "RelatedProducts",
+                    "wrapped": true
+                }
+            },
+            "SupersedingProduct": {
+                "$ref": "#/definitions/SupersedingProduct"
+            },
+            "Warranties": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Warranty"
+                },
+                "xml": {
+                    "name": "Warranties",
+                    "wrapped": true
+                }
+            },
+            "ProductStatus": {
+                "$ref": "#/definitions/ProductStatus"
+            },
+            "LastModifiedDate": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2017-07-31T10:48:06.200",
+                "description": "Maps to the field <em>Products.LastModifiedDate</em> in your WinMan database."
+            },
+            "CustomColumns": {
+                "type": "string",
+                "description": "Please see your WinMan application for data types for user defined custom columns."
+            }
+        }
+    }
+}

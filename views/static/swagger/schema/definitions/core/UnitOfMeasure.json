@@ -1,0 +1,28 @@
+{
+    "UnitOfMeasure": {
+        "type": "object",
+        "xml": {
+            "name": "UnitOfMeasure"
+        },
+        "properties": {
+            "MeasureName": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "KILO",
+                "description": "Maps to the field <em>UnitsOfMeasure.UnitOfMeasureId</em> in your WinMan database."
+            },
+            "MeasureDescription": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "Kilogram",
+                "description": "Maps to the field <em>UnitsOfMeasure.UnitOfMeasureDescription</em> in your WinMan database."
+            },
+            "MeasurePrintText": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "Kg",
+                "description": "Maps to the field <em>UnitsOfMeasure.UnitOfMeasurePrintText</em> in your WinMan database."
+            }
+        }
+    }
+}

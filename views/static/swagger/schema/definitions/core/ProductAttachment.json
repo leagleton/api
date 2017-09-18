@@ -1,0 +1,26 @@
+{
+    "ProductAttachment": {
+        "type": "object",
+        "xml": {
+            "name": "ProductAttachment"
+        },
+        "properties": {
+            "ProductSku": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "ABC00123",
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+            },
+            "Attachments": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Attachment"
+                },
+                "xml": {
+                    "name": "Attachments",
+                    "wrapped": true
+                }
+            }           
+        }
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "Discount": {
+        "type": "object",
+        "xml": {
+            "name": "Discount"
+        },
+        "properties": {
+            "DicountId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "",
+                "description": "Maps to the field <em>Discounts.DiscountId</em> in your WinMan database."
+            },
+            "DicountDescription": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "",
+                "description": "Maps to the field <em>Discounts.DiscountDescription</em> in your WinMan database."
+            },
+            "DicountPercentage": {
+                "type": "number",
+                "example": 25.15,
+                "description": "Maps to the field <em>Discounts.DiscountPercentage</em> in your WinMan database."
+            },                        
+            "DiscountBreaks": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/DiscountBreak"
+                },
+                "xml": {
+                    "name": "DiscountBreaks",
+                    "wrapped": true
+                }
+            }
+        }
+    }
+}

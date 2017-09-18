@@ -1,0 +1,53 @@
+{
+    "CrossReference": {
+        "type": "object",
+        "xml": {
+            "name": "CrossReference"
+        },
+        "properties": {
+            "ProductSku": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "ABC00123",
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+            },
+            "CustomersPartNumber": {
+                "type": "string",
+                "maxLength": 300,
+                "example": "",
+                "description": "Maps to the field <em>CustomerCrossReferences.CustomersPartNumber</em> in your WinMan database."
+            },
+            "CustomersDescription": {
+                "type": "string",
+                "maxLength": 300,
+                "example": "",
+                "description": "Maps to the field <em>CustomerCrossReferences.CustomersDescription</em> in your WinMan database."
+            },            
+            "MinimumOrderQuantity": {
+                "type": "number",
+                "example": 25.15,
+                "description": "Maps to the field <em>CustomerCrossReferences.MinimumOrderQuantity</em> in your WinMan database."
+            },
+            "IgnorePrice": {
+                "type": "boolean",
+                "example": true,
+                "description": "Maps to the field <em>CustomerCrossReferences.IgnorePrice</em> in your WinMan database."
+            }, 
+            "Price": {
+                "type": "number",
+                "example": 5.1654,
+                "description": "Maps to the field <em>CustomerCrossReferences.Price</em> in your WinMan database."
+            },                                               
+            "Discount": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Discount"
+                },
+                "xml": {
+                    "name": "Discounts",
+                    "wrapped": true
+                }
+            }
+        }
+    }
+}

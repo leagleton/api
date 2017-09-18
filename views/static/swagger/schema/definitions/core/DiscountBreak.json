@@ -1,0 +1,38 @@
+{
+    "DiscountBreak": {
+        "type": "object",
+        "xml": {
+            "name": "DiscountBreak"
+        },
+        "properties": {
+            "DicountBreakId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "",
+                "description": "Maps to the field <em>DiscountBreaks.DiscountBreakId</em> in your WinMan database."
+            },
+            "TriggerType": {
+                "type": "string",
+                "maxLength": 10,
+                "example": "",
+                "description": "Maps to the field <em>DiscountBreaks.TriggerType</em> in your WinMan database."
+            },
+            "TriggerValue": {
+                "type": "number",
+                "example": 10.5,
+                "description": "Maps to the field <em>DiscountBreaks.TriggerValue</em> in your WinMan database."
+            },                        
+            "DiscountBreakType": {
+                "type": "string",
+                "maxLength": 10,
+                "example": "",
+                "description": "Maps to the field <em>DiscountBreaks.DiscountBreakType</em> in your WinMan database."
+            },
+            "DiscountBreakValue": {
+                "type": "number",
+                "example": 10.5,
+                "description": "Maps to the field <em>DiscountBreaks.DiscountBreakValue</em> in your WinMan database."
+            }
+        }
+    }
+}

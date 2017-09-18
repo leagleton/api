@@ -1,0 +1,22 @@
+{
+    "ProductPricingClassification": {
+        "type": "object",
+        "xml": {
+            "name": "ProductPricingClassification"
+        },
+        "properties": {
+            "ProductPricingClassificationName": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "Trade",
+                "description": "Maps to the field <em>ProductPricingClassifications.ProductPricingClassificationId</em> in your WinMan database."
+            },
+            "ProductPricingClassificationDescription": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "Trade pricing only.",
+                "description": "Maps to the field <em>ProductPricingClassifications.ProductPricingClassificationDescription</em> in your WinMan database."
+            }
+        }
+    }
+}

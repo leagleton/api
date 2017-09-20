@@ -7,6 +7,10 @@
         {
             "name": "Products",
             "description": "Product operations"
-        }
+        },
+        {
+            "name": "Sales Orders",
+            "description": "Sales order operations"
+        }        
     ]
 }

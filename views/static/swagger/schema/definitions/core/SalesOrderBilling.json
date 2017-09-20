@@ -1,0 +1,109 @@
+{
+    "SalesOrderBilling": {
+        "type": "object",
+        "required": [
+            "PaymentType",
+            "CardPaymentReceived"
+        ],        
+        "xml": {
+            "name": "SalesOrderBilling"
+        },
+        "properties": {
+            "PaymentType": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "VISA",
+                "description": "Maps to the field <em>CreditCardTypes.CreditCardTypeId</em> in your WinMan database."
+            },
+            "CardName": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "Mrs Jane Doe",
+                "description": "Maps to the field <em>CreditCards.CardName</em> in your WinMan database."
+            },
+            "CardNumber": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "4612 5836 9563 2658",
+                "description": "Maps to the field <em>CreditCards.CardNumber</em> in your WinMan database."
+            },
+            "CardStartMonth": {
+                "type": "number",
+                "format": "integer",
+                "example": 10,
+                "description": "Maps to the field <em>CreditCards.StartMonth</em> in your WinMan database."
+            },
+            "CardStartYear": {
+                "type": "number",
+                "format": "integer",
+                "example": 15,
+                "description": "Maps to the field <em>CreditCards.StartYear</em> in your WinMan database."
+            },
+            "CardExpiryMonth": {
+                "type": "number",
+                "format": "integer",
+                "example": 4,
+                "description": "Maps to the field <em>CreditCards.ExpiryMonth</em> in your WinMan database."
+            },
+            "CardExpiryYear": {
+                "type": "number",
+                "format": "integer",
+                "example": 17,
+                "description": "Maps to the field <em>CreditCards.ExpiryYear</em> in your WinMan database."
+            },
+            "CardIssue": {
+                "type": "string",
+                "maxLength": 10,
+                "example": "01",
+                "description": "Maps to the field <em>CreditCards.Issue</em> in your WinMan database."
+            },
+            "BillingAddress": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "22 Acacia Avenue",
+                "description": "Maps to the field <em>CreditCards.Address</em> in your WinMan database."
+            },
+            "BillingCity": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "Birmingham",
+                "description": "Maps to the field <em>CreditCards.City</em> in your WinMan database."
+            },
+            "BillingRegion": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "West Midlands",
+                "description": "Maps to the field <em>CreditCards.Region</em> in your WinMan database."
+            },
+            "BillingPostalCode": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "B21 1SB",
+                "description": "Maps to the field <em>CreditCards.PostalCode</em> in your WinMan database."
+            },
+            "BillingCountryCode": {
+                "type": "string",
+                "maxLength": 3,
+                "example": "GBR",
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database."
+            },
+            "CardLastDigits": {
+                "type": "string",
+                "maxLength": 4,
+                "example": "030",
+                "description": "Maps to the field <em>CreditCards.LastDigits</em> in your WinMan database."
+            },
+            "CardAuthorisation": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "PDQ",
+                "description": "Maps to the field <em>CreditCardTransactions.Authorisation</em> in your WinMan database."
+            },
+            "CardPaymentReceived": {
+                "type": "number",
+                "example": 7.35,
+                "description": "The total payment amount received for this order."
+            }                                                                                                                                               
+        }
+    }
+}

@@ -1,0 +1,134 @@
+{
+    "SalesOrderItem": {
+        "type": "object",
+        "required": [
+            "Sku",
+            "Quantity",
+            "Price"
+        ],         
+        "xml": {
+            "name": "SalesOrderItem"
+        },
+        "properties": {
+            "Sku": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "ABC00123",
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+            },
+            "Quantity": {
+                "type": "number",
+                "minLength": 0.00001,
+                "example": 5.258,
+                "description": "Maps to the field <em>SalesOrderItems.Quantity</em> in your WinMan database."
+            },
+            "WarrantyId": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "12 MONTHS",
+                "description": "Maps to the field <em>Warranties.WarrantyId</em> in your WinMan database."
+            },
+            "Surcharge": {
+                "type": "number",
+                "example": 0.25,
+                "description": "Maps to the field <em>Products.Surcharge</em> in your WinMan database."
+            },
+            "ShippingName": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "Systemware Services Ltd.",
+                "description": "Maps to the field <em>DeliveryAddresses.DeliveryName</em> in your WinMan database."
+            },
+            "ShippingTitle": {
+                "type": "string",
+                "maxLength": 5,
+                "example": "Mrs",
+                "description": "Maps to the field <em>DeliveryAddresses.Title</em> in your WinMan database."
+            },
+            "ShippingFirstName": {
+                "type": "string",
+                "maxLength": 25,
+                "example": "Jane",
+                "description": "Maps to the field <em>DeliveryAddresses.FirstName</em> in your WinMan database."
+            },
+            "ShippingLastName": {
+                "type": "string",
+                "maxLength": 25,
+                "example": "Doe",
+                "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database."
+            },
+            "ShippingAddress": {
+                "type": "string",
+                "maxLength": 200,
+                "example": "22 Acacia Avenue",
+                "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database."
+            },
+            "ShippingCity": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "Birmingham",
+                "description": "Maps to the field <em>DeliveryAddresses.City</em> in your WinMan database."
+            },
+            "ShippingRegion": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "West Midlands",
+                "description": "Maps to the field <em>DeliveryAddresses.Region/em> in your WinMan database."
+            },
+            "ShippingPostalCode": {
+                "type": "string",
+                "maxLength": 20,
+                "example": "B21 1SB",
+                "description": "Maps to the field <em>DeliveryAddresses.PostalCode</em> in your WinMan database."
+            },
+            "ShippingCountryCode": {
+                "type": "string",
+                "maxLength": 3,
+                "example": "GBR",
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database."
+            },
+            "ShippingPhoneNumber": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 123 9876",
+                "description": "Maps to the field <em>DeliveryAddresses.PhoneNumber</em> in your WinMan database."
+            },
+            "ShippingEmailAddress": {
+                "type": "string",
+                "maxLength": 450,
+                "example": "jane.doe@example.com; john.doe@example.com",
+                "description": "Maps to the field <em>DeliveryAddresses.EmailAddress</em> in your WinMan database."
+            },          
+            "PriceListId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "TRADE",
+                "description": "Maps to the field <em>PriceLists.PriceListId</em> in your WinMan database."
+            },
+            "DiscountId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "10% DISCOUNT",
+                "description": "Maps to the field <em>Discounts.DiscountId</em> in your WinMan database."
+            },
+            "TaxCodeId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "STD",
+                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database."
+            },
+            "TaxCodeSecondaryId": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "STD17.5",
+                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database."
+            },
+            "Price": {
+                "type": "number",
+                "minLength": 0,
+                "example": 3.76,
+                "description": "The price paid per item for the specified <em>Sku</em>, before discounts, excluding tax."
+            }                                                                                                                                                                                                                                                                                                                                                                                          
+        }
+    }
+}

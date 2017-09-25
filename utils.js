@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const logger = require('./middleware/logger');
 const config = require('./config');
 const tp = require('tedious-promises');
+tp.setPromiseLibrary('es6');
 
 /** Delete expired access tokens and authorisation codes from training and live DBs every hour */
 setInterval(function () {
@@ -18,9 +19,9 @@ setInterval(function () {
       tp.setConnectionConfig(config.connection);
       tp.sql("EXEC wsp_RestApiExpiredAccessTokensDelete")
       .execute()
-      .fail(err => logger.error(err.stack));
+      .catch(err => logger.error(err.stack));
     })
-    .fail(err => logger.error(err.stack));
+    .catch(err => logger.error(err.stack));
 }, 3600000);
 
 /** Private certificate used for signing JSON WebTokens. */

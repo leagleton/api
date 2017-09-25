@@ -6,6 +6,7 @@ const process = require('process');
 const jwt = require('jsonwebtoken');
 const logger = require('./middleware/logger');
 const tp = require('tedious-promises');
+tp.setPromiseLibrary('es6');
 
 exports.system = (req) => {
   if (typeof req.session.system != 'undefined' && req.session.system === 'training') {
@@ -43,7 +44,7 @@ exports.token = (token, accessToken) => {
       }
     })
     .then(user => user)
-    .fail(err => logger.error(err));
+    .catch(err => logger.error(err));
 };
 
 /**
@@ -99,5 +100,5 @@ exports.generateToken = ({ user, client, scope, lifetime, source }) => {
       }
       return newToken
     })
-    .fail(err => logger.error(err.message));
+    .catch(err => logger.error(err.message));
 };

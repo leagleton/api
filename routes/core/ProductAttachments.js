@@ -19,20 +19,20 @@ router.get('/', passport.authenticate('bearer', { session: false }), function (r
         if (!isNaN(parseInt(res.locals.modified))) {
             inputParams.push("@seconds = " + res.locals.modified);
         } else {
-            return utils.reject(res, utils.reasons.invalidParam);
+            return utils.reject(res, req, utils.reasons.invalidParam);
         }
     }
 
     if (typeof res.locals.sku !== 'undefined') {
         inputParams.push("@sku = '" + res.locals.sku + "'");
     } else {
-        return utils.reject(res, utils.reasons.requiredParam);
+        return utils.reject(res, req, utils.reasons.requiredParam);
     }
 
     if (typeof res.locals.website !== 'undefined') {
         inputParams.push("@website = '" + res.locals.website + "'");
     } else {
-        return utils.reject(res, utils.reasons.requiredParam);
+        return utils.reject(res, req, utils.reasons.requiredParam);
     }
 
     const params = {

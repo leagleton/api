@@ -156,12 +156,14 @@ if (process.argv[2] == "-v" || process.argv[2] == "--version") {
 
     app.use('/api', function (req, res, next) {
         res.locals = req.query;
+        res.locals.system = 'live';
         req.query = tediousExpress(req, config.connection);
         next();
     }, require('./routes/api'));
 
     app.use('/training', function (req, res, next) {
         res.locals = req.query;
+        res.locals.system ='training';
         req.query = tediousExpress(req, config.connectionTraining);
         next();
     }, require('./routes/api'));

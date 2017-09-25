@@ -16,6 +16,7 @@ const utils = require('./utils');
 const validate = require('./validate');
 const jwt = require('jsonwebtoken');
 const tp = require('tedious-promises');
+tp.setPromiseLibrary('es6');
 
 exports.system = (req) => {
   if (typeof req.session.system != 'undefined' && req.session.system === 'training') {
@@ -62,7 +63,7 @@ server.grant(oauth2orize.grant.code((client, redirectURI, user, ares, done) => {
         done(null, code)
       }
     })
-    .fail(err => done(err, false));
+    .catch(err => done(err, false));
 
 }));
 
@@ -99,7 +100,7 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectURI, done) => {
 
       tp.sql("EXEC wsp_RestApiAuthorisationCodesDelete @uuid = '" + uuid + "'")
         .execute()
-        .fail(err => done(err, false, false));
+        .catch(err => done(err, false, false));
 
       return dbAuthorisationCode;
 
@@ -115,7 +116,7 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectURI, done) => {
       }
       throw new Error('Error exchanging auth code for tokens');
     })
-    .fail(err => done(err, false, false));
+    .catch(err => done(err, false, false));
 }));
 
 /*
@@ -243,5 +244,5 @@ server.deserializeClient((RestApiClient, done) => {
         return done(err, false);
       }
     })
-    .fail(err => done(err, false));
+    .catch(err => done(err, false));
 });

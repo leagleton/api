@@ -6,6 +6,7 @@ const utils = require('./utils');
 const config = require('./config');
 const logger = require('./middleware/logger');
 const tp = require('tedious-promises');
+tp.setPromiseLibrary('es6');
 
 exports.system = (req) => {
   if (typeof req.session.system != 'undefined' && req.session.system === 'training') {
@@ -127,7 +128,7 @@ exports.create = [
       .execute()
       .then((results) => client = results[0].client)
       .then(() => res.send({ client, clientId, clientSecret, scopes: req.query.scopes }))
-      .fail(err => next(err));
+      .catch(err => next(err));
   },
 ];
 
@@ -143,7 +144,7 @@ exports.scopes = [
     tp.sql("EXEC wsp_RestApiScopesSelect")
       .execute()
       .then((results) => res.send(results))
-      .fail(err => next(err));
+      .catch(err => next(err));
   },
 ];
 
@@ -160,13 +161,13 @@ exports.clients = [
       tp.sql("EXEC wsp_RestApiClientsDelete @client = " + req.query.client)
         .execute()
         .then(() => res.send("Success"))
-        .fail(err => next(err));
+        .catch(err => next(err));
     } else {
       // Select all clients for the specified user.
       tp.sql("EXEC wsp_RestApiClientsSelect @user = " + req.user.id)
         .execute()
         .then((results) => res.send(results))
-        .fail(err => next(err));
+        .catch(err => next(err));
     }
   }
 ];
@@ -184,13 +185,13 @@ exports.userAccessTokens = [
       tp.sql("EXEC wsp_RestApiUserAccessTokensDelete @token = " + req.query.token)
         .execute()
         .then(() => res.send("Success"))
-        .fail(err => next(err));
+        .catch(err => next(err));
     } else {
       // Select all access tokens for the specified user.
       tp.sql("EXEC wsp_RestApiUserAccessTokensSelect @user = " + req.user.id)
         .execute()
         .then((results) => res.send(results))
-        .fail(err => next(err));
+        .catch(err => next(err));
     }
   }
 ];

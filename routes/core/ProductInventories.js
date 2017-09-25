@@ -22,7 +22,7 @@ router.get('/', passport.authenticate('bearer', { session: false }), function (r
     if (typeof res.locals.website !== 'undefined') {
         inputParams.push("@website = '" + res.locals.website + "'");
     } else {
-        return utils.reject(res, utils.reasons.requiredParam);
+        return utils.reject(res, req, utils.reasons.requiredParam);
     }
 
     const params = {

@@ -1,4 +1,5 @@
 'use strict';
+const xml = require('xml');
 
 const contentTypes = {
     json: "application/json; charset=utf-8",
@@ -9,12 +10,55 @@ exports.reasons = {
     rejectHeader: 'This API produces XML or JSON only. Please alter your accept header accordingly.',
     requiredParam: 'A required parameter is missing.',
     invalidParam: 'One or more parameters are of the wrong type.',
-    inadequateAccess: 'The client has not been granted adequate access to this resource.'
+    inadequateAccess: 'The client has not been granted adequate access to this resource.',
+    unspecified: 'There was a problem trying to execute your request. Please contact WinMan support if the problem persists.'
 };
 
-exports.reject = (res, reason) => {
-    res.status(400);
-    res.send(reason);
+exports.reject = (res, req, reason, status = 400) => {
+    res.status(status);
+
+    if (req.accepts('application/xml')) {
+        this.setContentType(res, contentTypes.xml);
+
+        let xmlResponse = '<Response><Status>Error</Status><StatusMessage>';
+        xmlResponse += reason;
+        xmlResponse += '</StatusMessage></Response>';
+
+        res.write(xmlResponse);
+        res.end();
+    } else {
+        res.json({
+            Response: {
+                Status: "Error",
+                StatusMessage: reason
+            }
+        });
+    }
+}
+
+exports.error = (res, req, message) => {
+    this.reject(res, req, message, 500);
+}
+
+exports.success = (res, req, object, status = 200) => {
+    res.status(status);
+
+    if (req.accepts('application/xml')) {
+        this.setContentType(res, contentTypes.xml);
+        let xmlResponse = '<Response>';
+
+        for (const item in object) {
+            const element = {};
+            element[item] = object[item];
+            xmlResponse += xml(element);
+        }
+
+        xmlResponse += '</Response>';
+        res.write(xmlResponse);
+        res.end();
+    } else {
+        res.json({ Response: object });
+    }
 }
 
 exports.setContentType = (res, contentType) => {
@@ -42,7 +86,7 @@ exports.executeSelect = (res, req, params) => {
     }
 
     qry = qry + params.sp + type + params.args.concat();
-    
+
     req.query(qry)
         .into(res);
 }

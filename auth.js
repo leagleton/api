@@ -12,6 +12,7 @@ const bcrypt = require('bcrypt');
 const logger = require('./middleware/logger');
 const utils = require('./utils');
 const tp = require('tedious-promises');
+tp.setPromiseLibrary('es6');
 const env = process.env.NODE_ENV || 'development';
 
 exports.system = (req) => {
@@ -88,7 +89,7 @@ passport.use(new LocalStrategy({ passReqToCallback: true }, (req, RestApiUserId,
       }
 
     })
-    .fail(err => {
+    .catch(err => {
       const message = ('development' == env) ? err.stack : 'Log in error. Please contact WinMan Support.';
       return done(null, false, req.flash('message', message));
     });
@@ -130,7 +131,7 @@ passport.use(new BasicStrategy({ passReqToCallback: true }, (req, RestApiClientI
         return done(null, dbClient);
       }
     })
-    .fail(() => done(null, false, req.flash('message', 'something bad happened')));
+    .catch(() => done(null, false, req.flash('message', 'something bad happened')));
 
 }));
 
@@ -166,7 +167,7 @@ passport.use(new ClientPasswordStrategy({ passReqToCallback: true }, (req, RestA
       }
 
     })
-    .fail(err => done(null, false, req.flash('message', err.message)));
+    .catch(err => done(null, false, req.flash('message', err.message)));
 }));
 
 /**
@@ -238,5 +239,5 @@ passport.deserializeUser((req, RestApiUser, done) => {
         return done(err, false);
       }
     })
-    .fail(err => done(err, false));
+    .catch(err => done(err, false));
 });

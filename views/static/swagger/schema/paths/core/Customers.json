@@ -58,6 +58,49 @@
                     "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."
                 }                 
             }
-        }
+        },
+        "post": {
+            "tags": [
+                "Customers"
+            ],
+            "summary": "Insert a new customer into WinMan",
+            "operationId": "postCustomers",
+            "description": "TODO",
+            "consumes": [
+                "application/json",
+                "application/xml"
+            ],            
+            "produces": [
+                "application/json",
+                "application/xml"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "TODO",
+                    "schema": {
+                        "$ref": "#/definitions/CustomerPost"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Query executed successfully.",
+                    "schema": {
+                        "$ref": "#/definitions/SuccessResponse"            
+                    }                                                          
+                },
+                "400": {
+                    "description": "Bad input parameter.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
+                },
+                "401": {
+                    "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."                   
+                }                
+            }
+        }        
     }
 }

@@ -1,0 +1,120 @@
+{
+    "CustomerPost": {
+        "type": "object",
+        "required": [
+            "Website",
+            "FirstName",
+            "LastName",
+            "WebsiteUserName",
+            "AllowCommunication",
+            "Address",
+            "PostalCode"
+        ],        
+        "xml": {
+            "name": "Data"
+        },
+        "properties": {
+            "Website": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "www.example.co.uk",
+                "description": "Maps to the field <em>EcommerceWebsites.EcommerceWebsiteId</em> in your WinMan database."
+            },
+            "FirstName": {
+                "type": "string",
+                "maxLength": 25,
+                "example": "Joe",
+                "description": "Maps to the field <em>CRMContacts.FirstName</em> in your WinMan database."
+            }, 
+            "LastName": {
+                "type": "string",
+                "maxLength": 25,
+                "example": "Bloggs",
+                "description": "Maps to the field <em>CRMContacts.LastName</em> in your WinMan database."
+            },
+            "WorkPhoneNumber": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 4567 890",
+                "description": "Maps to the field <em>CRMContacts.PhoneNumberWork</em> in your WinMan database."
+            },
+            "HomePhoneNumber": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 4567 890",
+                "description": "Maps to the field <em>CRMContacts.PhoneNumberHome</em> in your WinMan database."
+            },
+            "MobilePhoneNumber": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "07123456789",
+                "description": "Maps to the field <em>CRMContacts.PhoneNumberMobile</em> in your WinMan database."
+            },
+            "FaxNumber": {
+                "type": "string",
+                "maxLength": 30,
+                "example": "0121 4567 890",
+                "description": "Maps to the field <em>CRMContacts.FaxNumber</em> in your WinMan database."
+            },
+            "HomeEmailAddress": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "joe.bloggs@example.com",
+                "description": "Maps to the field <em>CRMContacts.EmailAddressHome</em> in your WinMan database."
+            },
+            "WorkEmailAddress": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "joe.bloggs@example.com",
+                "description": "Maps to the field <em>CRMContacts.EmailAddressWork</em> in your WinMan database."
+            },
+            "WebsiteUserName": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "joe.bloggs@example.com",
+                "description": "Maps to the field <em>CRMContacts.PortalUserName</em> in your WinMan database."
+            },
+            "JobTitle": {
+                "type": "string",
+                "maxLength": 50,
+                "example": "Sales Assistant",
+                "description": "Maps to the field <em>CRMContacts.JobTitle</em> in your WinMan database."
+            },
+            "AllowCommunication": {
+                "type": "boolean",
+                "example": false,
+                "description": "Maps to the field <em>CRMContacts.AllowCommunication</em> in your WinMan database."
+            },
+            "Address": {
+                "type": "string",
+                "maxLength": 200,
+                "example": "22 Acacia Avenue",
+                "description": "Maps to the field <em>CRMCompanies.Address</em> in your WinMan database."
+            },
+            "City": {
+                "type": "string",
+                "maxLength": 200,
+                "example": "Birmingham",
+                "description": "Maps to the field <em>CRMCompanies.City</em> in your WinMan database."
+            },
+            "Region": {
+                "type": "string",
+                "maxLength": 200,
+                "example": "West Midlands",
+                "description": "Maps to the field <em>CRMCompanies.Region</em> in your WinMan database."
+            },
+            "PostalCode": {
+                "type": "string",
+                "maxLength": 200,
+                "example": "B21 1SB",
+                "description": "Maps to the field <em>CRMCompanies.PostalCode</em> in your WinMan database."
+            },
+            "CountryCode": {
+                "type": "string",
+                "maxLength": 3,
+                "example": "GBR",
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database."
+            }                                                                                                                                                                                 
+        }
+    }
+}

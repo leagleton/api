@@ -3,6 +3,10 @@
 const router = require('express').Router();
 const passport = require('passport');
 const utils = require('../utils');
+const logger = require('../../middleware/logger');
+const config = require('../../config');
+const tp = require('tedious-promises');
+tp.setPromiseLibrary('es6');
 
 /* Fetch all web enabled customers. */
 router.get('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
@@ -10,9 +14,7 @@ router.get('/', passport.authenticate('bearer', { session: false }), function (r
     const scopes = req.authInfo.scope.split(',');
 
     if (scopes.indexOf('read') === -1) {
-        res.status(401);
-        res.send(utils.reasons.inadequateAccess);
-        return;
+        return utils.reject(res, req, utils.reasons.inadequateAccess, 401);
     }
 
     if (typeof res.locals.modified !== 'undefined') {
@@ -41,30 +43,113 @@ router.get('/', passport.authenticate('bearer', { session: false }), function (r
     return utils.executeSelect(res, req, params);
 });
 
-router.put('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
-    const scopes = req.authInfo.scope.split(',');
-
-    if (scopes.indexOf('write') === -1) {
-        res.status(401);
-        res.send(utils.reasons.inadequateAccess);
-        return;
-    }
-
-    res.status(200);
-    res.send('Not yet implemented.');
-});
-
+/* Create a new CRM contact and company which can be converted to a customer in WinMan. */
 router.post('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
     const scopes = req.authInfo.scope.split(',');
 
     if (scopes.indexOf('write') === -1) {
-        res.status(401);
-        res.send(utils.reasons.inadequateAccess);
-        return;
+        return utils.reject(res, req, utils.reasons.inadequateAccess, 401);
     }
 
-    res.status(200);
-    res.send('Not yet implemented.');
+    if (res.locals.system === 'training') {
+        tp.setConnectionConfig(config.connectionTraining);
+    } else {
+        tp.setConnectionConfig(config.connection);
+    }
+
+    if (req.body.hasOwnProperty('Data')) {
+        req.body = req.body.Data;
+    }
+
+    const eCommerceWebsiteId = req.body.Website || '';
+    const firstName = req.body.FirstName || '';
+    const lastName = req.body.LastName || '';
+    const workPhoneNumber = req.body.WorkPhoneNumber || '';
+    const homePhoneNumber = req.body.HomePhoneNumber || '';
+    const mobilePhoneNumber = req.body.MobilePhoneNumber || '';
+    const faxNumber = req.body.FaxNumber || '';
+    const homeEmailAddress = req.body.HomeEmailAddress || '';
+    const workEmailAddress = req.body.WorkEmailAddress || '';
+    const portalUserName = req.body.WebsiteUserName || '';
+    const jobTitle = req.body.JobTitle || '';
+    let allowCommunication = req.body.AllowCommunication || false;
+    const address = req.body.Address || '';
+    const city = req.body.City || '';
+    const region = req.body.City || '';
+    const postalCode = req.body.PostalCode || '';
+    const countryCode = req.body.CountryCode || '';
+
+    if (!eCommerceWebsiteId || !firstName || !lastName ||
+        !address || !postalCode || !countryCode) {
+        return utils.reject(res, req, utils.reasons.requiredParam);
+    }
+
+    if (typeof req.body.AllowCommunication === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam);
+    }
+
+    allowCommunication = (allowCommunication) ? 1 : 0;
+
+    let transaction;
+
+    tp.beginTransaction()
+        .then((trans) => {
+            transaction = trans;
+
+            return transaction.sql("DECLARE @error NVARCHAR(1000) EXEC wsp_RestApiContactsInsert \
+                    @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
+                    @firstName = '" + firstName + "',\
+                    @lastName = '" + lastName + "',\
+                    @workPhoneNumber = '" + workPhoneNumber + "',\
+                    @homePhoneNumber = '" + homePhoneNumber + "',\
+                    @mobilePhoneNumber = '" + mobilePhoneNumber + "',\
+                    @faxNumber = '" + faxNumber + "',\
+                    @homeEmailAddress = '" + homeEmailAddress + "',\
+                    @workEmailAddress = '" + workEmailAddress + "',\
+                    @portalUserName = '" + portalUserName + "',\
+                    @jobTitle = '" + jobTitle + "',\
+                    @allowCommunication = " + allowCommunication + ",\
+                    @address = '" + address + "',\
+                    @city = '" + city + "',\
+                    @region = '" + region + "',\
+                    @postalCode = '" + postalCode + "',\
+                    @countryCode = '" + countryCode + "',\
+                    @error = @error OUTPUT")
+                .execute();
+        })
+        .then((results) => {
+            const result = results[0].ErrorMessage || '';
+
+            if (result !== '') {
+                throw new Error(result);
+            } else {
+                utils.success(res, req, {
+                    Status: "Success",
+                    StatusMessage: "CRM Contact has been successfully created."
+                });
+                return transaction.commitTransaction();
+            }
+        })
+        .catch((err) => {
+            let status = 500;
+
+            if (err.message.indexOf('input data') > -1 || 
+                err.message.indexOf('parameter missing') > -1 ||
+                err.message.indexOf('converting data type') > -1 ||
+                err.message.indexOf('expects parameter') > -1)
+            {
+                status = 400;
+            }
+
+            if (status === 500) {
+                logger.error(err.stack);
+                utils.error(res, req, err.message);
+            } else {
+                utils.reject(res, req, err.message);
+            }
+
+            return transaction.rollbackTransaction();
+        });
 });
 
 module.exports = router;

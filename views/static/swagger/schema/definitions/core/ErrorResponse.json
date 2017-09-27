@@ -1,0 +1,25 @@
+{
+    "ErrorResponse": {
+        "type": "object",
+        "required": [
+            "Status",
+            "StatusMessage"
+        ],        
+        "xml": {
+            "name": "Response"
+        },
+        "properties": {
+            "Status": {
+                "type": "string",
+                "maxLength": 5,
+                "example": "Error",
+                "description": "The resulting status of the request."
+            },
+            "StatusMessage": {
+                "type": "string",
+                "example": "Required parameter missing.",
+                "description": "The error message."
+            }                                                                                                                                          
+        }
+    }
+}

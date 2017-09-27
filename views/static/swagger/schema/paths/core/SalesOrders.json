@@ -1,0 +1,47 @@
+{
+    "/salesorders": {
+        "post": {
+            "tags": [
+                "Sales Orders"
+            ],
+            "summary": "Post a new sales order back to WinMan.",
+            "operationId": "postSalesOrders",
+            "description": "Post a new sales order back to WinMan.",
+            "consumes": [
+                "application/json",
+                "application/xml"
+            ],
+            "produces": [
+                "application/json",
+                "application/xml"
+            ],            
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "TODO",
+                    "schema": {
+                        "$ref": "#/definitions/SalesOrder"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Query executed successfully.",
+                    "schema": {
+                        "$ref": "#/definitions/SalesOrderResponse"
+                    }                    
+                },
+                "400": {
+                    "description": "Bad input parameter.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
+                },
+                "401": {
+                    "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."                   
+                }                
+            }
+        }
+    }
+}

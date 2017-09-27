@@ -1,0 +1,26 @@
+{
+    "SalesOrderResponse": {
+        "type": "object",
+        "required": [
+            "Status",
+            "SalesOrderId"
+        ],        
+        "xml": {
+            "name": "Response"
+        },
+        "properties": {
+            "Status": {
+                "type": "string",
+                "maxLength": 7,
+                "example": "Success",
+                "description": "The resulting status of the request."
+            },
+            "SalesOrderId": {
+                "type": "string",
+                "maxLength": 100,
+                "example": "SOP0000509",
+                "description": "Maps to the field <em>SalesOrders.SalesOrderId</em> in your WinMan database."
+            }                                                                                                                                            
+        }
+    }
+}

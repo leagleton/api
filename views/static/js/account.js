@@ -221,6 +221,10 @@ $(document).ready(function () {
         $("#createModal").modal('show');
     });
 
+    $('#changePasswordButton').click(function () {
+        $("#changePasswordModal").modal('show');
+    });
+
     $('#createClient').on('submit', function (e) {
         if ($('input[name="scope[]"]:checked').length === 0) {
             $('#createModal .error').show();
@@ -247,9 +251,124 @@ $(document).ready(function () {
                         $('.scope').prop('checked', false);
                     })
                     .fail(function () {
-                        
+
                     });
             });
+        }
+        return false;
+    });
+
+    $('input[type="password"]').on('focus', function (e) {
+        $(this).removeClass('has-error');
+        $(this).next('.missing').hide();
+        $(this).next('.missing').next('.mismatch').hide();
+    });
+
+    $('input[type="password"]').on('blur', function (e) {
+        if ($(this).val() === '') {
+            $(this).addClass('has-error');
+            $(this).next('.missing').show();
+        }
+    });
+
+    $('#changePassword').on('submit', function (e) {
+        let errors = false;
+
+        $('input[type="password"]').removeClass('has-error');
+        $('.missing').hide();
+        $('.mismatch').hide();
+        $('.validation').hide().text('');
+
+        if ($('input[name="newPassword"]').val() !== $('input[name="confirmPassword"]').val() &&
+            $('input[name="newPassword"]').val() !== '') {
+            $('input[name="newPassword"]').addClass('has-error');
+            $('input[name="confirmPassword"]').addClass('has-error');
+            $('input[name="newPassword"]').next('.missing').next('.mismatch').show();
+            errors = true;
+        }
+
+        if ($('input[name="currentPassword"]').val() === '') {
+            $('input[name="currentPassword"]').addClass('has-error');
+            $('input[name="currentPassword"]').next('.missing').show();
+            errors = true;
+        }
+
+        if ($('input[name="newPassword"]').val() === '') {
+            $('input[name="newPassword"]').addClass('has-error');
+            $('input[name="newPassword"]').next('.missing').show();
+            errors = true;
+        }
+
+        if ($('input[name="confirmPassword"]').val() === '') {
+            $('input[name="confirmPassword"]').addClass('has-error');
+            $('input[name="confirmPassword"]').next('.missing').show();
+            errors = true;
+        }
+
+        if (($('input[name="newPassword"]').val().length < 8 ||
+            $('input[name="newPassword"]').val().length > 12) &&
+            $('input[name="newPassword"]').val() === $('input[name="confirmPassword"]').val()) {
+            $('.validation').text('Passwords must be between 8 and 12 characters.')
+                .show();
+            $('input[name="newPassword"]').addClass('has-error');
+            $('input[name="confirmPassword"]').addClass('has-error');
+            errors = true;
+        } else if ($('input[name="newPassword"]').val() === $('input[name="confirmPassword"]').val() &&
+            $('input[name="newPassword"]').val() === $('input[name="newPassword"]').val().toUpperCase()) {
+            $('.validation').text('Passwords must contain at least one lowercase letter.')
+                .show();
+            $('input[name="newPassword"]').addClass('has-error');
+            $('input[name="confirmPassword"]').addClass('has-error');
+            errors = true;
+        } else if ($('input[name="newPassword"]').val() === $('input[name="confirmPassword"]').val() &&
+            $('input[name="newPassword"]').val() === $('input[name="newPassword"]').val().toLowerCase()) {
+            $('.validation').text('Passwords must contain at least one uppercase letter.')
+                .show();
+            $('input[name="newPassword"]').addClass('has-error');
+            $('input[name="confirmPassword"]').addClass('has-error');
+            errors = true;
+        } else if ($('input[name="newPassword"]').val() === $('input[name="confirmPassword"]').val() &&
+            /\d/.test($('input[name="newPassword"]').val()) === false) {
+            $('.validation').text('Passwords must contain at least one number.')
+                .show();
+            $('input[name="newPassword"]').addClass('has-error');
+            $('input[name="confirmPassword"]').addClass('has-error');
+            errors = true;
+        } else {
+            $('.validation').hide();
+        }
+
+        if (!errors) {
+            $.ajax({
+                method: "GET",
+                url: "passwordChange",
+                cache: false,
+                data: {
+                    "currentPassword": $('input[name="currentPassword"]').val(),
+                    "newPassword": $('input[name="newPassword"]').val()
+                }
+            })
+                .done(function (results) {
+                    $('input[type="password"]').removeClass('has-error');
+
+                    if (results === 'Password incorrect.') {
+                        $('input[name="currentPassword"]').addClass('has-error');
+                        $('input[name="currentPassword"]').next('.missing').next('.mismatch').show();
+                    } else if (results === 'New and current match.') {
+                        $('.validation').text('New password and current password must differ.')
+                            .show();
+                        $('input[name="newPassword"]').addClass('has-error');
+                        $('input[name="confirmPassword"]').addClass('has-error');
+                    } else if (results === 'Success.') {
+                        $('#changePasswordModal').modal('hide');
+                        $('.success').show();
+                        setTimeout(function () { $('.success').fadeOut('slow') }, 4000);
+                        $('input[type="password"]').removeClass('has-error');
+                    }
+                })
+                .fail(function () {
+                    // TODO: display error message.
+                });
         }
         return false;
     });

@@ -24,7 +24,7 @@ exports.system = (req) => {
   validate.system(req);
 }
 
-function cryptPassword(password, callback) {
+exports.cryptPassword = (password, callback) => {
   bcrypt.genSalt(10, function (err, salt) {
     if (err)
       return callback(err);
@@ -35,7 +35,7 @@ function cryptPassword(password, callback) {
   });
 };
 
-function comparePassword(plainPass, hashword, callback) {
+exports.comparePassword = (plainPass, hashword, callback) => {
   bcrypt.compare(plainPass, hashword, function (err, isPasswordMatch) {
     return err == null ?
       callback(null, isPasswordMatch) :
@@ -55,15 +55,13 @@ passport.use(new LocalStrategy({ passReqToCallback: true }, (req, RestApiUserId,
 
   this.system(req);
 
+  const auth = this;
+
   let message = 'There was a problem logging you in . Please try again. If the problem persists, please contact WinMan Support.';
-
-  if ('development' == env) {
-
-  }
 
   tp.sql("EXEC wsp_RestApiUsersSelect @userId = '" + RestApiUserId + "'")
     .execute()
-    .then(function (users) {
+    .then((users) => {
 
       if (users.length > 0) {
         const dbUser = {
@@ -71,8 +69,8 @@ passport.use(new LocalStrategy({ passReqToCallback: true }, (req, RestApiUserId,
           "username": users[0].RestApiUserId,
           "name": users[0].Name
         };
-
-        comparePassword(Password, users[0].Password, function (err, match) {
+        
+        auth.comparePassword(Password, users[0].Password, function (err, match) {
           if (match) {
             return done(null, dbUser);
           } else if (err) {

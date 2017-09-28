@@ -7,6 +7,31 @@ const fs = require('fs');
 const config = require('../config');
 const path = require('path');
 const version = require('../package.json').version;
+const tp = require('tedious-promises');
+tp.setPromiseLibrary('es6');
+
+function fetchScopes(system) {
+    if (system === 'training') {
+        tp.setConnectionConfig(config.connectionTraining);
+    } else {
+        tp.setConnectionConfig(config.connection);
+    }
+
+    const scopes = {};
+
+    return tp.sql("EXEC wsp_RestApiScopesSelect")
+        .execute()
+        .then((results) => {
+            if (results.length > 0) {
+                for (const result in results) {
+                    let key = results[result].RestApiScopeId;
+                    scopes[key] = results[result].Description;
+                }
+            }
+            return scopes;
+        })
+        .catch(err => logger.error(err.stack));
+}
 
 function compare(a, b) {
     if (a.filename < b.filename)
@@ -55,7 +80,7 @@ function read(coreDir, localDir) {
                 return new Promise((resolve, reject) => {
                     if (filename.substr(filename.lastIndexOf('.') + 1).toLowerCase() !== 'json') {
                         return resolve();
-                    }                  
+                    }
                     return fs.readFile(path.resolve(localDir, filename), 'utf-8', function (err, content) {
                         if (err) return reject(new Error(err.message));
                         fileContents.push({ filename: filename, contents: content });
@@ -80,6 +105,11 @@ exports.build = function (req) {
         return;
     }
     req.session.generating = true;
+
+    const scopes = new Promise((resolve) => {
+        return fetchScopes(req.session.system)
+            .then(scopes => resolve(scopes));
+    });
 
     const definitions = new Promise((resolve) => {
         const swaggerDefinitions = {};
@@ -144,10 +174,11 @@ exports.build = function (req) {
             .catch(err => logger.errorAndExit(5, err.stack));
     });
 
-    Promise.all([definitions, paths, tags]).then((data) => {
+    Promise.all([definitions, paths, tags, scopes]).then((data) => {
         const swaggerDefinitions = data[0];
         const swaggerPaths = data[1];
         const swaggerTags = data[2];
+        const swaggerScopes = data[3];
 
         const swaggerDist = './views/static/swagger/swagger.json.dist';
         const swaggerFile = './views/static/swagger/schema/' + req.sessionID + '.json';
@@ -178,6 +209,8 @@ exports.build = function (req) {
             json.securityDefinitions.OAuth2.authorizationUrl = authUrl;
 
             json.info.version = version;
+
+            json.securityDefinitions.OAuth2.scopes = swaggerScopes;
 
             json.basePath = (req.session.system === 'training') ? '/training' : '/api';
 

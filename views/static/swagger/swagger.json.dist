@@ -14,10 +14,7 @@
             "tokenUrl": "/oauth/token",
             "authorizationUrl": "/oauth/auth",
             "flow": "accessCode",
-            "scopes": {
-                "write": "allows modifying resources",
-                "read": "allows reading resources"
-            }
+            "scopes": {}
         }
     },
     "security": [

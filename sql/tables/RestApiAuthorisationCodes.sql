@@ -12,7 +12,7 @@ GO
 CREATE TABLE [dbo].[RestApiAuthorisationCodes](
 	[RestApiAuthorisationCode] [bigint] IDENTITY(1,1) NOT NULL,
 	[Expires] [datetime] NOT NULL,
-	[Scopes] [nvarchar](20) NOT NULL,
+	[Scopes] [nvarchar](1000) NOT NULL,
 	[RestApiClient] [bigint] NOT NULL,
 	[RestApiUser] [bigint] NOT NULL,
 	[CodeUUID] [nvarchar](36) NOT NULL,

@@ -13,20 +13,20 @@ GO
 
 CREATE FUNCTION [dbo].[wfn_RestApiConvertScopes] 
 (
-	@scopes NVARCHAR(20)
+	@scopes NVARCHAR(1000)
 )
 RETURNS NVARCHAR(max)
 AS
 BEGIN
-	DECLARE @str NVARCHAR(20) = @scopes;
-	DECLARE @tempTable TABLE (scope BIGINT, scopeid NVARCHAR(10));
+	DECLARE @str NVARCHAR(1000) = @scopes;
+	DECLARE @tempTable TABLE (scope BIGINT, scopeid NVARCHAR(20));
 	DECLARE @direction NVARCHAR(8);
-	DECLARE @convertedScopes NVARCHAR(20);
+	DECLARE @convertedScopes NVARCHAR(1000);
 	DECLARE @sql NVARCHAR(max);
 	
 	WHILE LEN(@str) > 0
 		BEGIN
-			DECLARE @scope NVARCHAR(10);
+			DECLARE @scope NVARCHAR(20);
 			IF CHARINDEX(',', @str) > 0
 				BEGIN
 					SET @scope = SUBSTRING(@str, 0, CHARINDEX(',', @str))

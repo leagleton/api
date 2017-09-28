@@ -13,7 +13,7 @@ CREATE TABLE [dbo].[RestApiUserClients](
 	[RestApiUserClient] [bigint] IDENTITY(1,1) NOT NULL,
 	[RestApiUser] [bigint] NOT NULL,
 	[RestApiClient] [bigint] NOT NULL,
-	[Scopes] [nvarchar](20) NOT NULL,
+	[Scopes] [nvarchar](1000) NOT NULL,
  CONSTRAINT [PK_RestApiUserClients] PRIMARY KEY CLUSTERED 
 (
 	[RestApiUserClient] ASC

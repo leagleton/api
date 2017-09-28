@@ -2,7 +2,9 @@
 
 const login = require('connect-ensure-login');
 const passport = require('passport');
+const version = require('./package.json').version;
 const utils = require('./utils');
+const auth = require('./auth');
 const config = require('./config');
 const logger = require('./middleware/logger');
 const tp = require('tedious-promises');
@@ -54,8 +56,6 @@ exports.oauth2redirect = (req, res) => {
  * @returns {undefined}
  */
 exports.loginForm = (req, res) => {
-  const version = require('./package.json').version;
-
   if (req.user) {
     res.redirect('/');
   } else {
@@ -100,7 +100,10 @@ exports.account = [
     res.render('account', {
       user: req.user,
       title: 'My Account',
-      system: req.session.system
+      system: req.session.system,
+      sessionId: req.sessionID,
+      baseUrl: config.server.host + ":" + config.server.port,
+      version: version
     });
   },
 ];
@@ -193,5 +196,48 @@ exports.userAccessTokens = [
         .then((results) => res.send(results))
         .catch(err => next(err));
     }
+  }
+];
+
+/**
+ * Change the password of a REST API User.
+ * @param   {Object}   req - The request
+ * @param   {Object}   res - The response
+ * @returns {undefined}
+ */
+exports.passwordChange = [
+  login.ensureLoggedIn(),
+  (req, res, next) => {
+    tp.sql("EXEC wsp_RestApiUsersSelect @userId = '" + req.user.username + "'")
+      .execute()
+      .then((users) => {
+        if (users.length > 0) {
+          auth.comparePassword(req.query.currentPassword, users[0].Password, function (err, match) {
+            if (match) {
+              if (req.query.currentPassword === req.query.newPassword) {
+                res.send('New and current match.');
+              } else {
+                auth.cryptPassword(req.query.newPassword, function (err, hash) {
+                  if (hash) {
+                    tp.sql("EXEC wsp_RestApiUsersUpdate @user = " + req.user.id + ", @password = '" + hash + "'")
+                      .execute()
+                      .then(() => res.send('Success.'))
+                      .catch(err => next(err));
+                  } else if (err) {
+                    throw new Error(err.message);
+                  }
+                })
+              }
+            } else if (err) {
+              throw new Error(err.message);
+            } else {
+              res.send('Password incorrect.');
+            }
+          });
+        } else {
+          throw new Error('User not found.');
+        }
+      })
+      .catch(err => next(err));
   }
 ];

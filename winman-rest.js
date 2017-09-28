@@ -187,6 +187,7 @@ if (process.argv[2] == "-v" || process.argv[2] == "--version") {
     app.get('/clients', site.clients);
     app.get('/userAccessTokens', site.userAccessTokens);
     app.get('/oauth2redirect', site.oauth2redirect);
+    app.get('/passwordChange', site.passwordChange);
 
     // Auth routes
     app.get('/oauth/auth', oauth2.authorization);

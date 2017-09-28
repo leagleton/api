@@ -10,6 +10,7 @@ const tp = require('tedious-promises');
 tp.setPromiseLibrary('es6');
 
 /** Delete expired access tokens and authorisation codes from training and live DBs every hour */
+/** Delete swagger schemas which belong to expired sessions every hour. */
 setInterval(function () {
   tp.setConnectionConfig(config.connectionTraining);
 
@@ -18,10 +19,28 @@ setInterval(function () {
     .then(() => {
       tp.setConnectionConfig(config.connection);
       tp.sql("EXEC wsp_RestApiExpiredAccessTokensDelete")
-      .execute()
-      .catch(err => logger.error(err.stack));
+        .execute()
+        .catch(err => logger.error(err.stack));
     })
     .catch(err => logger.error(err.stack));
+
+  fs.readdir('views/static/swagger/schema/', function (err, fileNames) {
+    if (err) return logger.error(err.stack);
+
+    const files = fileNames.map((filename, index) => {
+      if (filename.substr(filename.lastIndexOf('.') + 1).toLowerCase() !== 'json') {
+        return;
+      } else {
+        return fs.stat(path.resolve('sessions/', filename), function (err, stats) {
+          if (!err && stats.isFile()) {
+            return;
+          } else {
+            fs.unlink(path.resolve('views/static/swagger/schema/', filename));
+          }
+        });
+      }
+    });
+  });
 }, 3600000);
 
 /** Private certificate used for signing JSON WebTokens. */

@@ -103,6 +103,7 @@ exports.account = [
       system: req.session.system,
       sessionId: req.sessionID,
       baseUrl: config.server.host + ":" + config.server.port,
+      baseEnd: (req.session.system === 'training') ? 'training' : 'api',
       version: version
     });
   },

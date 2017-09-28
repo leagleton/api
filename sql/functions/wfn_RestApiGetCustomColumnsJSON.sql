@@ -35,8 +35,6 @@ BEGIN
 			FOR XML PATH(''), TYPE).value('.','NVARCHAR(max)'), 1, 1, '') 
 		+ ']')
 
-	SELECT @result = COALESCE(@result, '')
-
 	RETURN @result
 END
 GO

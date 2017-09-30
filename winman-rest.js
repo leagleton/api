@@ -4,13 +4,17 @@
 process.chdir(__dirname)
 
 const env = process.env.NODE_ENV || 'development';
+const config = require('./config');
 const service = require("os-service");
 const fs = require('fs');
 const version = require('./package.json').version;
-const serviceName = "winman-rest";
+const serviceName = config.service.serviceName;
 const options = {
-    displayName: "WinMan REST API",
-    programArgs: ["--run"]
+    displayName: config.service.displayName,
+    programArgs: ["--run",
+        "--max-old-space-size=48",
+        "--max-executable-size=64",
+        "--max-semi-space-size=1"]
 };
 
 // Show usage hints on command line if app called improperly.
@@ -21,7 +25,7 @@ function usage() {
     console.log("\x1b[36m  -v, --version   \x1b[37mPrint your WinMan REST API version number.");
     console.log("\x1b[36m  -a, --add       \x1b[37mAdd the WinMan REST API as a Windows service. Requires admin privileges.");
     console.log("\x1b[36m  -d, --delete    \x1b[37mDelete/remove the WinMan REST API service from Windows. Requires admin privileges and restart.");
-    console.log("\x1b[36m  -e, --edit      \x1b[37mEdit the database connection configuration. Requires admin privileges and restarts the service.");
+    //console.log("\x1b[36m  -e, --edit      \x1b[37mEdit the database connection configuration. Requires admin privileges and restarts the service.");
     console.log("\x1b[36m  -r, --run       \x1b[37mRun the WinMan REST API service.");
     process.exit(0);
 }
@@ -48,8 +52,8 @@ if (process.argv[2] == "-v" || process.argv[2] == "--version") {
         else
             console.log("\x1b[32m" + options.displayName + " service successfully removed.");
     });
-} else if (process.argv[2] == "-e" || process.argv[2] == "--edit") {
-    console.log("\x1b[36mTODO");
+//} else if (process.argv[2] == "-e" || process.argv[2] == "--edit") {
+//    console.log("\x1b[36mTODO");
 } else if (process.argv[2] == "-r" || process.argv[2] == "--run") {
     const logStream = fs.createWriteStream("./logs/activityLogs.log");
     const errorStream = fs.createWriteStream("./logs/errorLogs.log");
@@ -63,7 +67,6 @@ if (process.argv[2] == "-v" || process.argv[2] == "--version") {
 
     const logger = require('./middleware/logger');
     const express = require('express');
-    const config = require('./config'); // OAuth config stuff
     const compression = require('compression'); // To use gzip compression on response bodies
     const bodyParser = require('body-parser'); // To parse incoming request body (for posts)
     require('body-parser-xml')(bodyParser); // To allow parsing of XML request bodies
@@ -163,7 +166,7 @@ if (process.argv[2] == "-v" || process.argv[2] == "--version") {
 
     app.use('/training', function (req, res, next) {
         res.locals = req.query;
-        res.locals.system ='training';
+        res.locals.system = 'training';
         req.query = tediousExpress(req, config.connectionTraining);
         next();
     }, require('./routes/api'));
@@ -185,6 +188,7 @@ if (process.argv[2] == "-v" || process.argv[2] == "--version") {
     app.get('/create', site.create);
     app.get('/scopes', site.scopes);
     app.get('/clients', site.clients);
+    app.get('/userWebsites', site.websites);
     app.get('/userAccessTokens', site.userAccessTokens);
     app.get('/oauth2redirect', site.oauth2redirect);
     app.get('/passwordChange', site.passwordChange);

@@ -1,6 +1,7 @@
 {
     "Inventory": {
         "type": "object",
+        "description": "The <strong>Inventories</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "ProductSku",
             "ProductInventories"

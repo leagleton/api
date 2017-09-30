@@ -28,24 +28,31 @@ exports.system = (req) => {
 exports.token = (token, accessToken) => {
   utils.verifyToken(accessToken);
 
-  return tp.sql("EXEC wsp_RestApiUsersSelect @user = " + token.userID)
+  return tp.sql("EXEC wsp_RestApiUsersSelect @user = " + token.userID + ", @website = " + token.website)
     .execute()
     .then(function (users) {
       if (users.length > 0) {
         const user = {
-          "id": users[0].RestApiUser,
+          "user": users[0].RestApiUser,
           "username": users[0].RestApiUserId,
           "name": users[0].Name
         };
         return user;
       } else {
-        const err = new Error("No user found with supplied user number. Token may be invalid.");
+        const err = new Error("Error: Token may be invalid.");
         return logger.error(err);
       }
     })
     .then(user => user)
     .catch(err => logger.error(err));
 };
+
+exports.scopes = (scopes, website) => {
+  const tokenScopes = scopes.split(',');
+
+  // for each scopes, if scope not in website, reject.
+  return true;
+}
 
 /**
  * Given an auth code, client, and redirectURI this will return the auth code if it exists and is
@@ -61,14 +68,12 @@ exports.token = (token, accessToken) => {
  */
 exports.authCode = (code, authCode, client, redirectURI) => {
   utils.verifyToken(code);
-  if (client.id !== authCode.client) {
+  if (client.client !== authCode.client) {
     throw new Error('AuthCode client does not match client id given');
   }
   if (redirectURI !== authCode.RedirectURI) {
     throw new Error('AuthCode RedirectURI does not match redirectURI given');
   }
-
-  // TODO: check user too?
   return authCode;
 };
 
@@ -79,7 +84,7 @@ exports.authCode = (code, authCode, client, redirectURI) => {
  * @param   {String}   scope  - The allowed scope(s).
  * @returns {Promise}  The resolved access token after saving.
  */
-exports.generateToken = ({ user, client, scope, lifetime, source }) => {
+exports.generateToken = ({ user, client, scope, lifetime, source, website }) => {
   const expires = config.token.calculateExpirationDate(lifetime);
   const expiresIn = parseInt(Date.parse(expires) / 1000);
 
@@ -91,7 +96,8 @@ exports.generateToken = ({ user, client, scope, lifetime, source }) => {
                   @expires = '" + expires + "', \
                   @scopes = '" + scope + "', \
                   @user = " + user + ", \
-                  @client = " + client)
+                  @client = " + client + ", \
+                  @website = " + website)
     .execute()
     .then(function () {
       const newToken = {

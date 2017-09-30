@@ -1,7 +1,7 @@
 {
     "ProductPrice": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty arrays: not allowed",
+        "description": "The <strong>ProductPrices</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "Quantity",
             "EffectiveDateStart",
@@ -16,7 +16,7 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.00001,
-                "example": 2.00000,
+                "example": 2.00009,
                 "description": "Maps to the field <em>Prices.Quantity</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: not allowed"
             },
             "EffectiveDateStart": {

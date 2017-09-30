@@ -1,5 +1,9 @@
 'use strict';
 const xml = require('xml');
+const logger = require('../middleware/logger');
+const config = require('../config');
+const tp = require('tedious-promises');
+tp.setPromiseLibrary('es6');
 
 const contentTypes = {
     json: "application/json; charset=utf-8",
@@ -87,6 +91,44 @@ exports.executeSelect = (res, req, params) => {
 
     qry = qry + params.sp + type + params.args.concat();
 
-    req.query(qry)
-        .into(res);
+    if (res.locals.system === 'training') {
+        tp.setConnectionConfig(config.connectionTraining);
+    } else {
+        tp.setConnectionConfig(config.connection);
+    }
+
+    tp.sql(qry)
+        .execute()
+        .then((results) => {
+            const result = results[0].ErrorMessage || '';
+            if (result !== '') {
+                throw new Error(result);
+            } else {
+                if (req.accepts('application/xml')) {
+                    res.write(results[0].Results);
+                    res.end();
+                } else {
+                    res.send(results[0].Results);
+                }
+            }
+        })
+        .catch((err) => {
+            let status = 500;
+
+            if (err.message.indexOf('parameter') > -1 ||
+                err.message.indexOf('Parameter') > -1) {
+                status = 400;
+            }
+
+            if (err.message.indexOf('not enabled') > -1) {
+                status = 403;
+            }
+
+            if (status === 500) {
+                logger.error(err.stack);
+                this.error(res, req, err.message);
+            } else {
+                this.reject(res, req, err.message);
+            }
+        });
 }

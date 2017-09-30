@@ -15,7 +15,7 @@
                 {
                     "in": "query",
                     "name": "sku",
-                    "description": "<p>Fetch attachments for a single web-enabled product with the supplied <em>sku</em>.</p>",
+                    "description": "Fetch attachments for a single web-enabled product with the supplied <em>sku</em>.",
                     "required": true,
                     "type": "string",
                     "minLength": 1,
@@ -24,7 +24,7 @@
                 {
                     "in": "query",
                     "name": "website",
-                    "description": "<p>Fetch only attachments for web-enabled products which are attached to the supplied <em>website</em>.</p>",
+                    "description": "Fetch only attachments for web-enabled products which are attached to the supplied <em>website</em>.",
                     "required": true,
                     "type": "string",
                     "minLength": 1,
@@ -33,7 +33,7 @@
                 {
                     "in": "query",
                     "name": "modified",
-                    "description": "<p>Fetch attachments for web-enabled products modified within the specified number of seconds.</p>",
+                    "description": "Fetch attachments for web-enabled products modified within the specified number of seconds.",
                     "required": false,
                     "type": "integer",
                     "format": "init32",

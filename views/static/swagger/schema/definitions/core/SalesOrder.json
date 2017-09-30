@@ -1,6 +1,7 @@
 {
     "SalesOrder": {
         "type": "object",
+        "description": "The <strong>Data</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
         "required": [
             "Website",
             "CustomerOrderNumber", 
@@ -13,7 +14,7 @@
             "SalesOrderBilling"
         ],
         "xml": {
-            "name": "SalesOrder"
+            "name": "Data"
         },
         "properties": {
             "Website": {
@@ -54,8 +55,9 @@
             },
             "TotalOrderValue": {
                 "type": "number",
-                "format": "double",
-                "example": 72.48,
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 72.4801,
                 "description": "The total order value after discounts are applied, including tax, including delivery.<br/>Null values: not allowed<br/>Zero values: not allowed"
             },            
             "CreditTermsId": {

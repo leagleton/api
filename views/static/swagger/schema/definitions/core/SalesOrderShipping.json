@@ -1,7 +1,7 @@
 {
     "SalesOrderShipping": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty objects: not allowed",
+        "description": "The <strong>SalesOrderShipping</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
         "required": [
             "Price",
             "ShippingName",
@@ -114,8 +114,9 @@
             },
             "Price": {
                 "type": "number",
-                "format": "double",
-                "example": 5.86,
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 5.8601,
                 "description": "The price paid for shipping, excluding tax.<br/>Null values: not allowed<br/>Zero values: allowed"
             }                                                                                                                                                                                                                                                                                                                                                                                          
         }

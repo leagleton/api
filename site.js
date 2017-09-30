@@ -125,18 +125,19 @@ exports.create = [
   (req, res, next) => {
     const clientId = utils.generateString(32);
     const clientSecret = utils.generateString(32);
+    const redirectUri = config.server.scheme + "://" + config.server.host + ":" + config.server.port + "/" + "oauth2redirect"
     let client = 0;
 
     tp.sql("DECLARE @client BIGINT EXEC wsp_RestApiClientsInsert \
               @clientId = '" + clientId + "', \
               @secret = '" + clientSecret + "', \
-              @redirectUri = '" + config.server.scheme + "://" + config.server.host + ":" + config.server.port + "/" + "oauth2redirect', \
-              @user = " + req.user.id + ", \
+              @redirectUri = '" + redirectUri + "', \
+              @user = " + req.user.user + ", \
               @scopes = '" + req.query.scopes + "', \
               @client = @client OUTPUT")
       .execute()
       .then((results) => client = results[0].client)
-      .then(() => res.send({ client, clientId, clientSecret, scopes: req.query.scopes }))
+      .then(() => res.send({ client, clientId, clientSecret, redirectUri, scopes: req.query.scopes }))
       .catch(err => next(err));
   },
 ];
@@ -172,7 +173,7 @@ exports.clients = [
         .then(() => res.send("Success"))
         .catch(err => next(err));
     } else {
-      tp.sql("EXEC wsp_RestApiClientsSelect @user = " + req.user.id)
+      tp.sql("EXEC wsp_RestApiClientsSelect @user = " + req.user.user)
         .execute()
         .then((results) => res.send(results))
         .catch(err => next(err));
@@ -195,11 +196,21 @@ exports.userAccessTokens = [
         .then(() => res.send("Success"))
         .catch(err => next(err));
     } else {
-      tp.sql("EXEC wsp_RestApiUserAccessTokensSelect @user = " + req.user.id)
+      tp.sql("EXEC wsp_RestApiUserAccessTokensSelect @user = " + req.user.user)
         .execute()
         .then((results) => res.send(results))
         .catch(err => next(err));
     }
+  }
+];
+
+exports.websites = [
+  login.ensureLoggedIn(),
+  (req, res, next) => {
+    tp.sql("EXEC wsp_RestApiEcommerceWebsitesSelect @user = " + req.user.user)
+      .execute()
+      .then((results) => res.send(results))
+      .catch(err => next(err));
   }
 ];
 
@@ -223,7 +234,7 @@ exports.passwordChange = [
               } else {
                 auth.cryptPassword(req.query.newPassword, function (err, hash) {
                   if (hash) {
-                    tp.sql("EXEC wsp_RestApiUsersUpdate @user = " + req.user.id + ", @password = '" + hash + "'")
+                    tp.sql("EXEC wsp_RestApiUsersUpdate @user = " + req.user.user + ", @password = '" + hash + "'")
                       .execute()
                       .then(() => res.send('Success.'))
                       .catch(err => next(err));

@@ -1,7 +1,7 @@
 {
     "CustomerPrice": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty arrays: not allowed",
+        "description": "The <strong>CustomerPrices</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
         "required": [
             "ProductSku",
             "Quantity",
@@ -24,7 +24,7 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.00001,
-                "example": "1.00000",
+                "example": 1.00004,
                 "description": "Maps to the field <em>Prices.Quantity</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: not allowed"
             },
             "EffectiveDateStart": {
@@ -43,7 +43,7 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.00001,
-                "example": "29.99999",
+                "example": 29.99999,
                 "description": "Maps to the field <em>Prices.PriceValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             }            
         }

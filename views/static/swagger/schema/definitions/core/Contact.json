@@ -1,7 +1,7 @@
 {
     "Contact": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty arrays: not allowed",
+        "description": "The <strong>Contacts</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
         "required": [
             "CrmContactGuid",
             "CrmContactId",
@@ -12,7 +12,7 @@
             "FaxNumber",
             "EmailAddressWork",
             "EmailAddressHome",
-            "PortalUserName",
+            "WebsiteUserName",
             "JobTitle",
             "AllowCommunication"
         ],           
@@ -84,7 +84,7 @@
                 "example": "jsmith@email.com",
                 "description": "Maps to the field <em>CRMContacts.EmailAddressHome</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
-            "PortalUserName": {
+            "WebsiteUserName": {
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 50,

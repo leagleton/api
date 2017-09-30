@@ -1,7 +1,7 @@
 {
     "SalesDiscount": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty objects: allowed",
+        "description": "The <strong>SalesDiscount</strong> object <strong>cannot</strong> be null but <strong>can</strong> be an empty object.",
         "required": [
             "DiscountId",
             "DiscountDescription",
@@ -15,20 +15,21 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 15,
-                "example": "ZERO",
+                "example": "BULK PURCHASE",
                 "description": "Maps to the field <em>Discounts.DiscountId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "DiscountDescription": {
                 "type": "string",
                 "minLength": 0,
                 "maxLength": 100,
-                "example": "No discount",
+                "example": "Discount for bulk purchases",
                 "description": "Maps to the field <em>Discounts.DiscountDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "DiscountPercentage": {
                 "type": "number",
-                "format": "double",
-                "example": 0.00,
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 20.0101,
                 "description": "Maps to the field <em>Discounts.DiscountPercentage</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "DiscountBreaks": {

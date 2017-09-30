@@ -1,7 +1,7 @@
 {
     "Attachment": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty arrays: allowed",
+        "description": "The <strong>Attachments</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "Type",
             "FileName",

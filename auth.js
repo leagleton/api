@@ -65,11 +65,11 @@ passport.use(new LocalStrategy({ passReqToCallback: true }, (req, RestApiUserId,
 
       if (users.length > 0) {
         const dbUser = {
-          "id": users[0].RestApiUser,
+          "user": users[0].RestApiUser,
           "username": users[0].RestApiUserId,
           "name": users[0].Name
         };
-        
+
         auth.comparePassword(Password, users[0].Password, function (err, match) {
           if (match) {
             return done(null, dbUser);
@@ -109,7 +109,12 @@ passport.use(new BasicStrategy({ passReqToCallback: true }, (req, RestApiClientI
   if (typeof req.body.system !== 'undefined') {
     req.session.system = req.body.system;
   }
-  
+
+  let user = 0;
+  if (typeof req.user !== 'undefined') {
+    user = req.user.user
+  }
+
   this.system(req);
 
   tp.sql("EXEC wsp_RestApiClientsSelect @clientId = '" + RestApiClientId + "'")
@@ -117,7 +122,8 @@ passport.use(new BasicStrategy({ passReqToCallback: true }, (req, RestApiClientI
     .then(function (clients) {
 
       const dbClient = {
-        "id": clients[0].RestApiClient,
+        "user": user,
+        "client": clients[0].RestApiClient,
         "clientId": clients[0].RestApiClientId,
         "clientSecret": clients[0].Secret,
         "scope": clients[0].Scopes
@@ -129,8 +135,7 @@ passport.use(new BasicStrategy({ passReqToCallback: true }, (req, RestApiClientI
         return done(null, dbClient);
       }
     })
-    .catch(() => done(null, false, req.flash('message', 'something bad happened')));
-
+    .catch(err => done(null, false, req.flash('message', err.message)));
 }));
 
 /**
@@ -144,7 +149,12 @@ passport.use(new ClientPasswordStrategy({ passReqToCallback: true }, (req, RestA
   if (typeof req.body.system !== 'undefined') {
     req.session.system = req.body.system;
   }
-  
+
+  let user = 0;
+  if (typeof req.user !== 'undefined') {
+    user = req.user.user
+  }
+
   this.system(req);
 
   tp.sql("EXEC wsp_RestApiClientsSelect @clientId = '" + RestApiClientId + "'")
@@ -152,7 +162,8 @@ passport.use(new ClientPasswordStrategy({ passReqToCallback: true }, (req, RestA
     .then(function (clients) {
 
       const dbClient = {
-        "id": clients[0].RestApiClient,
+        "user": user,
+        "client": clients[0].RestApiClient,
         "clientId": clients[0].RestApiClientId,
         "clientSecret": clients[0].Secret,
         "scope": clients[0].Scopes
@@ -175,15 +186,25 @@ passport.use(new ClientPasswordStrategy({ passReqToCallback: true }, (req, RestA
  * (aka a bearer token).  If a user, they must have previously authorized a client
  * application, which is issued an access token to make requests on behalf of
  * the authorizing user.
- *
- * To keep this example simple, restricted scopes are not implemented, and this is just for
- * illustrative purposes
  */
-passport.use(new BearerStrategy((accessToken, done) => {
+passport.use(new BearerStrategy({ passReqToCallback: true }, (req, accessToken, done) => {
+  if (typeof req.res.locals.system !== 'undefined') {
+    req.session.system = req.res.locals.system;
+  }
+
+  this.system(req);
+
   const uuid = jwt.decode(accessToken).jti;
   const allowedScopes = jwt.decode(accessToken).scp;
+  let eCommerceWebsite = '';
 
-  tp.sql("EXEC wsp_RestApiAccessTokensSelect @uuid = '" + uuid + "'")
+  if (req.body.hasOwnProperty('Data')) {
+    eCommerceWebsite = req.body.Data.Website;
+  } else {
+    eCommerceWebsite = req.res.locals.website;
+  }
+
+  tp.sql("EXEC wsp_RestApiAccessTokensSelect @uuid = '" + uuid + "', @website = '" + eCommerceWebsite + "'")
     .execute()
     .then(function (tokens) {
       if (tokens.length > 0) {
@@ -191,7 +212,8 @@ passport.use(new BearerStrategy((accessToken, done) => {
           "userID": tokens[0].RestApiUser,
           "expirationDate": tokens[0].Expires,
           "clientID": tokens[0].RestApiClient,
-          "scope": tokens[0].Scopes
+          "scope": tokens[0].Scopes,
+          "website": tokens[0].EcommerceWebsite
         };
 
         return validate.token(dbAccessToken, accessToken);
@@ -218,16 +240,19 @@ passport.use(new BearerStrategy((accessToken, done) => {
 // the client by ID from the database.
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  if (user.user === 0) {
+    delete user.user;
+  }
+  return done(null, user);
 });
 
-passport.deserializeUser((req, RestApiUser, done) => {
-  tp.sql("EXEC wsp_RestApiUsersSelect @user = " + RestApiUser)
+passport.deserializeUser((req, user, done) => {
+  tp.sql("EXEC wsp_RestApiUsersSelect @user = " + user.user)
     .execute()
     .then(function (users) {
       if (users.length > 0) {
         const user = {
-          "id": users[0].RestApiUser,
+          "user": users[0].RestApiUser,
           "username": users[0].RestApiUserId,
           "name": users[0].Name
         };

@@ -1,7 +1,7 @@
 {
     "TaxCodeSecondary": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty objects: allowed",
+        "description": "The <strong>TaxCodeSecondary</strong> object <strong>cannot</strong> be null but <strong>can</strong> be an empty object.",
         "required": [
             "TaxCodeId",
             "TaxCodeDescription",

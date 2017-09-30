@@ -1,7 +1,7 @@
 {
     "PriceList": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty arrays: not allowed",
+        "description": "For Products, the <strong>PriceLists</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.<br/>For Customers, the <strong>PriceList</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be and empty object.",
         "required": [
             "PriceListId",
             "PriceListDescription",

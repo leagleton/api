@@ -1,7 +1,7 @@
 {
     "DiscountBreak": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty arrays: allowed",
+        "description": "The <strong>DiscountBreaks</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "DiscountBreakId",
             "TriggerType",
@@ -31,7 +31,7 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.00001,
-                "example": 1.00000,
+                "example": 1.00001,
                 "description": "Maps to the field <em>DiscountBreaks.TriggerValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },                        
             "DiscountBreakType": {
@@ -45,7 +45,7 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.00001,
-                "example": 10.00000,
+                "example": 10.00005,
                 "description": "Maps to the field <em>DiscountBreaks.DiscountBreakValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             }
         }

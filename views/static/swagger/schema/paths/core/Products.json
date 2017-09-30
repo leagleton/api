@@ -15,7 +15,7 @@
                 {
                     "in": "query",
                     "name": "sku",
-                    "description": "<p>Fetch a single web-enabled product with the supplied <em>sku</em>.</p>",
+                    "description": "Fetch a single web-enabled product with the supplied <em>sku</em>.",
                     "required": false,
                     "type": "string",
                     "minLength": 1,
@@ -24,7 +24,7 @@
                 {
                     "in": "query",
                     "name": "website",
-                    "description": "<p>Fetch only web-enabled products which are attached to the supplied <em>website</em>.</p>",
+                    "description": "Fetch only web-enabled products which are attached to the supplied <em>website</em>.",
                     "required": true,
                     "type": "string",
                     "minLength": 1,
@@ -33,12 +33,30 @@
                 {
                     "in": "query",
                     "name": "modified",
-                    "description": "<p>Fetch web-enabled products modified within the specified number of seconds.</p>",
+                    "description": "Fetch web-enabled products modified within the specified number of seconds.",
                     "required": false,
                     "type": "integer",
                     "format": "int32",
                     "minimum": 0
-                }
+                },
+                {
+                    "in": "query",
+                    "name": "page",
+                    "description": "Results are paginated. Fetch results from the specified page number. The default page is 1.",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0
+                },
+                {
+                    "in": "query",
+                    "name": "size",
+                    "description": "Results are paginated. Fetch the specified number of results per page. The default size is 10.",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0
+                }                                
             ],
             "responses": {
                 "200": {

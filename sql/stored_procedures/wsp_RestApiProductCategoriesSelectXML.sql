@@ -1,9 +1,11 @@
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 GO
+
+BEGIN TRANSACTION AlterProcedure;
 
 -- =============================================
 -- Author:		Lynn Eagleton
@@ -11,30 +13,72 @@ GO
 -- Description:	Stored procedure for SELECTing product categories for the WinMan REST API in XML format.
 -- =============================================
 
-CREATE PROCEDURE [dbo].[wsp_RestApiProductCategoriesSelectXML]
-	@guid UNIQUEIDENTIFIER = NULL,
-	@website NVARCHAR(100),
-	@seconds BIGINT = 315360000,
-	@results NVARCHAR(max) OUTPUT
+IF NOT EXISTS
+(
+    SELECT 
+		p.[name] 
+	FROM 
+		sys.procedures p
+		INNER JOIN sys.schemas s ON p.[schema_id] = s.[schema_id]
+    WHERE
+        p.[type] = 'P'
+		AND p.[name] = 'wsp_RestApiProductCategoriesSelectXML'
+		AND s.[name] = 'dbo'
+)
+	BEGIN
+		EXECUTE('CREATE PROCEDURE dbo.wsp_RestApiProductCategoriesSelectXML AS PRINT ''wsp_RestApiProductCategoriesSelectXML''');
+	END;
+GO
+
+ALTER PROCEDURE [dbo].[wsp_RestApiProductCategoriesSelectXML]
+	@pageNumber int = 1,
+	@pageSize int = 10,
+	@guid nvarchar(36) = null,
+	@website nvarchar(100),
+	@seconds bigint = 315360000,
+	@scope nvarchar(50),
+	@results nvarchar(max) OUTPUT
 AS
 BEGIN
 
 	IF dbo.wfn_BespokeSPExists('bsp_RestApiProductCategoriesSelectXML') = 1 
-	BEGIN
-		EXEC dbo.bsp_RestApiProductCategoriesSelectXML
-			@guid = @guid,
-			@website = @website,
-			@seconds = @seconds,
-			@results = @results
-		RETURN	
-	END
+		BEGIN
+			EXEC dbo.bsp_RestApiProductCategoriesSelectXML
+				@pageNumber = @pageNumber,
+				@pageSize = @pageSize,			
+				@guid = @guid,
+				@website = @website,
+				@seconds = @seconds,
+				@scope = @scope,
+				@results = @results;
+			RETURN;	
+		END;
 
 	SET NOCOUNT ON;
 
-	DECLARE 
-		@lastModifiedDate DATETIME
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	BEGIN TRANSACTION;	
+
+	DECLARE @lastModifiedDate datetime;
 
 	SET @lastModifiedDate = (SELECT DATEADD(second,-@seconds,GETDATE()));
+
+	IF NOT EXISTS (
+		SELECT 
+			s.RestApiScope 
+		FROM 
+			RestApiScopeEcommerceWebsites sw
+			INNER JOIN RestApiScopes s ON sw.RestApiScope = s.RestApiScope
+			INNER JOIN EcommerceWebsites w ON sw.EcommerceWebsite = w.EcommerceWebsite
+		WHERE
+			s.RestApiScopeId = @scope
+			AND w.EcommerceWebsiteId = @website
+	)
+		BEGIN
+			SELECT 'ERROR: Scope not enabled for specified website.' AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;	
 
 	WITH ProductCategoryTree ( 
 		CategoryGUID,
@@ -86,10 +130,42 @@ BEGIN
 			INNER JOIN ProductCategoryTree ON ProductCategories.ParentCategory = ProductCategoryTree.ProductCategory
 		WHERE
 			IsActive = 1
+	),
+	CTE AS
+	(
+		SELECT
+			ROW_NUMBER() OVER (ORDER BY ProductCategory) AS RowNumber,
+			CategoryGUID,
+			ProductCategory,
+			CategoryPath,
+			CategoryName,
+			SortOrder,
+			CategoryImage,
+			MetaTitle,
+			MetaDescription,
+			MetaKeywords,
+			[Level],
+			LastModifiedDate
+		FROM
+			ProductCategoryTree
+		WHERE
+			CategoryGUID = COALESCE(@guid, CategoryGUID)
+			AND CategoryPath IS NOT NULL
+			AND ProductCategoryTree.LastModifiedDate >= @lastModifiedDate
+			AND EXISTS (SELECT 
+							P.ProductId AS SKU 
+						FROM
+							ProductProductCategories C
+							INNER JOIN Products P ON C.Product = P.Product
+							INNER JOIN ProductEcommerceWebsites PEW ON PEW.Product = P.Product
+							INNER JOIN EcommerceWebsites EW ON EW.EcommerceWebsite = PEW.EcommerceWebsite
+						WHERE 
+							C.ProductCategory = ProductCategoryTree.ProductCategory 
+							AND EW.EcommerceWebsiteId = @website)
 	)
 
 	SELECT @results = 
-		(SELECT 
+		CONVERT(nvarchar(max), (SELECT 
 			CategoryGUID,
 			CategoryPath,
 			CategoryName,
@@ -112,28 +188,30 @@ BEGIN
 				AND EW.EcommerceWebsiteId = @website
 			FOR XML PATH('Product'), TYPE) AS Products
 		FROM
-			ProductCategoryTree
+			CTE AS ProductCategoryTree
 		WHERE
-			CategoryGUID = COALESCE(@guid, CategoryGUID)
-			AND CategoryPath IS NOT NULL
-			AND ProductCategoryTree.LastModifiedDate >= @lastModifiedDate
-			AND EXISTS (SELECT 
-							P.ProductId AS SKU 
-						FROM
-							ProductProductCategories C
-							INNER JOIN Products P ON C.Product = P.Product
-							INNER JOIN ProductEcommerceWebsites PEW ON PEW.Product = P.Product
-							INNER JOIN EcommerceWebsites EW ON EW.EcommerceWebsite = PEW.EcommerceWebsite
-						WHERE 
-							C.ProductCategory = ProductCategoryTree.ProductCategory 
-							AND EW.EcommerceWebsiteId = @website)
-		FOR XML PATH('ProductCategory'))
+			(rowNumber > @pageSize * (@pageNumber - 1) )
+			AND (rowNumber <= @pageSize * @pageNumber )
+		ORDER BY
+			RowNumber
+		FOR XML PATH('ProductCategory'), TYPE));
 
-	OPTION (OPTIMIZE FOR (@guid UNKNOWN, @website UNKNOWN, @lastModifiedDate UNKNOWN, @results UNKNOWN))	
+	--OPTION (OPTIMIZE FOR (@guid UNKNOWN, @website UNKNOWN, @lastModifiedDate UNKNOWN));
 
-	SELECT @results = CONCAT('<ProductCategories>', @results, '</ProductCategories>')
+	IF @results IS NOT NULL AND @results <> ''
+		BEGIN
+			SELECT @results = '<ProductCategories>' + @results + '</ProductCategories>';
+		END;
+	ELSE
+		BEGIN
+			SELECT @results = '<ProductCategories/>';
+		END;
 
-	SELECT @results
+	SELECT @results AS Results;
 
-END
+	COMMIT TRANSACTION;
+
+END;
 GO
+
+COMMIT TRANSACTION AlterProcedure;

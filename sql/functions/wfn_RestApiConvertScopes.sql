@@ -1,9 +1,11 @@
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 GO
+
+BEGIN TRANSACTION AlterFunction;
 
 -- =============================================
 -- Author:		Lynn Eagleton
@@ -11,36 +13,60 @@ GO
 -- Description:	Function to convert scopes from text to numeric for the WinMan REST API.
 -- =============================================
 
-CREATE FUNCTION [dbo].[wfn_RestApiConvertScopes] 
+IF NOT EXISTS
 (
-	@scopes NVARCHAR(1000)
+	SELECT 
+		[name]
+	FROM
+		sys.objects
+	WHERE
+		[object_id] = OBJECT_ID(N'[dbo].[wfn_RestApiConvertScopes]')
+		AND [type] IN (N'FN', N'IF', N'TF', N'FS', N'FT')
 )
-RETURNS NVARCHAR(max)
+	BEGIN
+		EXECUTE('CREATE FUNCTION dbo.wfn_RestApiConvertScopes() RETURNS nvarchar(100) AS BEGIN RETURN ''dbo.wfn_RestApiConvertScopes''; END;');
+	END;
+GO
+
+ALTER FUNCTION [dbo].[wfn_RestApiConvertScopes] 
+(
+	@scopes nvarchar(1000)
+)
+RETURNS nvarchar(max)
 AS
 BEGIN
-	DECLARE @str NVARCHAR(1000) = @scopes;
-	DECLARE @tempTable TABLE (scope BIGINT, scopeid NVARCHAR(20));
-	DECLARE @direction NVARCHAR(8);
-	DECLARE @convertedScopes NVARCHAR(1000);
-	DECLARE @sql NVARCHAR(max);
+
+	DECLARE @str nvarchar(1000);
+	DECLARE @tempTable table (scope bigint, scopeid nvarchar(50));
+	DECLARE @direction nvarchar(8);
+	DECLARE @convertedScopes nvarchar(1000);
+	DECLARE @sql nvarchar(max);
+	DECLARE @scopeId nvarchar(50);
+	DECLARE @scopeNum bigint;
+
+	SET @str = @scopes;
 	
 	WHILE LEN(@str) > 0
 		BEGIN
-			DECLARE @scope NVARCHAR(20);
+			DECLARE @scope nvarchar(50);
 			IF CHARINDEX(',', @str) > 0
 				BEGIN
-					SET @scope = SUBSTRING(@str, 0, CHARINDEX(',', @str))
+					SET @scope = SUBSTRING(@str, 0, CHARINDEX(',', @str));
 					IF ISNUMERIC(@str) = 1
 						BEGIN
 							SET @direction = 'toString';
-							INSERT INTO @tempTable (scope) VALUES (CAST(@scope AS BIGINT));
-						END
+							SET @scopeId = (SELECT RestApiScopeId FROM RestApiScopes WHERE RestApiScope = @scope);
+
+							INSERT INTO @tempTable (scopeid, scope) VALUES (@scopeId, CAST(@scope AS bigint));
+						END;
 					ELSE
 						BEGIN
 							SET @direction = 'toNumber';
-							INSERT INTO @tempTable (scopeid) VALUES (@scope);
-						END
-				END
+							SET @scopeNum = (SELECT RestApiScope FROM RestApiScopes WHERE RestApiScopeId = @scope);
+
+							INSERT INTO @tempTable (scopeid, scope) VALUES (@scope, @scopeNum);
+						END;
+				END;
 			ELSE
 				BEGIN
 					SET @scope = @str;
@@ -49,30 +75,37 @@ BEGIN
 					IF ISNUMERIC(@scope) = 1
 						BEGIN
 							SET @direction = 'toString';
-							INSERT INTO @tempTable (scope) VALUES (CAST(@scope AS BIGINT));
-						END
+							SET @scopeId = (SELECT RestApiScopeId FROM RestApiScopes WHERE RestApiScope = @scope);
+
+							INSERT INTO @tempTable (scopeid, scope) VALUES (@scopeId, CAST(@scope AS bigint));
+						END;
 					ELSE
 						BEGIN
 							SET @direction = 'toNumber';
-							INSERT INTO @tempTable (scopeid) VALUES (@scope);
-						END
+							SET @scopeNum = (SELECT RestApiScope FROM RestApiScopes WHERE RestApiScopeId = @scope);
+
+							INSERT INTO @tempTable (scopeid, scope) VALUES (@scope, @scopeNum);
+						END;
 				END
 			SET @str = REPLACE(@str, @scope + ',' , '');
 		END
 
 	IF @direction = 'toString'
 		BEGIN
-			SET @convertedScopes = (SELECT STUFF(REPLACE((SELECT '#!' + LTRIM(RTRIM(RestApiScopeId)) AS 'data()' FROM RestApiScopes 
-														WHERE RestApiScope IN (SELECT scope FROM @tempTable) 
+			SET @convertedScopes = (SELECT STUFF(REPLACE((SELECT '#!' + LTRIM(RTRIM(scopeid)) AS 'data()' FROM @tempTable 
+														ORDER BY scope ASC
 														FOR XML PATH('')),' #!',','), 1, 2, ''));
-		END
+		END;
 	ELSE
 		BEGIN
-			SET @convertedScopes = (SELECT STUFF(REPLACE((SELECT '#!' + LTRIM(RTRIM(RestApiScope)) AS 'data()' FROM RestApiScopes 
-														WHERE RestApiScopeId IN (SELECT scopeid FROM @tempTable) 
-														FOR XML PATH('')),' #!',','), 1, 2, ''))
-		END
+			SET @convertedScopes = (SELECT STUFF(REPLACE((SELECT '#!' + LTRIM(RTRIM(scope)) AS 'data()' FROM @tempTable 
+														ORDER BY scope ASC
+														FOR XML PATH('')),' #!',','), 1, 2, ''));
+		END;
 
 	RETURN @convertedScopes;
-END
+
+END;
 GO
+
+COMMIT TRANSACTION AlterFunction;

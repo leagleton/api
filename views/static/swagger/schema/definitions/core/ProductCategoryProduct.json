@@ -1,7 +1,7 @@
 {
     "ProductCategoryProduct": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty arrays: not allowed",
+        "description": "The <strong>ProductCategoryProducts</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "ProductSku"
         ],             

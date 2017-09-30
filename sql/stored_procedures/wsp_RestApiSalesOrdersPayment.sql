@@ -1,7 +1,11 @@
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+GO
+
+BEGIN TRANSACTION AlterProcedure;
 
 -- =============================================
 -- Author:		Lynn Eagleton
@@ -9,25 +13,42 @@ GO
 -- Description:	Stored procedure for adding payment information to a sales order in WinMan for the WinMan REST API.
 -- =============================================
 
-CREATE PROCEDURE [dbo].[wsp_RestApiSalesOrdersPayment]
-	@salesOrder BIGINT = NULL,
-	@creditCardTypeId NVARCHAR(20) = NULL,
-	@cardName NVARCHAR(50) = NULL,
-	@cardNumber NVARCHAR(100) = NULL,
-	@startMonth INT = NULL,
-	@startYear INT = NULL,
-	@expiryMonth INT = NULL,
-	@expiryYear INT = NULL,
-	@issue NVARCHAR(10) = NULL,
-	@address NVARCHAR(100) = NULL,
-	@city NVARCHAR(50) = NULL,
-	@region NVARCHAR(50) = NULL,
-	@postalCode NVARCHAR(20) = NULL,
-	@countryCode NVARCHAR(3) = NULL,
-	@lastDigits NVARCHAR(4) = NULL,
-	@authorisation NVARCHAR(50) = NULL,
-	@curTransactionValue MONEY,
-	@error NVARCHAR(1000) OUTPUT
+IF NOT EXISTS
+(
+    SELECT * FROM sys.procedures p
+    JOIN sys.schemas s
+    ON p.schema_id = s.schema_id
+    WHERE
+        p.[type] = 'P'
+    AND
+        p.[name] = 'wsp_RestApiSalesOrdersPayment'
+    AND
+        s.[name] = 'dbo'
+)
+	BEGIN
+		EXECUTE('CREATE PROCEDURE dbo.wsp_RestApiSalesOrdersPayment AS PRINT ''wsp_RestApiSalesOrdersPayment''');
+	END;
+GO
+
+ALTER PROCEDURE dbo.wsp_RestApiSalesOrdersPayment
+	@salesOrder bigint = null,
+	@creditCardTypeId nvarchar(20) = null,
+	@cardName nvarchar(50) = null,
+	@cardNumber nvarchar(100) = null,
+	@startMonth int = null,
+	@startYear int = null,
+	@expiryMonth int = null,
+	@expiryYear int = null,
+	@issue nvarchar(10) = null,
+	@address nvarchar(100) = null,
+	@city nvarchar(50) = null,
+	@region nvarchar(50) = null,
+	@postalCode nvarchar(20) = null,
+	@countryCode nvarchar(3) = null,
+	@lastDigits nvarchar(4) = null,
+	@authorisation nvarchar(50) = null,
+	@curTransactionValue money,
+	@error nvarchar(1000) OUTPUT
 AS
 BEGIN
 
@@ -52,31 +73,35 @@ BEGIN
 				@authorisation = @authorisation,
 				@curTransactionValue = @curTransactionValue,
 				@error = @error OUTPUT
-			RETURN
-		END
+			RETURN;
+		END;
 
 	SET NOCOUNT ON;
 
-	DECLARE
-		@customer BIGINT,
-		@creditCard BIGINT,
-		@creditCardType BIGINT,
-		@country BIGINT,
-		@site BIGINT,
-		@exchangeRate DECIMAL(18,6),
-		@currency BIGINT,
-		@originalLastModifiedDate DATETIME,
-		@creditCardTransaction BIGINT,
-		@user NVARCHAR(20) = 'WinMan REST API'
-		
-	SET @error = ''
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	BEGIN TRANSACTION;	
+
+	DECLARE	@customer bigint;
+	DECLARE @creditCard bigint;
+	DECLARE @creditCardType bigint;
+	DECLARE @country bigint;
+	DECLARE @site bigint;
+	DECLARE @exchangeRate decimal(18,6);
+	DECLARE @currency bigint;
+	DECLARE @originalLastModifiedDate datetime;
+	DECLARE @creditCardTransaction bigint;
+	DECLARE @user nvarchar(20);
+
+	SET @user = 'WinMan REST API';		
+	SET @error = '';
 
 	IF @salesOrder IS NULL OR @salesOrder = 0
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Sales Order Number.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Required parameter missing: Sales Order Number.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 	ELSE
 		BEGIN
 			SELECT
@@ -88,104 +113,108 @@ BEGIN
 			FROM
 				SalesOrders
 			WHERE
-				SalesOrder = @salesOrder
-		END
+				SalesOrder = @salesOrder;
+		END;
 
 	IF @curTransactionValue IS NULL
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Transaction Value.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Required parameter missing: Transaction Value.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
 	IF @creditCardTypeId IS NULL OR @creditCardTypeId = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Payment Type.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Required parameter missing: Payment Type.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 	ELSE
 		BEGIN
-			SET @creditCardType = (SELECT CreditCardType FROM CreditCardTypes WHERE CreditCardTypeId = @creditCardTypeId)
-		END
+			SET @creditCardType = (SELECT CreditCardType FROM CreditCardTypes WHERE CreditCardTypeId = @creditCardTypeId);
+		END;
 
 	IF @creditCardType IS NULL
 		BEGIN
-			SET @error = 'ERROR: Could not find credit card type with the specified credit card type ID. Please check your input data.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Could not find credit card type with the specified credit card type ID. Please check your input data.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
 	IF @cardName IS NULL
 		BEGIN
-			SET @cardName = ''
-		END
+			SET @cardName = '';
+		END;
 
 	IF @cardNumber IS NULL
 		BEGIN
-			SET @cardNumber = ''
-		END
+			SET @cardNumber = '';
+		END;
 
 	IF @expiryMonth IS NULL
 		BEGIN
-			SET @expiryMonth = 0
-		END
+			SET @expiryMonth = 0;
+		END;
 
 	IF @expiryYear IS NULL
 		BEGIN
-			SET @expiryYear = 0
-		END
+			SET @expiryYear = 0;
+		END;
 
 	IF @issue IS NULL
 		BEGIN
-			SET @issue = ''
-		END
+			SET @issue = '';
+		END;
 
 	IF @address IS NULL
 		BEGIN
-			SET @address = ''
-		END
+			SET @address = '';
+		END;
 
 	IF @city IS NULL
 		BEGIN
-			SET @city = ''
-		END
+			SET @city = '';
+		END;
 
 	IF @region IS NULL
 		BEGIN
-			SET @region = ''
-		END
+			SET @region = '';
+		END;
 
 	IF @postalCode IS NULL
 		BEGIN
-			SET @postalCode = ''
-		END
+			SET @postalCode = '';
+		END;
 
 	IF @countryCode IS NULL OR @countryCode = ''
 		BEGIN
-			SET @country = (SELECT Country FROM ApplicationSettings)
-		END
+			SET @country = (SELECT Country FROM ApplicationSettings);
+		END;
 	ELSE
 		BEGIN
-			SET @country = (SELECT Country FROM Countries WHERE ISO3Chars = @countryCode)
-		END
+			SET @country = (SELECT Country FROM Countries WHERE ISO3Chars = @countryCode);
+		END;
 
 	IF @country IS NULL
 		BEGIN
-			SET @error = 'ERROR: Could not find country with the specified country code. Please check your input data.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Could not find country with the specified country code. Please check your input data.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
 	IF @lastDigits IS NULL
 		BEGIN
-			SET @lastDigits = ''
-		END
+			SET @lastDigits = '';
+		END;
 
 	IF @authorisation IS NULL
 		BEGIN
-			SET @authorisation = ''
-		END
+			SET @authorisation = '';
+		END;
 
 	EXEC dbo.wsp_SalesOrdersAddCreditCard
 		@SalesOrder = @salesOrder,
@@ -207,7 +236,7 @@ BEGIN
 		@Country = @country,
 		@Active = 1,
 		@LastModifiedUser = @user,
-		@Original_LastModifiedDate = @originalLastModifiedDate
+		@Original_LastModifiedDate = @originalLastModifiedDate;
 
 	EXEC dbo.wsp_CreditCardTransactionsInsert
 		@SalesOrder = @salesOrder,
@@ -226,7 +255,7 @@ BEGIN
 		@Username = @user,
 		@Cash = null,
 		@SalesInvoice = null,
-		@CreditCardTransaction = @creditCardTransaction OUTPUT
+		@CreditCardTransaction = @creditCardTransaction OUTPUT;
 
 	EXEC dbo.wsp_CashCreateUnallocatedReceipt
 		@Customer = @customer,
@@ -236,9 +265,13 @@ BEGIN
 		@CreditCard = @creditCard,
 		@Site = @site,
 		@CreditCardTransaction = @creditCardTransaction,
-		@Cash = null
+		@Cash = null;
 		
-	SELECT @error AS ErrorMessage
+	SELECT @error AS ErrorMessage;
 
-END
+	COMMIT TRANSACTION;
+
+END;
 GO
+
+COMMIT TRANSACTION AlterProcedure;

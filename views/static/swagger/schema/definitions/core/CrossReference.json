@@ -1,7 +1,7 @@
 {
     "CrossReference": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty arrays: allowed",
+        "description": "The <strong>CrossReferences</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "ProductSku",
             "CustomersPartNumber",
@@ -53,14 +53,7 @@
                 "description": "Maps to the field <em>CustomerCrossReferences.Price</em> in your WinMan database.<br/>Null values: allowed<br/>Zero values: allowed"
             },                                               
             "Discount": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Discount"
-                },
-                "xml": {
-                    "name": "Discounts",
-                    "wrapped": true
-                }
+                "$ref": "#/definitions/Discount"
             }
         }
     }

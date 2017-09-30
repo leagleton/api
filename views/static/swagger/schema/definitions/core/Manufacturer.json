@@ -1,7 +1,7 @@
 {
     "Manufacturer": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty objects: allowed",
+        "description": "The <strong>Manufacturer</strong> object <strong>cannot</strong> be null but <strong>can</strong> be an empty object.",
         "required": [
             "ManufacturerId",
             "ManufacturerDescription"

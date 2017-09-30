@@ -1,7 +1,7 @@
 {
     "SalesOrderItem": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty arrays: not allowed",
+        "description": "The <strong>SalesOrderItems</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
         "required": [
             "Sku",
             "Quantity",
@@ -22,7 +22,7 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.00001,
-                "example": 2.00000,
+                "example": 2.00006,
                 "description": "Maps to the field <em>SalesOrderItems.Quantity</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: not allowed"
             },
             "WarrantyId": {
@@ -36,7 +36,7 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.00001,
-                "example": 0.50000,
+                "example": 0.50001,
                 "description": "Maps to the field <em>Products.Surcharge</em> in your WinMan database.<br/>Null values: allowed<br/>Zero values: allowed"
             },
             "ShippingName": {
@@ -146,8 +146,9 @@
             },
             "Price": {
                 "type": "number",
-                "format": "double",
-                "example": 29.67,
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.6701,
                 "description": "The price paid per item for the specified <em>Sku</em>, before discounts, excluding tax.<br/>Null values: not allowed<br/>Zero values: allowed"
             }
         }

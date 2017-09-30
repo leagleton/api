@@ -1,6 +1,7 @@
 {
     "Customer": {
         "type": "object",
+        "description": "The <strong>Customers</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "Guid",
             "CustomerId",
@@ -133,7 +134,7 @@
                 "minLength": 1,
                 "maxLength": 20,
                 "example": "en-GB",
-                "description": "Maps to the fields <em>Customers.PreferredCulture</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+                "description": "Maps to the field <em>Customers.PreferredCulture</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "Currency": {
                 "$ref": "#/definitions/Currency"
@@ -197,13 +198,13 @@
                 "type": "string",
                 "minLength": 0,
                 "example": "Registered trading name: John Smith Trading Co.",
-                "description": "Maps to the fields <em>Customers.Notes</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+                "description": "Maps to the field <em>Customers.Notes</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "PromptText": {
                 "type": "string",
                 "minLength": 0,
                 "example": "No backorders allowed",
-                "description": "Maps to the fields <em>Customers.PromptText</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+                "description": "Maps to the field <em>Customers.PromptText</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             }
         }
     }

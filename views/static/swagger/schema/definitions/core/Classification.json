@@ -1,7 +1,7 @@
 {
     "Classification": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty objects: not allowed",
+        "description": "The <strong>Classification</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
         "required": [
             "ClassificationName",
             "ClassificationDescription"

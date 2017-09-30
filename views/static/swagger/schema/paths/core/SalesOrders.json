@@ -19,7 +19,7 @@
                 {
                     "in": "body",
                     "name": "data",
-                    "description": "<p>The sales order information. Please check the Model for required fields.</p>",
+                    "description": "The sales order information. Please check the Model for required fields.",
                     "schema": {
                         "$ref": "#/definitions/SalesOrder"
                     }

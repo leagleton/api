@@ -1,7 +1,7 @@
 {
     "SupersedingProduct": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty objects: allowed",
+        "description": "The <strong>SupersedingProducts</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "SupersedingProductSku",
             "SupersedingProductName"

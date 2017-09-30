@@ -1,7 +1,7 @@
 {
     "CustomerPricingClassification": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty objects: allowed",
+        "description": "The <strong>CustomerPricingClassification</strong> object <strong>cannot</strong> be null but <strong>can</strong> be an object.",
         "required": [
             "CustomerPricingClassificationName",
             "CustomerPricingClassificationDescription"

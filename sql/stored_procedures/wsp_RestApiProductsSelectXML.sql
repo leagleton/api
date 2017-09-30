@@ -1,9 +1,11 @@
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 GO
+
+BEGIN TRANSACTION AlterProcedure;
 
 -- =============================================
 -- Author:		Lynn Eagleton
@@ -11,33 +13,160 @@ GO
 -- Description:	Stored procedure for SELECTing products for the WinMan REST API in XML format.
 -- =============================================
 
-CREATE PROCEDURE dbo.wsp_RestApiProductsSelectXML
-	@sku NVARCHAR(100) = NULL,
-	@seconds BIGINT = 315360000,
-	@website NVARCHAR(100),
-	@results NVARCHAR(max) OUTPUT
+IF NOT EXISTS
+(
+    SELECT 
+		p.[name] 
+	FROM 
+		sys.procedures p
+		INNER JOIN sys.schemas s ON p.[schema_id] = s.[schema_id]
+    WHERE
+        p.[type] = 'P'
+		AND p.[name] = 'wsp_RestApiProductsSelectXML'
+		AND s.[name] = 'dbo'
+)
+	BEGIN
+		EXECUTE('CREATE PROCEDURE dbo.wsp_RestApiProductsSelectXML AS PRINT ''wsp_RestApiProductsSelectXML''');
+	END;
+GO
+
+ALTER PROCEDURE dbo.wsp_RestApiProductsSelectXML
+	@pageNumber int = 1,
+	@pageSize int = 10,
+	@sku nvarchar(100) = null,
+	@seconds bigint = 315360000,
+	@website nvarchar(100),
+	@scope nvarchar(50),
+	@results nvarchar(max) OUTPUT
 AS
 BEGIN
 
 	IF dbo.wfn_BespokeSPExists('bsp_RestApiProductsSelectXML') = 1 
-	BEGIN
-		EXEC dbo.bsp_RestApiProductsSelectXML
-			@sku = @sku,
-			@website = @website,
-			@seconds = @seconds,
-			@results = @results
-		RETURN	
-	END
+		BEGIN
+			EXEC dbo.bsp_RestApiProductsSelectXML
+				@pageNumber = @pageNumber,
+				@pageSize = @pageSize,				
+				@sku = @sku,
+				@seconds = @seconds,
+				@website = @website,
+				@scope = @scope,
+				@results = @results;
+			RETURN;
+		END;
 
 	SET NOCOUNT ON;
 
-	DECLARE 
-		@lastModifiedDate DATETIME
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	BEGIN TRANSACTION;	
+
+	DECLARE @lastModifiedDate datetime;
 
 	SET @lastModifiedDate = (SELECT DATEADD(second,-@seconds,GETDATE()));
+
+	IF NOT EXISTS (
+		SELECT 
+			s.RestApiScope 
+		FROM 
+			RestApiScopeEcommerceWebsites sw
+			INNER JOIN RestApiScopes s ON sw.RestApiScope = s.RestApiScope
+			INNER JOIN EcommerceWebsites w ON sw.EcommerceWebsite = w.EcommerceWebsite
+		WHERE
+			s.RestApiScopeId = @scope
+			AND w.EcommerceWebsiteId = @website
+	)
+		BEGIN
+			SELECT 'ERROR: Scope not enabled for specified website.' AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
+
+	WITH CTE AS
+	(
+		SELECT
+			ROW_NUMBER() OVER (ORDER BY Products.Product) AS rowNumber,
+			Products.ProductGUID,
+			Products.ProductId,
+			Products.ProductDescription,
+			Products.StandardPrice,
+			Products.WebPrice,
+			Products.WebRRP,
+			Products.SurCharge,
+			Products.ProductPricingClassification,
+			Products.WebDescription,
+			Products.WebSummary,
+			Products.Taxable,
+			Products.TaxCode,
+			Products.SalesDiscount,
+			Products.Product,
+			Products.TitleTag,
+			Products.KeywordsTag,
+			Products.DescriptionTag,
+			Products.PackSize,
+			Products.[Length],
+			Products.Width,
+			Products.Height,
+			Products.[Weight],
+			Products.UnitOfMeasure,
+			Products.DimensionQuantity,
+			Products.ConfiguratorOption,
+			Products.Manufacturer,
+			Products.Barcode,
+			Products.CrossReference,
+			Products.SalesLeadTime,
+			Products.RoHS,
+			Products.Notes,
+			Products.PromptText,
+			Products.Classification,
+			Products.ProductStatus,
+			Products.LastModifiedDate
+		FROM
+			Products
+			INNER JOIN ProductEcommerceWebsites ON Products.Product = ProductEcommerceWebsites.Product
+			INNER JOIN EcommerceWebsites ON EcommerceWebsites.EcommerceWebsite = ProductEcommerceWebsites.EcommerceWebsite
+		WHERE
+			Products.ProductId = COALESCE(@sku, Products.ProductId)
+			AND Products.LastModifiedDate >= @lastModifiedDate
+			AND EcommerceWebsites.EcommerceWebsiteId = @website
+		GROUP BY
+			Products.ProductGUID,
+			Products.ProductId,
+			Products.ProductDescription,
+			Products.StandardPrice,
+			Products.WebPrice,
+			Products.WebRRP,
+			Products.SurCharge,
+			Products.ProductPricingClassification,
+			Products.WebDescription,
+			Products.WebSummary,
+			Products.Taxable,
+			Products.TaxCode,
+			Products.SalesDiscount,
+			Products.Product,
+			Products.TitleTag,
+			Products.KeywordsTag,
+			Products.DescriptionTag,
+			Products.PackSize,
+			Products.[Length],
+			Products.Width,
+			Products.Height,
+			Products.[Weight],
+			Products.UnitOfMeasure,
+			Products.DimensionQuantity,
+			Products.ConfiguratorOption,
+			Products.Manufacturer,
+			Products.Barcode,
+			Products.CrossReference,
+			Products.SalesLeadTime,
+			Products.RoHS,
+			Products.Notes,
+			Products.PromptText,
+			Products.Classification,
+			Products.ProductStatus,
+			Products.LastModifiedDate					
+	)
 	
 	SELECT @results = 
-		(SELECT
+		CONVERT(nvarchar(max), (SELECT
 			Products.ProductGUID AS [Guid],
 			Products.ProductId AS Sku,
 			Products.ProductDescription AS [Name],
@@ -204,21 +333,30 @@ BEGIN
 			Products.LastModifiedDate,		
 			(SELECT dbo.wfn_RestApiGetCustomColumnsXML(Products.Product)) AS CustomColumns,
 			'' AS CustomColumns
-		FROM
-			Products
-			INNER JOIN ProductEcommerceWebsites ON Products.Product = ProductEcommerceWebsites.Product
-			INNER JOIN EcommerceWebsites ON EcommerceWebsites.EcommerceWebsite = ProductEcommerceWebsites.EcommerceWebsite
-		WHERE
-			Products.ProductId = COALESCE(@sku, Products.ProductId)
-			AND Products.LastModifiedDate >= @lastModifiedDate
-			AND EcommerceWebsites.EcommerceWebsiteId = @website
-		FOR XML PATH('Product'))
+		FROM CTE AS Products
+			WHERE 
+				(rowNumber > @pageSize * (@pageNumber - 1) )
+				AND (rowNumber <= @pageSize * @pageNumber )
+			ORDER BY
+				RowNumber 
+		FOR XML PATH('Product'), TYPE));
 
-		OPTION (OPTIMIZE FOR (@sku UNKNOWN, @lastModifiedDate UNKNOWN, @website UNKNOWN, @results UNKNOWN))
+		--OPTION (OPTIMIZE FOR (@sku UNKNOWN, @lastModifiedDate UNKNOWN, @website UNKNOWN));
 
-	SELECT @results = CONCAT('<Products>', @results, '</Products>')
+	IF @results IS NOT NULL AND @results <> ''
+		BEGIN
+			SELECT @results = '<Products>' + @results + '</Products>';
+		END;
+	ELSE
+		BEGIN
+			SELECT @results = '<Products/>';
+		END;
 
-	SELECT @results
+	SELECT @results AS Results;
 
-END
+	COMMIT TRANSACTION;
+
+END;
 GO
+
+COMMIT TRANSACTION AlterProcedure;

@@ -11,8 +11,8 @@ GO
 
 CREATE TABLE [dbo].[RestApiScopes](
 	[RestApiScope] [bigint] IDENTITY(1,1) NOT NULL,
-	[RestApiScopeId] [nvarchar](20) NOT NULL,
-	[Description] [nvarchar](30) NOT NULL,
+	[RestApiScopeId] [nvarchar](50) NOT NULL,
+	[Description] [nvarchar](100) NOT NULL,
  CONSTRAINT [PK_RestApiScopes] PRIMARY KEY CLUSTERED 
 (
 	[RestApiScope] ASC

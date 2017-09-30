@@ -1,7 +1,7 @@
 {
     "SalesOrderBilling": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty objects: not allowed",
+        "description": "The <strong>SalesOrderBilling</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
         "required": [
             "PaymentType",
             "CardPaymentReceived"
@@ -113,8 +113,9 @@
             },
             "CardPaymentReceived": {
                 "type": "number",
-                "format": "double",
-                "example": 72.48,
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 72.4801,
                 "description": "The total payment amount received for this order.<br/>Null values: not allowed<br/>Zero values: not allowed"
             }                                                                                                                                               
         }

@@ -1,6 +1,7 @@
 {
     "Product": {
         "type": "object",
+        "description": "The <strong>Products</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "Guid",
             "Sku",
@@ -67,20 +68,23 @@
             },
             "WebPrice": {
                 "type": "number",
-                "format": "double",
-                "example": 5.99,
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 5.9905,
                 "description": "Maps to the field <em>Products.WebPrice</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Rrp": {
                 "type": "number",
-                "example": 6.99,
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 6.9905,
                 "description": "Maps to the field <em>Products.WebRRP</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Surcharge": {
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.00001,
-                "example": 0.10000,
+                "example": 0.10001,
                 "description": "Maps to the field <em>Products.SurCharge</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "ProductPricingClassification": {
@@ -109,7 +113,7 @@
             "SalesDiscount": {
                 "$ref": "#/definitions/SalesDiscount"
             },
-            "PriceLists": {
+            "ProcudtPriceLists": {
                 "type": "array",
                 "items": {
                     "$ref": "#/definitions/ProductPriceList"
@@ -147,28 +151,28 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.000001,
-                "example": 1.000000,
+                "example": 1.000001,
                 "description": "Maps to the field <em>Products.Length</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Width": {
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.000001,
-                "example": 1.000000,
+                "example": 1.000001,
                 "description": "Maps to the field <em>Products.Weight</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Height": {
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.000001,
-                "example": 1.000000,
+                "example": 1.000001,
                 "description": "Maps to the field <em>Products.Height</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Weight": {
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.000001,
-                "example": 1.000000,
+                "example": 1.000001,
                 "description": "Maps to the field <em>Products.Weight</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "UnitOfMeasure": {

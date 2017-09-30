@@ -17,6 +17,7 @@ CREATE TABLE [dbo].[RestApiScopeEcommerceWebsites](
 	[CreatedDate] [datetime] NOT NULL,
 	[LastModifiedUser] [nvarchar](20) NOT NULL,
 	[LastModifiedDate] [datetime] NOT NULL,
+	[Comments] [nvarchar](500) NOT NULL,
  CONSTRAINT [PK_RestApiScopeEcommerceWebsites] PRIMARY KEY CLUSTERED 
 (
 	[RestApiScopeEcommerceWebsite] ASC

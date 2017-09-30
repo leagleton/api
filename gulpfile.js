@@ -51,7 +51,7 @@ gulp.task('copy', function (cb) {
 });
 
 // Copy remaining production files and remove comments.
-gulp.task('strip', function (cb) {
+gulp.task('stript', function (cb) {
     pump([
         gulp.src([
             'config/**',

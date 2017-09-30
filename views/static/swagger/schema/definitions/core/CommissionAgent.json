@@ -1,7 +1,7 @@
 {
     "CommissionAgent": {
         "type": "object",
-        "description": "Null values: not allowed<br/>Empty arrays: allowed",
+        "description": "The <strong>CommissionAgents</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "CommissionAgentId",
             "DefaultPercentage",
@@ -30,7 +30,7 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.00001,
-                "example": 15.00000,
+                "example": 15.00003,
                 "description": "Maps to the field <em>CustomerCommissionAgents.DefaultPercentage</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "SupplierName": {

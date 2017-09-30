@@ -1,6 +1,7 @@
 {
     "ProductCategory": {
         "type": "object",
+        "description": "The <strong>ProductCategories</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "CategoryGuid",
             "CategoryPath",
@@ -41,8 +42,15 @@
                 "type": "integer",
                 "format": "int32",
                 "example": 3,
-                "description": "A calculated value from the field <em>ProductCategories.SortOrder</em> your WinMan database.<br/>Null values: not allowed<br/>Zero valuess: not allowed"
+                "description": "A calculated value from the field <em>ProductCategories.SortOrder</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero valuess: not allowed"
             },
+            "CategoryImage": {
+                "type": "string",
+                "format": "byte",
+                "minLength": 1,
+                "example": "R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=",
+                "description": "Maps to the field <em>ProductCategories.CategoryImage</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },            
             "MetaTitle": {
                 "type": "string",
                 "minLength": 0,

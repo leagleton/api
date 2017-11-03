@@ -218,15 +218,15 @@ BEGIN
 											"DiscountId":"' + REPLACE(DiscountId, '"','&#34;') + '",
 											"DiscountDescription":"' + REPLACE(REPLACE(REPLACE(DiscountDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
 											"DiscountPercentage":' + CAST(DiscountPercentage AS nvarchar(20)) + ',
-											"DiscountBreaks":' + (SELECT '[' + STUFF(
+											"DiscountBreaks":' + COALESCE((SELECT '[' + STUFF(
 											(SELECT ',{
 											"DiscountBreakId":"' + REPLACE(DiscountBreakId, '"','&#34;') + '",
 											"TriggerType":"' + TriggerType + '",
-											"TriggerValue":' + CAST(TriggerValue AS nvarchar(20)) + ',
+											"TriggerValue":' + CAST(TriggerValue AS NVARCHAR(20)) + ',
 											"DiscountBreakType":"' + DiscountBreakType + '",
-											"DiscountBreakValue":' + CAST(DiscountBreakValue AS nvarchar(20)) + '
-											}' FROM DiscountBreaks WHERE DiscountBreaks.Discount = Discounts.Discount FOR XML PATH(''), TYPE)			
-											.value('.','nvarchar(max)'), 1, 1, '') + ']')
+											"DiscountBreakValue":' + CAST(DiscountBreakValue AS NVARCHAR(20)) + '
+											}' FROM DiscountBreaks WHERE DiscountBreaks.Discount = Discounts.Discount FOR XML PATH(''), TYPE)											
+											.value('.','NVARCHAR(max)'), 1, 1, '') + ']'), '""')
 											 + '
 										}' FROM Discounts
 										WHERE cust.Discount = Discounts.Discount
@@ -364,7 +364,7 @@ BEGIN
 																"DiscountId":"' + REPLACE(DiscountId, '"','&#34;') + '",
 																"DiscountDescription":"' + REPLACE(DiscountDescription, '"','&#34;') + '",
 																"DiscountPercentage":' + CAST(DiscountPercentage AS nvarchar(20)) + ',
-																"DiscountBreaks":' + (SELECT '[' + STUFF(
+																"DiscountBreaks":' + COALESCE((SELECT '[' + STUFF(
 																(SELECT ',{
 																"DiscountBreakId":"' + REPLACE(DiscountBreakId, '"','&#34;') + '",
 																"TriggerType":"' + TriggerType + '",
@@ -372,7 +372,7 @@ BEGIN
 																"DiscountBreakType":"' + DiscountBreakType + '",
 																"DiscountBreakValue":' + CAST(DiscountBreakValue AS nvarchar(20)) + '
 																}' FROM DiscountBreaks WHERE DiscountBreaks.Discount = Discounts.Discount FOR XML PATH(''), TYPE)											
-																.value('.','nvarchar(max)'), 1, 1, '') + ']')
+																.value('.','nvarchar(max)'), 1, 1, '') + ']'), '""')
 																 + '
 															}' FROM Discounts
 															WHERE cust.Discount = Discounts.Discount

@@ -1,7 +1,11 @@
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+GO
+
+BEGIN TRANSACTION AlterProcedure;
 
 -- =============================================
 -- Author:		Lynn Eagleton
@@ -9,67 +13,109 @@ GO
 -- Description:	Stored procedure for INSERTing new contacts into WinMan for the WinMan REST API.
 -- =============================================
 
-CREATE PROCEDURE [dbo].[wsp_RestApiContactsInsert]
-	@eCommerceWebsiteId NVARCHAR(100) = NULL,
-	@firstName NVARCHAR(25) = NULL,
-	@lastName NVARCHAR(25) = NULL,
-	@workPhoneNumber NVARCHAR(30) = NULL,
-	@homePhoneNumber NVARCHAR(30) = NULL,
-	@mobilePhoneNumber NVARCHAR(30) = NULL,
-	@faxNumber NVARCHAR(30) = NULL,
-	@homeEmailAddress NVARCHAR(50) = NULL,
-	@workEmailAddress NVARCHAR(50) = NULL,
-	@portalUserName NVARCHAR(50) = NULL,
-	@jobTitle NVARCHAR(50) = NULL,
-	@allowCommunication BIT = 0,
-	@address NVARCHAR(200) = NULL,
-	@city NVARCHAR(50) = NULL,
-	@region NVARCHAR(50) = NULL,
-	@postalCode NVARCHAR(20) = NULL,
-	@countryCode NVARCHAR(3) = NULL,
-	@error NVARCHAR(1000) OUTPUT
+IF NOT EXISTS
+(
+    SELECT 
+		p.[name] 
+	FROM 
+		sys.procedures p
+		INNER JOIN sys.schemas s ON p.[schema_id] = s.[schema_id]
+    WHERE
+        p.[type] = 'P'
+		AND p.[name] = 'wsp_RestApiContactsInsert'
+		AND s.[name] = 'dbo'
+)
+	BEGIN
+		EXECUTE('CREATE PROCEDURE dbo.wsp_RestApiContactsInsert AS PRINT ''dbo.wsp_RestApiContactsInsert''');
+	END;
+GO
+
+ALTER PROCEDURE [dbo].[wsp_RestApiContactsInsert]
+	@eCommerceWebsiteId nvarchar(100) = null,
+	@firstName nvarchar(25) = null,
+	@lastName nvarchar(25) = null,
+	@workPhoneNumber nvarchar(30) = null,
+	@homePhoneNumber nvarchar(30) = null,
+	@mobilePhoneNumber nvarchar(30) = null,
+	@faxNumber nvarchar(30) = null,
+	@homeEmailAddress nvarchar(50) = null,
+	@workEmailAddress nvarchar(50) = null,
+	@portalUserName nvarchar(50) = null,
+	@jobTitle nvarchar(50) = null,
+	@allowCommunication bit = 0,
+	@address nvarchar(200) = null,
+	@city nvarchar(50) = null,
+	@region nvarchar(50) = null,
+	@postalCode nvarchar(20) = null,
+	@countryCode nvarchar(3) = null,
+	@scope nvarchar(50),
+	@error nvarchar(1000) OUTPUT
 AS
 BEGIN
 
 	IF dbo.wfn_BespokeSPExists('bsp_RestApiContactsInsert') = 1 
-	BEGIN
-		EXEC dbo.bsp_RestApiContactsInsert
-			@eCommerceWebsiteId = @eCommerceWebsiteId,
-			@firstName = @firstName,
-			@lastName = @lastName,
-			@workPhoneNumber = @workPhoneNumber,
-			@homePhoneNumber = @homePhoneNumber,
-			@mobilePhoneNumber = @mobilePhoneNumber,
-			@faxNumber = @faxNumber,
-			@homeEmailAddress = @homeEmailAddress,
-			@workEmailAddress = @workEmailAddress,
-			@portalUserName = @portalUserName,
-			@jobTitle = @jobTitle,
-			@allowCommunication = @allowCommunication,
-			@address = @address,
-			@city = @city,
-			@region = @region,
-			@postalCode = @postalCode,
-			@countryCode = @countryCode,
-			@error = @error OUTPUT
-		RETURN	
-	END
+		BEGIN
+			EXEC dbo.bsp_RestApiContactsInsert
+				@eCommerceWebsiteId = @eCommerceWebsiteId,
+				@firstName = @firstName,
+				@lastName = @lastName,
+				@workPhoneNumber = @workPhoneNumber,
+				@homePhoneNumber = @homePhoneNumber,
+				@mobilePhoneNumber = @mobilePhoneNumber,
+				@faxNumber = @faxNumber,
+				@homeEmailAddress = @homeEmailAddress,
+				@workEmailAddress = @workEmailAddress,
+				@portalUserName = @portalUserName,
+				@jobTitle = @jobTitle,
+				@allowCommunication = @allowCommunication,
+				@address = @address,
+				@city = @city,
+				@region = @region,
+				@postalCode = @postalCode,
+				@countryCode = @countryCode,
+				@scope = @scope,
+				@error = @error OUTPUT;
+			RETURN;	
+		END;
 
 	SET NOCOUNT ON;
 
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	BEGIN TRANSACTION;	
+
+	IF NOT EXISTS (
+		SELECT 
+			s.RestApiScope 
+		FROM 
+			RestApiScopeEcommerceWebsites sw
+			INNER JOIN RestApiScopes s ON sw.RestApiScope = s.RestApiScope
+			INNER JOIN EcommerceWebsites w ON sw.EcommerceWebsite = w.EcommerceWebsite
+		WHERE
+			s.RestApiScopeId = @scope
+			AND w.EcommerceWebsiteId = @eCommerceWebsiteId
+	)
+		BEGIN
+			SET @error = 'ERROR: Scope not enabled for specified website.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;	
+
 	IF @eCommerceWebsiteId IS NULL OR @eCommerceWebsiteId = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Website.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Required parameter missing: Website.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
 	IF @portalUserName IS NULL OR @portalUserName = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: User Name.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Required parameter missing: User Name.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
 	IF EXISTS (SELECT 
 					ctct.PortalUserName
@@ -100,40 +146,43 @@ BEGIN
 					ctct.PortalUserName = @portalUserName
 					AND comp.Customer IS NULL)
 		BEGIN
-			SET @error = 'ERROR: Specified User Name already exists. Please check your input data.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Specified User Name already exists. Please check your input data.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
-	DECLARE
-		@site BIGINT,
-		@crmCompany BIGINT,
-		@name NVARCHAR(50),
-		@country BIGINT,
-		@department BIGINT,
-		@customerIndustry BIGINT,
-		@customerCurrency BIGINT,
-		@customerGlAccountDivision BIGINT,
-		@customerTaxCode BIGINT,
-		@customerCreditTerms BIGINT,
-		@customerSettlementTerms BIGINT,
-		@customerGlAccountType BIGINT,
-		@supplierIndustry BIGINT,
-		@supplierCurrency BIGINT,
-		@supplierGlAccountDivision BIGINT,
-		@supplierDepartment BIGINT,
-		@supplierTaxCode BIGINT,
-		@supplierCreditTerms BIGINT,
-		@supplierSettlementTerms BIGINT,
-		@supplierGlAccountType BIGINT,
-		@crmSource BIGINT,
-		@crmGroup BIGINT,
-		@crmRegion BIGINT,
-		@crmContact BIGINT,
-		@date DATETIME = GETDATE(),
-		@user NVARCHAR(20) = 'WinMan REST API'
+	DECLARE @site bigint;
+	DECLARE @crmCompany bigint;
+	DECLARE @name nvarchar(50);
+	DECLARE @country bigint;
+	DECLARE @department bigint;
+	DECLARE @customerIndustry bigint;
+	DECLARE @customerCurrency bigint;
+	DECLARE @customerGlAccountDivision bigint;
+	DECLARE @customerTaxCode bigint;
+	DECLARE @customerCreditTerms bigint;
+	DECLARE @customerSettlementTerms bigint;
+	DECLARE @customerGlAccountType bigint;
+	DECLARE @supplierIndustry bigint;
+	DECLARE @supplierCurrency bigint;
+	DECLARE @supplierGlAccountDivision bigint;
+	DECLARE @supplierDepartment bigint;
+	DECLARE @supplierTaxCode bigint;
+	DECLARE @supplierCreditTerms bigint;
+	DECLARE @supplierSettlementTerms bigint;
+	DECLARE @supplierGlAccountType bigint;
+	DECLARE @crmSource bigint;
+	DECLARE @crmGroup bigint;
+	DECLARE @crmRegion bigint;
+	DECLARE @crmContact bigint;
+	DECLARE @date datetime;
+	DECLARE @user nvarchar(20);
 
-	SET @error = ''
+	SET @date = GETDATE();
+	SET @user = 'WinMan REST API';
+
+	SET @error = '';
 
 	SET @site = (SELECT 
 					[Site] 
@@ -142,114 +191,122 @@ BEGIN
 					INNER JOIN EcommerceWebsites ew ON ews.EcommerceWebsite = ew.EcommerceWebsite
 				WHERE 
 					ew.EcommerceWebsiteId = @eCommerceWebsiteId
-					AND ews.[Default] = 1)
+					AND ews.[Default] = 1);
 
 	IF @site IS NULL
 		BEGIN
-			SET @error = 'ERROR: Could not find specified website. Please check your input data.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Could not find specified website. Please check your input data.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
 	IF @firstName IS NULL OR @firstName = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: First Name.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Required parameter missing: First Name.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
 	IF @lastName IS NULL OR @lastName = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Last Name.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Required parameter missing: Last Name.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
-	SET @name = @firstName + ' ' + @lastName
+	SET @name = @firstName + ' ' + @lastName;
 
 	IF @workPhoneNumber IS NULL
 		BEGIN
-			SET @workPhoneNumber = ''
-		END
+			SET @workPhoneNumber = '';
+		END;
 
 	IF @homePhoneNumber IS NULL
 		BEGIN
-			SET @homePhoneNumber = ''
-		END
+			SET @homePhoneNumber = '';
+		END;
 
 	IF @mobilePhoneNumber IS NULL
 		BEGIN
-			SET @mobilePhoneNumber = ''
-		END
+			SET @mobilePhoneNumber = '';
+		END;
 
 	IF @faxNumber IS NULL
 		BEGIN
-			SET @faxNumber = ''
-		END
+			SET @faxNumber = '';
+		END;
 
 	IF @homeEmailAddress IS NULL
 		BEGIN
-			SET @homeEmailAddress = ''
-		END
+			SET @homeEmailAddress = '';
+		END;
 
 	IF @workEmailAddress IS NULL
 		BEGIN
-			SET @workEmailAddress = ''
-		END
+			SET @workEmailAddress = '';
+		END;
 
 	IF @jobTitle IS NULL
 		BEGIN
-			SET @jobTitle = ''
-		END
+			SET @jobTitle = '';
+		END;
 
 	IF @address IS NULL OR @address = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Address.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Required parameter missing: Address.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
 	IF @city IS NULL
 		BEGIN
-			SET @city = ''
-		END
+			SET @city = '';
+		END;
 
 	IF @region IS NULL
 		BEGIN
-			SET @region = ''
-		END
+			SET @region = '';
+		END;
 
 	IF @postalCode IS NULL OR @postalCode = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Postal Code.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Required parameter missing: Postal Code.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
 	IF @countryCode IS NULL OR @countryCode = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Country Code.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Required parameter missing: Country Code.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 	ELSE
 		BEGIN
-			SET @country = (SELECT TOP 1 Country FROM Countries WHERE ISO3Chars = @countryCode)
-		END
+			SET @country = (SELECT TOP 1 Country FROM Countries WHERE ISO3Chars = @countryCode);
+		END;
 
 	IF @country IS NULL
 		BEGIN
-			SET @error = 'ERROR: Could not find country with specified county code. Please check your input data.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END
+			SET @error = 'ERROR: Could not find country with specified county code. Please check your input data.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
 
 	IF @allowCommunication IS NULL
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Allow Communication.'
-			SELECT @error AS ErrorMessage
-			RETURN
-		END		
+			SET @error = 'ERROR: Required parameter missing: Allow Communication.';
+			SELECT @error AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;	
 
 	SELECT
 		@department = SalesDepartment,
@@ -272,13 +329,13 @@ BEGIN
 	FROM
 		Sites
 	WHERE
-		[Site] = @site
+		[Site] = @site;
 
 	SELECT
 		@customerCurrency = SalesCurrency,
 		@supplierCurrency = PurchaseCurrency
 	FROM
-		ApplicationSettings
+		ApplicationSettings;
 
 	EXEC wsp_CRMCompaniesInsert
 		@CompanyName = @name,
@@ -320,7 +377,7 @@ BEGIN
 		@CustomerBranch = '',
 		@SupplierBranch = '',
 		@SourceStoredProcedure = '',
-		@CreditLimit = null, -- Leave null.
+		@CreditLimit = null,
 		@PromptText = '',
 		@CompanyAlias = '',
 		@CustomerNotes = '',
@@ -337,17 +394,17 @@ BEGIN
 		@CRMCompanyId = '',
 		@CorporateHeadOffice = 0,
 		@CustomerPriceList = 0,
-		@Territory = null, -- Leave null.
-		@TimeZone = null, -- Leave null.
-		@WorkSchedule = null, -- Leave null.
+		@Territory = null,
+		@TimeZone = null,
+		@WorkSchedule = null,
 		@DC_001_TXT = '',
 		@DC_002_TXT = '',
 		@DC_003_TXT = '',
 		@DC_004_TXT = '',
 		@DC_005_INT = 0,
-		@DC_006_DAT = null, -- Leave null.
-		@CustomerDiscount = null, -- Leave null.
-		@SupplierDiscount = null -- Leave null.	
+		@DC_006_DAT = null,
+		@CustomerDiscount = null,
+		@SupplierDiscount = null;	
 
 	EXEC wsp_CRMContactsInsert
 		@ContactName = @name,
@@ -374,8 +431,8 @@ BEGIN
 		@ContactCompanyRegion = @region,
 		@ContactCompanyPostalCode = @postalCode,
 		@ContactCompanyCountry = @country,
-		@ContactSupplier = null, -- Leave null.
-		@ContactCustomer = null, -- Leave null.
+		@ContactSupplier = null,
+		@ContactCustomer = null,
 		@CreatedUser = @user,
 		@CreatedDate = @date,
 		@LastModifiedUser = @user,
@@ -407,9 +464,13 @@ BEGIN
 		@SupplierSecurityLevel = 0,
 		@AllowCommunication = @allowCommunication,
 		@PortalUserName = @portalUserName,
-		@CRMContact = @crmContact OUTPUT
+		@CRMContact = @crmContact OUTPUT;
 
-		SELECT @error AS ErrorMessage
+	SELECT @error AS ErrorMessage;
 
-END
+	COMMIT TRANSACTION;
+
+END;
 GO
+
+COMMIT TRANSACTION AlterProcedure;

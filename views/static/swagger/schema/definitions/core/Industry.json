@@ -1,21 +1,28 @@
 {
     "Industry": {
         "type": "object",
+        "description": "The <strong>Industry</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
+        "required": [
+            "IndustryId",
+            "IndustryDescription"
+        ],          
         "xml": {
             "name": "Industry"
         },
         "properties": {
             "IndustryId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
-                "example": "",
-                "description": "Maps to the field <em>Industries.IndustryId</em> in your WinMan database."
+                "example": "END USER",
+                "description": "Maps to the field <em>Industries.IndustryId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "IndustryDescription": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
-                "example": "",
-                "description": "Maps to the field <em>Industries.IndustryDescription</em> in your WinMan database."
+                "example": "End users",
+                "description": "Maps to the field <em>Industries.IndustryDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             }
         }
     }

@@ -1,6 +1,7 @@
 {
     "SalesOrderResponse": {
         "type": "object",
+        "description": "The <strong>SalesOrderResponse</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
         "required": [
             "Status",
             "SalesOrderId"
@@ -11,15 +12,17 @@
         "properties": {
             "Status": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 7,
                 "example": "Success",
-                "description": "The resulting status of the request."
+                "description": "The resulting status of the request.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "SalesOrderId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
-                "example": "SOP0000509",
-                "description": "Maps to the field <em>SalesOrders.SalesOrderId</em> in your WinMan database."
+                "example": "SO-0000509",
+                "description": "Maps to the field <em>SalesOrders.SalesOrderId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             }                                                                                                                                            
         }
     }

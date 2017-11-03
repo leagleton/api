@@ -1,9 +1,11 @@
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 GO
+
+BEGIN TRANSACTION AlterProcedure;
 
 -- =============================================
 -- Author:		Lynn Eagleton
@@ -11,28 +13,66 @@ GO
 -- Description:	Stored procedure for SELECTing customer price lists for the WinMan REST API in JSON format.
 -- =============================================
 
-CREATE PROCEDURE [dbo].[wsp_RestApiCustomerPriceListsSelectJSON]
-	@guid NVARCHAR(36),
-	@website NVARCHAR(100),
-	@seconds BIGINT = 315360000,
-	@results NVARCHAR(max) OUTPUT
+IF NOT EXISTS
+(
+    SELECT 
+		p.[name] 
+	FROM 
+		sys.procedures p
+		INNER JOIN sys.schemas s ON p.[schema_id] = s.[schema_id]
+    WHERE
+        p.[type] = 'P'
+		AND p.[name] = 'wsp_RestApiCustomerPriceListsSelectJSON'
+		AND s.[name] = 'dbo'
+)
+	BEGIN
+		EXECUTE('CREATE PROCEDURE dbo.wsp_RestApiCustomerPriceListsSelectJSON AS PRINT ''dbo.wsp_RestApiCustomerPriceListsSelectJSON''');
+	END;
+GO
+
+ALTER PROCEDURE [dbo].[wsp_RestApiCustomerPriceListsSelectJSON]
+	@guid nvarchar(36),
+	@website nvarchar(100),
+	@seconds bigint = 315360000,
+	@scope nvarchar(50),
+	@results nvarchar(max) OUTPUT
 AS
 BEGIN
 
 	IF dbo.wfn_BespokeSPExists('bsp_RestApiCustomerPriceListsSelectJSON') = 1 
-	BEGIN
-		EXEC dbo.bsp_RestApiCustomerPriceListsSelectJSON
-			@guid = @guid,
-			@website = @website,
-			@seconds = @seconds,
-			@results = @results
-		RETURN	
-	END
+		BEGIN
+			EXEC dbo.bsp_RestApiCustomerPriceListsSelectJSON
+				@guid = @guid,
+				@website = @website,
+				@seconds = @seconds,
+				@scope = @scope,
+				@results = @results;
+			RETURN;	
+		END;
 
 	SET NOCOUNT ON;
 
-	DECLARE
-		@lastModifiedDate DATETIME
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	BEGIN TRANSACTION;	
+
+	IF NOT EXISTS (
+		SELECT 
+			s.RestApiScope 
+		FROM 
+			RestApiScopeEcommerceWebsites sw
+			INNER JOIN RestApiScopes s ON sw.RestApiScope = s.RestApiScope
+			INNER JOIN EcommerceWebsites w ON sw.EcommerceWebsite = w.EcommerceWebsite
+		WHERE
+			s.RestApiScopeId = @scope
+			AND w.EcommerceWebsiteId = @website
+	)
+		BEGIN
+			SELECT 'ERROR: Scope not enabled for specified website.' AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;	
+
+	DECLARE	@lastModifiedDate datetime;
 
 	SET @lastModifiedDate = (SELECT DATEADD(second,-@seconds,GETDATE()));
 
@@ -40,7 +80,7 @@ BEGIN
 		(SELECT
 			STUFF( 
 				(SELECT ',{
-						"Guid":"' + CAST(cust.CustomerGUID AS NVARCHAR(36)) + '",
+						"Guid":"' + CAST(cust.CustomerGUID AS nvarchar(36)) + '",
                         "PriceList":' + 
 							COALESCE(
 								(SELECT 
@@ -51,19 +91,19 @@ BEGIN
 											"CustomerPrices":' + (SELECT '[' + STUFF(
 											(SELECT ',{
 											"ProductSku":"' + ProductId + '",
-											"Quantity":' + CAST(Quantity AS NVARCHAR(20)) + ',
-											"EffectiveDateStart":"' + CONVERT(NVARCHAR(50), EffectiveDateStart, 126) + '",
-											"EffectiveDateEnd":"' + CONVERT(NVARCHAR(50), EffectiveDateEnd, 126) + '",
-											"PriceValue":' + CAST(PriceValue AS NVARCHAR(20)) + '
+											"Quantity":' + CAST(Quantity AS nvarchar(20)) + ',
+											"EffectiveDateStart":"' + CONVERT(nvarchar(50), EffectiveDateStart, 126) + '",
+											"EffectiveDateEnd":"' + CONVERT(nvarchar(50), EffectiveDateEnd, 126) + '",
+											"PriceValue":' + CAST(PriceValue AS nvarchar(20)) + '
 											}' FROM Prices
 												INNER JOIN Products ON Products.Product = Prices.Product 
 											WHERE Prices.PriceList = PriceLists.PriceList FOR XML PATH(''), TYPE)											
-											.value('.','NVARCHAR(max)'), 1, 1, '') + ']')
+											.value('.','nvarchar(max)'), 1, 1, '') + ']')
 											 + '
 										}' FROM PriceLists
 										WHERE cust.PriceList = PriceLists.PriceList
 										FOR XML PATH(''),
-										TYPE).value('.','NVARCHAR(max)'), 1, 1, '')
+										TYPE).value('.','nvarchar(max)'), 1, 1, '')
 								),
 							'{}')
 						 + '						
@@ -85,15 +125,22 @@ BEGIN
 							WHERE
 								EcommerceWebsiteId = @website)
 						))
+					GROUP BY
+						cust.CustomerGUID,
+						cust.PriceList
 					FOR XML PATH(''), 
-			TYPE).value('.','NVARCHAR(max)'), 1, 1, '' 
-			)), '')
+			TYPE).value('.','nvarchar(max)'), 1, 1, '' 
+			)), '');
 
-	OPTION (OPTIMIZE FOR (@guid UNKNOWN, @website UNKNOWN, @lastModifiedDate UNKNOWN, @results UNKNOWN))
+	--OPTION (OPTIMIZE FOR (@guid UNKNOWN, @website UNKNOWN, @lastModifiedDate UNKNOWN))
 
-	SELECT @results = REPLACE(REPLACE(REPLACE('{"CustomerPriceLists":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), '')
+	SELECT @results = REPLACE(REPLACE(REPLACE('{"CustomerPriceLists":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), '');
 
-	SELECT @results
+	SELECT @results AS Results;
 
-END
+	COMMIT TRANSACTION;
+
+END;
 GO
+
+COMMIT TRANSACTION AlterProcedure;

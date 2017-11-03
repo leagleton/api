@@ -1,12 +1,12 @@
 {
   "name": "winman-rest-api",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
     "build": "npm run build-structure && npm run build-gulp",
     "build-structure": "if not exist dist\\sessions mkdir dist\\sessions && if not exist dist\\logs mkdir dist\\logs",
-    "build-gulp": "gulp copy && gulp strip"
+    "build-gulp": "gulp copy && gulp stript"
   },
   "description": "winman-rest-api",
   "author": {

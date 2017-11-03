@@ -1,6 +1,7 @@
 {
     "SalesOrderItem": {
         "type": "object",
+        "description": "The <strong>SalesOrderItems</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
         "required": [
             "Sku",
             "Quantity",
@@ -12,123 +13,144 @@
         "properties": {
             "Sku": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
                 "example": "ABC00123",
-                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "Quantity": {
                 "type": "number",
-                "minLength": 0.00001,
-                "example": 5.258,
-                "description": "Maps to the field <em>SalesOrderItems.Quantity</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 2.00006,
+                "description": "Maps to the field <em>SalesOrderItems.Quantity</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: not allowed"
             },
             "WarrantyId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 20,
                 "example": "12 MONTHS",
-                "description": "Maps to the field <em>Warranties.WarrantyId</em> in your WinMan database."
+                "description": "Maps to the field <em>Warranties.WarrantyId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "Surcharge": {
                 "type": "number",
-                "example": 0.25,
-                "description": "Maps to the field <em>Products.Surcharge</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 0.50001,
+                "description": "Maps to the field <em>Products.Surcharge</em> in your WinMan database.<br/>Null values: allowed<br/>Zero values: allowed"
             },
             "ShippingName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 50,
                 "example": "Systemware Services Ltd.",
-                "description": "Maps to the field <em>DeliveryAddresses.DeliveryName</em> in your WinMan database."
+                "description": "Maps to the field <em>DeliveryAddresses.DeliveryName</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "ShippingTitle": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 5,
                 "example": "Mrs",
-                "description": "Maps to the field <em>DeliveryAddresses.Title</em> in your WinMan database."
+                "description": "Maps to the field <em>DeliveryAddresses.Title</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "ShippingFirstName": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 25,
                 "example": "Jane",
-                "description": "Maps to the field <em>DeliveryAddresses.FirstName</em> in your WinMan database."
+                "description": "Maps to the field <em>DeliveryAddresses.FirstName</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "ShippingLastName": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 25,
-                "example": "Doe",
-                "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database."
+                "example": "Smith",
+                "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "ShippingAddress": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 200,
                 "example": "22 Acacia Avenue",
-                "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database."
+                "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: not allowed"
             },
             "ShippingCity": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
                 "example": "Birmingham",
-                "description": "Maps to the field <em>DeliveryAddresses.City</em> in your WinMan database."
+                "description": "Maps to the field <em>DeliveryAddresses.City</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "ShippingRegion": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
                 "example": "West Midlands",
-                "description": "Maps to the field <em>DeliveryAddresses.Region/em> in your WinMan database."
+                "description": "Maps to the field <em>DeliveryAddresses.Region</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "ShippingPostalCode": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 20,
                 "example": "B21 1SB",
-                "description": "Maps to the field <em>DeliveryAddresses.PostalCode</em> in your WinMan database."
+                "description": "Maps to the field <em>DeliveryAddresses.PostalCode</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: not allowed"
             },
             "ShippingCountryCode": {
                 "type": "string",
+                "minLength": 3,
                 "maxLength": 3,
                 "example": "GBR",
-                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database."
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: not allowed"
             },
             "ShippingPhoneNumber": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 30,
-                "example": "0121 123 9876",
-                "description": "Maps to the field <em>DeliveryAddresses.PhoneNumber</em> in your WinMan database."
+                "example": "+44 (0)121 123 4567",
+                "description": "Maps to the field <em>DeliveryAddresses.PhoneNumber</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "ShippingEmailAddress": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 450,
-                "example": "jane.doe@example.com; john.doe@example.com",
-                "description": "Maps to the field <em>DeliveryAddresses.EmailAddress</em> in your WinMan database."
+                "example": "jane.smith@example.com; jsmith@example.com",
+                "description": "Maps to the field <em>DeliveryAddresses.EmailAddress</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },          
             "PriceListId": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 15,
                 "example": "TRADE",
-                "description": "Maps to the field <em>PriceLists.PriceListId</em> in your WinMan database."
+                "description": "Maps to the field <em>PriceLists.PriceListId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "DiscountId": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 15,
                 "example": "10% DISCOUNT",
-                "description": "Maps to the field <em>Discounts.DiscountId</em> in your WinMan database."
+                "description": "Maps to the field <em>Discounts.DiscountId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "TaxCodeId": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 15,
                 "example": "STD",
-                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database."
+                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "TaxCodeSecondaryId": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 15,
                 "example": "STD17.5",
-                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database."
+                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "Price": {
                 "type": "number",
-                "minLength": 0,
-                "example": 3.76,
-                "description": "The price paid per item for the specified <em>Sku</em>, before discounts, excluding tax."
-            }                                                                                                                                                                                                                                                                                                                                                                                          
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.6701,
+                "description": "The price paid per item for the specified <em>Sku</em>, before discounts, excluding tax.<br/>Null values: not allowed<br/>Zero values: allowed"
+            }
         }
     }
 }

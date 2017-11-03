@@ -1,6 +1,7 @@
 {
     "ErrorResponse": {
         "type": "object",
+        "description": "The <strong>ErrorResponse</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
         "required": [
             "Status",
             "StatusMessage"
@@ -11,14 +12,16 @@
         "properties": {
             "Status": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 5,
                 "example": "Error",
-                "description": "The resulting status of the request."
+                "description": "The resulting status of the request.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "StatusMessage": {
                 "type": "string",
+                "minLength": 1,
                 "example": "Required parameter missing.",
-                "description": "The error message."
+                "description": "The error message.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             }                                                                                                                                          
         }
     }

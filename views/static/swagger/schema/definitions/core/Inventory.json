@@ -1,15 +1,21 @@
 {
     "Inventory": {
         "type": "object",
+        "description": "The <strong>Inventories</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
+        "required": [
+            "ProductSku",
+            "ProductInventories"
+        ],          
         "xml": {
             "name": "Inventory"
         },
         "properties": {
             "ProductSku": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
                 "example": "ABC00123",
-                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "ProductInventories": {
                 "type": "array",

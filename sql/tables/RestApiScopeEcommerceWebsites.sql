@@ -9,7 +9,7 @@ GO
 -- Description:	Table for storing RestApiScopes linked to EcommerceWebsites for the WinMan REST API.
 -- =============================================
 
-CREATE TABLE [dbo].[RestApiScopesEcommerceWebsites](
+CREATE TABLE [dbo].[RestApiScopeEcommerceWebsites](
 	[RestApiScopeEcommerceWebsite] [bigint] IDENTITY(1,1) NOT NULL,
 	[RestApiScope] [bigint] NOT NULL,
 	[EcommerceWebsite] [bigint] NOT NULL,
@@ -17,23 +17,24 @@ CREATE TABLE [dbo].[RestApiScopesEcommerceWebsites](
 	[CreatedDate] [datetime] NOT NULL,
 	[LastModifiedUser] [nvarchar](20) NOT NULL,
 	[LastModifiedDate] [datetime] NOT NULL,
- CONSTRAINT [PK_RestApiScopesEcommerceWebsites] PRIMARY KEY CLUSTERED 
+	[Comments] [nvarchar](500) NOT NULL,
+ CONSTRAINT [PK_RestApiScopeEcommerceWebsites] PRIMARY KEY CLUSTERED 
 (
 	[RestApiScopeEcommerceWebsite] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[RestApiScopesEcommerceWebsites]  WITH CHECK ADD  CONSTRAINT [FK_RestApiScopesEcommerceWebsites_EcommerceWebsites] FOREIGN KEY([EcommerceWebsite])
+ALTER TABLE [dbo].[RestApiScopeEcommerceWebsites]  WITH CHECK ADD  CONSTRAINT [FK_RestApiScopeEcommerceWebsites_EcommerceWebsites] FOREIGN KEY([EcommerceWebsite])
 REFERENCES [dbo].[EcommerceWebsites] ([EcommerceWebsite])
 GO
 
-ALTER TABLE [dbo].[RestApiScopesEcommerceWebsites] CHECK CONSTRAINT [FK_RestApiScopesEcommerceWebsites_EcommerceWebsites]
+ALTER TABLE [dbo].[RestApiScopeEcommerceWebsites] CHECK CONSTRAINT [FK_RestApiScopeEcommerceWebsites_EcommerceWebsites]
 GO
 
-ALTER TABLE [dbo].[RestApiScopesEcommerceWebsites]  WITH CHECK ADD  CONSTRAINT [FK_RestApiScopesEcommerceWebsites_RestApiScopes] FOREIGN KEY([RestApiScope])
+ALTER TABLE [dbo].[RestApiScopeEcommerceWebsites]  WITH CHECK ADD  CONSTRAINT [FK_RestApiScopeEcommerceWebsites_RestApiScopes] FOREIGN KEY([RestApiScope])
 REFERENCES [dbo].[RestApiScopes] ([RestApiScope])
 GO
 
-ALTER TABLE [dbo].[RestApiScopesEcommerceWebsites] CHECK CONSTRAINT [FK_RestApiScopesEcommerceWebsites_RestApiScopes]
+ALTER TABLE [dbo].[RestApiScopeEcommerceWebsites] CHECK CONSTRAINT [FK_RestApiScopeEcommerceWebsites_RestApiScopes]
 GO

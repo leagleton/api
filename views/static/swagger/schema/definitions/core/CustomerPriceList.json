@@ -1,26 +1,24 @@
 {
     "CustomerPriceList": {
         "type": "object",
+        "description": "The <strong>CustomerPriceLists</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
+        "required": [
+            "Guid"
+        ],
         "xml": {
             "name": "CustomerPriceList"
         },
         "properties": {
             "Guid": {
                 "type": "string",
+                "format": "uuid",
                 "minLength": 36,
                 "maxLength": 36,
                 "example": "CC5821D6-66C7-423B-A7EC-7EE1E838C69F",
-                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database."
+                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
-            "PriceLists": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/PriceList"
-                },
-                "xml": {
-                    "name": "PriceLists",
-                    "wrapped": true
-                }
+            "PriceList": {
+                "$ref": "#/definitions/PriceList"
             }
         }
     }

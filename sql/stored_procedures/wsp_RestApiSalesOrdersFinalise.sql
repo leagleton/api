@@ -1,7 +1,11 @@
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+GO
+
+BEGIN TRANSACTION AlterProcedure;
 
 -- =============================================
 -- Author:		Lynn Eagleton
@@ -9,10 +13,27 @@ GO
 -- Description:	Stored procedure for finalising sales orders in WinMan for the WinMan REST API.
 -- =============================================
 
-CREATE PROCEDURE [dbo].[wsp_RestApiSalesOrdersFinalise]
-	@salesOrder BIGINT,
-	@totalOrderValue MONEY,
-	@error NVARCHAR(1000) OUTPUT
+IF NOT EXISTS
+(
+    SELECT 
+		p.[name] 
+	FROM 
+		sys.procedures p
+		INNER JOIN sys.schemas s ON p.[schema_id] = s.[schema_id]
+    WHERE
+        p.[type] = 'P'
+		AND p.[name] = 'wsp_RestApiSalesOrdersFinalise'
+		AND s.[name] = 'dbo'
+)
+	BEGIN
+		EXECUTE('CREATE PROCEDURE dbo.wsp_RestApiSalesOrdersFinalise AS PRINT ''wsp_RestApiSalesOrdersFinalise''');
+	END;
+GO
+
+ALTER PROCEDURE dbo.wsp_RestApiSalesOrdersFinalise
+	@salesOrder bigint,
+	@totalOrderValue money,
+	@error nvarchar(1000) OUTPUT
 AS
 BEGIN
 
@@ -21,55 +42,56 @@ BEGIN
 			EXEC dbo.bsp_RestApiSalesOrdersFinalise
 				@salesOrder = @salesOrder,
 				@totalOrderValue = @totalOrderValue,
-				@error = @error OUTPUT
-			RETURN
-		END
+				@error = @error OUTPUT;
+			RETURN;
+		END;
 
 	SET NOCOUNT ON;
 
-	DECLARE
-		@systemOrderValue MONEY
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	BEGIN TRANSACTION;	
+
+	DECLARE	@systemOrderValue money;
 		
-	SET @error = ''
+	SET @error = '';
 
 	SELECT
 		@systemOrderValue = ROUND(SUM(CurItemValue) + SUM(CurTaxValue), 2)
 	FROM
 		SalesOrderItems
 	WHERE
-		SalesOrder = @salesOrder
+		SalesOrder = @salesOrder;
 
 	IF @totalOrderValue <> @systemOrderValue
-		BEGIN
-			SET @error = @error + CHAR(13) + CHAR(10) + 'Website order total does not match system order total.'			
-		END
+		BEGIN;
+			SET @error = @error + CHAR(13) + CHAR(10) + 'Website order total does not match system order total of ' + CAST(@systemOrderValue AS nvarchar(100)) + '.';		
+		END;
 
-	DECLARE 
-		@customer BIGINT,
-		@underLimit	BIT,
-		@tradingStatus NVARCHAR(1)
+	DECLARE @customer bigint;
+	DECLARE @underLimit	bit;
+	DECLARE @tradingStatus nvarchar(1);
 
-	SET @customer = (SELECT Customer FROM SalesOrders WHERE SalesOrder = @salesOrder)
+	SET @customer = (SELECT Customer FROM SalesOrders WHERE SalesOrder = @salesOrder);
 
 	EXEC dbo.wsp_CustomerCreditCheck
 		@Customer = @customer,
 		@UnderLimit = @underLimit OUTPUT,	
-		@OptTradingStatus = @tradingStatus OUTPUT	
+		@OptTradingStatus = @tradingStatus OUTPUT;
 
 	IF @underLimit = 0
 		BEGIN
-			SET @error = @error + CHAR(13) + CHAR(10) + 'Customer has exceeded their credit limit.'
-		END
+			SET @error = @error + CHAR(13) + CHAR(10) + 'Customer has exceeded their credit limit.';
+		END;
 
 	IF @tradingStatus = 'S'
 		BEGIN
-			SET @error = @error + CHAR(13) + CHAR(10) + 'Customer is on stop.'
-		END
+			SET @error = @error + CHAR(13) + CHAR(10) + 'Customer is on stop.';
+		END;
 
 	IF @tradingStatus = 'H'
 		BEGIN
-			SET @error = @error + CHAR(13) + CHAR(10) + 'Customer is on hold.'
-		END
+			SET @error = @error + CHAR(13) + CHAR(10) + 'Customer is on hold.';
+		END;
 
 	IF @error <> ''
 		BEGIN
@@ -81,10 +103,14 @@ BEGIN
 				LastModifiedUser = 'WinMan REST API',
 				Comments = Comments + CHAR(13) + CHAR(10) + @error
 			WHERE
-				SalesOrder = @salesOrder
-		END
+				SalesOrder = @salesOrder;
+		END;
 
-	SELECT @error AS ErrorMessage
+	SELECT @error AS ErrorMessage;
 
-END
+	COMMIT TRANSACTION;
+
+END;
 GO
+
+COMMIT TRANSACTION AlterProcedure;

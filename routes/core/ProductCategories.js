@@ -9,10 +9,12 @@ router.get('/', passport.authenticate('bearer', { session: false }), function (r
     const inputParams = [];
     const scopes = req.authInfo.scope.split(',');
 
-    if (scopes.indexOf('read') === -1) {
+    if (scopes.indexOf('getProductCategories') === -1) {
         res.status(401);
         res.send(utils.reasons.inadequateAccess);
         return;
+    } else {
+        inputParams.push("@scope = 'getProductCategories'");
     }
 
     if (typeof res.locals.modified !== 'undefined') {
@@ -22,6 +24,22 @@ router.get('/', passport.authenticate('bearer', { session: false }), function (r
             return utils.reject(res, req, utils.reasons.invalidParam);
         }
     }
+
+    if (typeof res.locals.page !== 'undefined') {
+        if (!isNaN(parseInt(res.locals.page))) {
+            inputParams.push("@pageNumber = " + res.locals.page);
+        } else {
+            return utils.reject(res, req, utils.reasons.invalidParam);
+        }
+    }
+
+    if (typeof res.locals.size !== 'undefined') {
+        if (!isNaN(parseInt(res.locals.size))) {
+            inputParams.push("@pageSize = " + res.locals.size);
+        } else {
+            return utils.reject(res, req, utils.reasons.invalidParam);
+        }
+    }    
 
     if (typeof res.locals.guid !== 'undefined') {
         inputParams.push("@guid = '" + res.locals.guid + "'");

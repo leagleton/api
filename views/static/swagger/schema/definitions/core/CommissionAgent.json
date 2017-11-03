@@ -1,75 +1,100 @@
 {
     "CommissionAgent": {
         "type": "object",
+        "description": "The <strong>CommissionAgents</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
+        "required": [
+            "CommissionAgentId",
+            "DefaultPercentage",
+            "SupplierName",
+            "Address",
+            "City",
+            "Region",
+            "PostalCode",
+            "Country",
+            "PhoneNumber",
+            "FaxNumber",
+            "Email"
+        ],        
         "xml": {
             "name": "CommissionAgent"
         },
         "properties": {
             "CommissionAgentId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 10,
-                "example": "",
-                "description": "Maps to the field <em>CommissionAgents.CommissionAgentId</em> in your WinMan database."
+                "example": "A00123",
+                "description": "Maps to the field <em>CommissionAgents.CommissionAgentId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "DefaultPercentage": {
                 "type": "number",
-                "example": 40.25,
-                "description": "Maps to the field <em>CustomerCommissionAgents.DefaultPercentage</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 15.00003,
+                "description": "Maps to the field <em>CustomerCommissionAgents.DefaultPercentage</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "SupplierName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 50,
-                "example": "",
-                "description": "Maps to the field <em>Suppliers.SupplierName</em> in your WinMan database."
+                "example": "Systemware Services Ltd.",
+                "description": "Maps to the field <em>Suppliers.SupplierName</em> in your WinMan database. <br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "Address": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 200,
-                "example": "",
-                "description": "Maps to the field <em>Suppliers.Address</em> in your WinMan database."
+                "example": "Suite 220 Fort Dunlop&#xD;&#xA;Fort Parkway",
+                "description": "Maps to the field <em>Suppliers.Address</em> in your WinMan database. <br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "City": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
-                "example": "",
-                "description": "Maps to the field <em>Suppliers.City</em> in your WinMan database."
+                "example": "Birmingham",
+                "description": "Maps to the field <em>Suppliers.City</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             } ,
             "Region": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 50,
-                "example": "",
-                "description": "Maps to the field <em>Suppliers.Region</em> in your WinMan database."
+                "example": "West Midlands",
+                "description": "Maps to the field <em>Suppliers.Region</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             } ,
             "PostalCode": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 20,
-                "example": "",
-                "description": "Maps to the field <em>Suppliers.PostalCode</em> in your WinMan database."
+                "example": "B24 9FD",
+                "description": "Maps to the field <em>Suppliers.PostalCode</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "Country": {
                 "type": "string",
                 "minLength": 3,
                 "maxLength": 3,
                 "example": "GBR",
-                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database."
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "PhoneNumber": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 30,
-                "example": "0121 1234 567",
-                "description": "Maps to the field <em>Suppliers.PhoneNumber</em> in your WinMan database."
+                "example": "+44 (0)121 123 4567",
+                "description": "Maps to the field <em>Suppliers.PhoneNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "FaxNumber": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 30,
-                "example": "0121 1234 568",
-                "description": "Maps to the field <em>Suppliers.FaxNumber</em> in your WinMan database."
+                "example": "+44 (0)121 123 4568",
+                "description": "Maps to the field <em>Suppliers.FaxNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "Email": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 450,
-                "example": "jsmith@email.com",
-                "description": "Maps to the field <em>Suppliers.EmailAddress</em> in your WinMan database."
+                "example": "support@winman.com",
+                "description": "Maps to the field <em>Suppliers.EmailAddress</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             }                                                                                      
         }
     }

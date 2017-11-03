@@ -2,20 +2,23 @@
 
 // The configuration options of the server
 
+exports.service = {
+  "serviceName": "winman-rest",
+  "displayName": "WinMan REST API"
+}
+
 exports.connection = {
   "server": "SQL2012SANDBOX",
   "userName": "winman",
   "password": "winman",
-  "requestTimeout": 0,
-  "options": { "encrypt": true, "database": "WinManLEClean", "requestTimeout": 0 }
+  "options": { "encrypt": true, "database": "WinManLEClean", "requestTimeout": 0, "rowCollectionOnRequestCompletion": false }
 };
 
 exports.connectionTraining = {
   "server": "SQL2012SANDBOX",
   "userName": "winman",
   "password": "winman",
-  "requestTimeout": 0,
-  "options": { "encrypt": true, "database": "WinManLE", "requestTimeout": 0 }
+  "options": { "encrypt": true, "database": "WinManLE", "requestTimeout": 0, "rowCollectionOnRequestCompletion": false }
 };
 
 exports.server = {

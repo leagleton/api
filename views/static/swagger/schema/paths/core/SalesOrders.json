@@ -4,9 +4,9 @@
             "tags": [
                 "Sales Orders"
             ],
-            "summary": "Post a new sales order back to WinMan.",
+            "summary": "Insert a new sales order into WinMan.",
             "operationId": "postSalesOrders",
-            "description": "Post a new sales order back to WinMan.",
+            "description": "<p>Insert a new sales order into WinMan.</p>",
             "consumes": [
                 "application/json",
                 "application/xml"
@@ -19,7 +19,7 @@
                 {
                     "in": "body",
                     "name": "data",
-                    "description": "TODO",
+                    "description": "The sales order information. Please check the Model for required fields.",
                     "schema": {
                         "$ref": "#/definitions/SalesOrder"
                     }

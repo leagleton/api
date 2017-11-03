@@ -69,7 +69,7 @@ function fetchClients() {
                     });
 
                     Promise.all(scopes).then(() => {
-                        clients += '<tr data-client="' + result.RestApiClient + '" class="clientRow"><td>' + result.RestApiClientId + '</td><td>' + result.Secret + '</td><td>' + readableScopes.join(',') + '</td><td class="actions"><button class="btn btn-danger" onclick="confirmDelete(this)">Delete</button><button class="btn btn-success" onclick="getAuthorisationCode(this)">Get Token</button></td></tr>';
+                        clients += '<tr data-client="' + result.RestApiClient + '" class="clientRow"><td>' + result.RestApiClientId + '</td><td>' + result.Secret + '</td><td>' + readableScopes.join('<br/>') + '</td><td class="actions"><button class="btn btn-danger" onclick="confirmDelete(this)">Delete</button><button class="btn btn-success" onclick="showRequestTokenModal(this)">Get Token</button></td></tr>';
 
                         const client = {
                             "clientId": result.RestApiClientId,
@@ -113,9 +113,7 @@ function fetchAccessTokens() {
         });
 }
 
-function getAuthorisationCode(elem) {
-    const client = $(elem).closest('.clientRow').attr('data-client');
-    // TODO!!!
+function getAuthorisationCode(client, website) {
     $.ajax({
         method: "GET",
         url: "oauth/auth",
@@ -125,7 +123,8 @@ function getAuthorisationCode(elem) {
             "redirect_uri": userClients[client].redirectUri,
             "scope": userClients[client].scopes,
             "response_type": "code",
-            "response": "ajax"
+            "response": "ajax",
+            "website": website
         }
     })
         .done(function (results) {
@@ -147,18 +146,50 @@ function getAccessToken(code, client) {
         }
     })
         .done(function (results) {
+            $("#requestTokenModal").modal('hide');
             $('#token').html(results.access_token);
-            $('#expires').html(new Date(results.expires).toString());
+            $('#expires').html(results.expires);
             $("#tokenModal").modal('show');
         });
 }
 
+function fetchWebsites() {
+    $.ajax({
+        method: "GET",
+        url: "userWebsites",
+        cache: false
+    })
+    .done(function (results) {
+        let websitesSelect = '<select name="website" id="website">';
+
+        const dbWebsites = results.map((result) => {
+            return new Promise((resolve) => {
+                userWebsites[result.EcommerceWebsite] = result.EcommerceWebsiteId;
+                websitesSelect += '<option value="' + result.EcommerceWebsite + '">' + result.EcommerceWebsiteId + '</option>';
+                resolve();                
+            });
+        });
+
+        Promise.all(dbWebsites).then(() => {
+            websitesSelect += '</select>';
+            $(websitesSelect).appendTo('#requestToken');
+        });
+    });
+}
+
+function showRequestTokenModal(elem) {
+    const client = $(elem).closest('.clientRow').attr('data-client');
+    $('#tokenClient').val(client);
+    $("#requestTokenModal").modal('show');
+}
+
 const dbScopes = [];
 const userClients = [];
+const userWebsites = [];
 
 $(document).ready(function () {
     fetchAccessTokens(); // TODO!
-
+    fetchWebsites();
 
     // Initialize the tooltip.
     $('#copy-button').tooltip({
@@ -225,6 +256,14 @@ $(document).ready(function () {
         $("#changePasswordModal").modal('show');
     });
 
+    $('#requestToken').on('submit', function (e) {
+        const client = $('#tokenClient').val();
+        const website = $('#website').val();
+
+        getAuthorisationCode(client, website);
+        return false;
+    });
+
     $('#createClient').on('submit', function (e) {
         if ($('input[name="scope[]"]:checked').length === 0) {
             $('#createModal .error').show();
@@ -244,11 +283,19 @@ $(document).ready(function () {
                     }
                 })
                     .done(function (results) {
-                        const clients = '<tr data-client="' + results.client + '" class="clientRow"><td>' + results.clientId + '</td><td>' + results.clientSecret + '</td><td>' + results.scopes + '</td><td class="actions"><button class="btn btn-danger" onclick="confirmDelete(this)">Delete</button><button class="btn btn-success" onclick="getAuthorisationCode(this)">Get Token</button></td></tr>';
+                        const clients = '<tr data-client="' + results.client + '" class="clientRow"><td>' + results.clientId + '</td><td>' + results.clientSecret + '</td><td>' + results.scopes.split(',').join('<br/>') + '</td><td class="actions"><button class="btn btn-danger" onclick="confirmDelete(this)">Delete</button><button class="btn btn-success" onclick="showRequestTokenModal(this)">Get Token</button></td></tr>';
 
                         $("#userClients").append(clients);
                         $("#createModal").modal('hide');
                         $('.scope').prop('checked', false);
+
+                        const client = {
+                            "clientId": results.clientId,
+                            "clientSecret": results.clientSecret,
+                            "scopes": results.scopes,
+                            "redirectUri": results.redirectUri
+                        }
+                        userClients[results.client] = client;
                     })
                     .fail(function () {
 

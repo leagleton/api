@@ -12,7 +12,7 @@ tp.setPromiseLibrary('es6');
 router.post('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
     const scopes = req.authInfo.scope.split(',');
 
-    if (scopes.indexOf('write') === -1) {
+    if (scopes.indexOf('postSalesOrders') === -1) {
         return utils.reject(res, req, utils.reasons.inadequateAccess, 401);
     }
 
@@ -20,6 +20,10 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
         tp.setConnectionConfig(config.connectionTraining);
     } else {
         tp.setConnectionConfig(config.connection);
+    }
+
+    if (req.body.hasOwnProperty('Data')) {
+        req.body = req.body.Data;
     }
 
     let result = '';
@@ -111,7 +115,8 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                     @currencyCode = '" + currencyCode + "',\
                     @portalUserName = '" + portalUserName + "',\
                     @freightMethodId = '" + freightMethodId + "',\
-                    @salesOrderPrefixId = '" + salesOrderPrefixId + "'")
+                    @salesOrderPrefixId = '" + salesOrderPrefixId + "',\
+                    @scope = 'postSalesOrders'")
                 .execute();
         })
         .then((results) => {

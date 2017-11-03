@@ -17,11 +17,19 @@ CREATE TABLE [dbo].[RestApiAuthorisationCodes](
 	[RestApiUser] [bigint] NOT NULL,
 	[CodeUUID] [nvarchar](36) NOT NULL,
 	[RedirectURI] [nvarchar](100) NOT NULL,
+	[EcommerceWebsite] [bigint] NOT NULL,
  CONSTRAINT [PK_RestApiAuthorisationCodes] PRIMARY KEY CLUSTERED 
 (
 	[RestApiAuthorisationCode] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[RestApiAuthorisationCodes]  WITH CHECK ADD  CONSTRAINT [FK_RestApiAuthorisationCodes_EcommerceWebsites] FOREIGN KEY([EcommerceWebsite])
+REFERENCES [dbo].[EcommerceWebsites] ([EcommerceWebsite])
+GO
+
+ALTER TABLE [dbo].[RestApiAuthorisationCodes] CHECK CONSTRAINT [FK_RestApiAuthorisationCodes_EcommerceWebsites]
 GO
 
 ALTER TABLE [dbo].[RestApiAuthorisationCodes]  WITH CHECK ADD  CONSTRAINT [FK_RestApiAuthorisationCodes_RestApiClients] FOREIGN KEY([RestApiClient])

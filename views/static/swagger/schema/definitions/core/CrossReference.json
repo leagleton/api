@@ -1,52 +1,59 @@
 {
     "CrossReference": {
         "type": "object",
+        "description": "The <strong>CrossReferences</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
+        "required": [
+            "ProductSku",
+            "CustomersPartNumber",
+            "CustomersDescription",
+            "IgnorePrice"
+        ],
         "xml": {
             "name": "CrossReference"
         },
         "properties": {
             "ProductSku": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
                 "example": "ABC00123",
-                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CustomersPartNumber": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 300,
-                "example": "",
-                "description": "Maps to the field <em>CustomerCrossReferences.CustomersPartNumber</em> in your WinMan database."
+                "example": "DEF00789",
+                "description": "Maps to the field <em>CustomerCrossReferences.CustomersPartNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CustomersDescription": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 300,
-                "example": "",
-                "description": "Maps to the field <em>CustomerCrossReferences.CustomersDescription</em> in your WinMan database."
+                "example": "Display stand with 3 shelves in a gloss finish.",
+                "description": "Maps to the field <em>CustomerCrossReferences.CustomersDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },            
             "MinimumOrderQuantity": {
                 "type": "number",
-                "example": 25.15,
-                "description": "Maps to the field <em>CustomerCrossReferences.MinimumOrderQuantity</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 25.10005,
+                "description": "Maps to the field <em>CustomerCrossReferences.MinimumOrderQuantity</em> in your WinMan database.<br/>Null values: allowed<br/>Zero values: allowed"
             },
             "IgnorePrice": {
                 "type": "boolean",
                 "example": true,
-                "description": "Maps to the field <em>CustomerCrossReferences.IgnorePrice</em> in your WinMan database."
+                "description": "Maps to the field <em>CustomerCrossReferences.IgnorePrice</em> in your WinMan database.<br/>Null values: not allowed"
             }, 
             "Price": {
                 "type": "number",
-                "example": 5.1654,
-                "description": "Maps to the field <em>CustomerCrossReferences.Price</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 5.00005,
+                "description": "Maps to the field <em>CustomerCrossReferences.Price</em> in your WinMan database.<br/>Null values: allowed<br/>Zero values: allowed"
             },                                               
             "Discount": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Discount"
-                },
-                "xml": {
-                    "name": "Discounts",
-                    "wrapped": true
-                }
+                "$ref": "#/definitions/Discount"
             }
         }
     }

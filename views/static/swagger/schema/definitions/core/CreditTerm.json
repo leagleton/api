@@ -1,48 +1,62 @@
 {
     "CreditTerm": {
         "type": "object",
+        "description": "The <strong>CreditTerm</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
+        "required": [
+            "CreditTermsId",
+            "CreditTermsDescription",
+            "TriggerDate",
+            "EndOfMonth",
+            "PaymentPeriod",
+            "PaymentUnit",
+            "CreditCardRequired"
+        ],           
         "xml": {
             "name": "CreditTerm"
         },
         "properties": {
             "CreditTermsId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
-                "example": "",
-                "description": "Maps to the field <em>CreditTerms.CreditTermsId</em> in your WinMan database."
+                "example": "30 DAYS",
+                "description": "Maps to the field <em>CreditTerms.CreditTermsId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CreditTermsDescription": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
-                "example": "",
-                "description": "Maps to the field <em>CreditTerms.CreditTermsDescription</em> in your WinMan database."
+                "example": "30 days from invoice",
+                "description": "Maps to the field <em>CreditTerms.CreditTermsDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "TriggerDate": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 1,
                 "example": "D",
-                "description": "Maps to the field <em>CreditTerms.TriggerDate</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditTerms.TriggerDate</em> in your WinMan database where <em>D</em> = <em>Delivery Date</em>, <em>I</em> = <em>Invoice Date</em>.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "EndOfMonth": {
                 "type": "boolean",
                 "example": false,
-                "description": "Maps to the field <em>CreditTerms.EndOfMonth</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditTerms.EndOfMonth</em> in your WinMan database.<br/>Null values: not allowed"
             },
             "PaymentPeriod": {
                 "type": "integer",
                 "example": 30,
-                "description": "Maps to the field <em>CreditTerms.PaymentUnits</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditTerms.PaymentUnits</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "PaymentUnit": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 1,
                 "example": "Y",
-                "description": "Maps to the field <em>CreditTerms.PaymentUnit</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditTerms.PaymentUnit</em> in your WinMan database where <em>D</em> = <em>Days</em>, <em>M</em> = <em>Months</em>.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CreditCardRequired": {
                 "type": "boolean",
                 "example": true,
-                "description": "Maps to the field <em>CreditTerms.CreditCardRequired</em> in your WinMan database."
+                "description": "Maps to the field <em>CreditTerms.CreditCardRequired</em> in your WinMan database.<br/>Null values: not allowed"
             }                                                            
         }
     }

@@ -1,26 +1,36 @@
 {
     "Discount": {
         "type": "object",
+        "description": "For Customers, the <strong>Discount</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.<br/>For CrossReferences, the <strong>Discount</strong> object <strong>cannot</strong> be null but <strong>can</strong> be an empty object.",
+        "required": [
+            "DiscountId",
+            "DiscountDescription",
+            "DiscountPercentage"
+        ],             
         "xml": {
             "name": "Discount"
         },
         "properties": {
-            "DicountId": {
+            "DiscountId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
-                "example": "",
-                "description": "Maps to the field <em>Discounts.DiscountId</em> in your WinMan database."
+                "example": "LOYAL CUSTOMER",
+                "description": "Maps to the field <em>Discounts.DiscountId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
-            "DicountDescription": {
+            "DiscountDescription": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 100,
-                "example": "",
-                "description": "Maps to the field <em>Discounts.DiscountDescription</em> in your WinMan database."
+                "example": "Loyal customer discount",
+                "description": "Maps to the field <em>Discounts.DiscountDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
-            "DicountPercentage": {
+            "DiscountPercentage": {
                 "type": "number",
-                "example": 25.15,
-                "description": "Maps to the field <em>Discounts.DiscountPercentage</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 10.0101,
+                "description": "Maps to the field <em>Discounts.DiscountPercentage</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },                        
             "DiscountBreaks": {
                 "type": "array",

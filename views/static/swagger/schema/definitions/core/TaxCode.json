@@ -1,26 +1,36 @@
 {
     "TaxCode": {
         "type": "object",
+        "description": "For Products, the <strong>TaxCode</strong> object <strong>cannot</strong> be null but <strong>can</strong> be an empty object.<br/>For Customers, the <strong>TaxCode</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
+        "required": [
+            "TaxCodeId",
+            "TaxCodeDescription",
+            "TaxRate"
+        ],         
         "xml": {
             "name": "TaxCode"
         },
         "properties": {
             "TaxCodeId": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 15,
-                "example": "",
-                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database."
+                "example": "STD",
+                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "TaxCodeDescription": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
-                "example": "",
-                "description": "Maps to the field <em>TaxCodes.TaxCodeDescription</em> in your WinMan database."
+                "example": "Standard 20% tax rate",
+                "description": "Maps to the field <em>TaxCodes.TaxCodeDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "TaxRate": {
                 "type": "number",
-                "example": "",
-                "description": "Maps to the field <em>TaxCodes.TaxRate</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 20.00000,
+                "description": "Maps to the field <em>TaxCodes.TaxRate</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             }
         }
     }

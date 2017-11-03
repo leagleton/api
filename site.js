@@ -10,6 +10,11 @@ const logger = require('./middleware/logger');
 const tp = require('tedious-promises');
 tp.setPromiseLibrary('es6');
 
+/**
+ * Set the appropriate DB connection config based on user session.
+ * @constructor
+ * @param   {Object} req - The request.
+ */
 exports.system = (req) => {
   if (typeof req.session.system != 'undefined' && req.session.system === 'training') {
     tp.setConnectionConfig(config.connectionTraining);
@@ -20,9 +25,9 @@ exports.system = (req) => {
 
 /**
  * Render the main documentation page after ensuring the user is logged in.
- * @param   {Object} req - The request
- * @param   {Object} res - The response
- * @returns {undefined}
+ * @param   {Object} req - The request.
+ * @param   {Object} res - The response.
+ * @returns {void}
  */
 exports.index = [
   login.ensureLoggedIn(),
@@ -35,9 +40,9 @@ exports.index = [
 
 /**
  * Render the oauth2 redirect page.
- * @param   {Object} req - The request
- * @param   {Object} res - The response
- * @returns {undefined}
+ * @param   {Object} req - The request.
+ * @param   {Object} res - The response.
+ * @returns {void}
  */
 exports.oauth2redirect = (req, res) => {
   try {
@@ -51,9 +56,9 @@ exports.oauth2redirect = (req, res) => {
 
 /**
  * Render the login page.
- * @param   {Object} req - The request
- * @param   {Object} res - The response
- * @returns {undefined}
+ * @param   {Object} req - The request.
+ * @param   {Object} res - The response.
+ * @returns {void}
  */
 exports.loginForm = (req, res) => {
   if (req.user) {
@@ -68,7 +73,7 @@ exports.loginForm = (req, res) => {
 };
 
 /**
- * Authenticate normal login page using strategy of authenticate
+ * Authenticate normal login page using strategy of authenticate.
  */
 exports.login = [
   passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login', failureFlash: true }),
@@ -76,9 +81,9 @@ exports.login = [
 
 /**
  * Log out of the system and redirect to home page.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.logout = (req, res) => {
   req.session.destroy(function (err) {
@@ -89,10 +94,10 @@ exports.logout = (req, res) => {
 };
 
 /**
- * Render account.ejs but ensure the user is logged in before rendering.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * Render account page but ensure the user is logged in first.
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.account = [
   login.ensureLoggedIn(),
@@ -111,36 +116,37 @@ exports.account = [
 
 /**
  * Randomly generate a new client ID and secret but ensure the user is logged in first.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.create = [
   login.ensureLoggedIn(),
   (req, res, next) => {
     const clientId = utils.generateString(32);
     const clientSecret = utils.generateString(32);
+    const redirectUri = config.server.scheme + "://" + config.server.host + ":" + config.server.port + "/" + "oauth2redirect"
     let client = 0;
 
     tp.sql("DECLARE @client BIGINT EXEC wsp_RestApiClientsInsert \
               @clientId = '" + clientId + "', \
               @secret = '" + clientSecret + "', \
-              @redirectUri = '" + config.server.scheme + "://" + config.server.host + ":" + config.server.port + "/" + "oauth2redirect', \
-              @user = " + req.user.id + ", \
+              @redirectUri = '" + redirectUri + "', \
+              @user = " + req.user.user + ", \
               @scopes = '" + req.query.scopes + "', \
               @client = @client OUTPUT")
       .execute()
       .then((results) => client = results[0].client)
-      .then(() => res.send({ client, clientId, clientSecret, scopes: req.query.scopes }))
+      .then(() => res.send({ client, clientId, clientSecret, redirectUri, scopes: req.query.scopes }))
       .catch(err => next(err));
   },
 ];
 
 /**
  * Fetch scopes from DB to display on account page.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.scopes = [
   login.ensureLoggedIn(),
@@ -154,9 +160,9 @@ exports.scopes = [
 
 /**
  * Fetch clients from DB to display on account page.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.clients = [
   login.ensureLoggedIn(),
@@ -167,8 +173,7 @@ exports.clients = [
         .then(() => res.send("Success"))
         .catch(err => next(err));
     } else {
-      // Select all clients for the specified user.
-      tp.sql("EXEC wsp_RestApiClientsSelect @user = " + req.user.id)
+      tp.sql("EXEC wsp_RestApiClientsSelect @user = " + req.user.user)
         .execute()
         .then((results) => res.send(results))
         .catch(err => next(err));
@@ -178,9 +183,9 @@ exports.clients = [
 
 /**
  * Fetch access tokens from DB to display on account page.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.userAccessTokens = [
   login.ensureLoggedIn(),
@@ -191,8 +196,7 @@ exports.userAccessTokens = [
         .then(() => res.send("Success"))
         .catch(err => next(err));
     } else {
-      // Select all access tokens for the specified user.
-      tp.sql("EXEC wsp_RestApiUserAccessTokensSelect @user = " + req.user.id)
+      tp.sql("EXEC wsp_RestApiUserAccessTokensSelect @user = " + req.user.user)
         .execute()
         .then((results) => res.send(results))
         .catch(err => next(err));
@@ -200,11 +204,21 @@ exports.userAccessTokens = [
   }
 ];
 
+exports.websites = [
+  login.ensureLoggedIn(),
+  (req, res, next) => {
+    tp.sql("EXEC wsp_RestApiEcommerceWebsitesSelect @user = " + req.user.user)
+      .execute()
+      .then((results) => res.send(results))
+      .catch(err => next(err));
+  }
+];
+
 /**
  * Change the password of a REST API User.
- * @param   {Object}   req - The request
- * @param   {Object}   res - The response
- * @returns {undefined}
+ * @param   {Object}   req - The request.
+ * @param   {Object}   res - The response.
+ * @returns {void}
  */
 exports.passwordChange = [
   login.ensureLoggedIn(),
@@ -220,7 +234,7 @@ exports.passwordChange = [
               } else {
                 auth.cryptPassword(req.query.newPassword, function (err, hash) {
                   if (hash) {
-                    tp.sql("EXEC wsp_RestApiUsersUpdate @user = " + req.user.id + ", @password = '" + hash + "'")
+                    tp.sql("EXEC wsp_RestApiUsersUpdate @user = " + req.user.user + ", @password = '" + hash + "'")
                       .execute()
                       .then(() => res.send('Success.'))
                       .catch(err => next(err));

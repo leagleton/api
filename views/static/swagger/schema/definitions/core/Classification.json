@@ -1,21 +1,28 @@
 {
     "Classification": {
         "type": "object",
+        "description": "The <strong>Classification</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
+        "required": [
+            "ClassificationName",
+            "ClassificationDescription"
+        ],        
         "xml": {
             "name": "Classification"
         },
         "properties": {
             "ClassificationName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 30,
                 "example": "General",
-                "description": "Maps to the field <em>Classifications.ClassificationId</em> in your WinMan database."
+                "description": "Maps to the field <em>Classifications.ClassificationId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "ClassificationDescription": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
                 "example": "General product classification.",
-                "description": "Maps to the field <em>Classifications.ClassificationDescription</em> in your WinMan database."
+                "description": "Maps to the field <em>Classifications.ClassificationDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             }
         }
     }

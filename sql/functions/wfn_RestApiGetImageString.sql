@@ -1,9 +1,11 @@
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 GO
+
+BEGIN TRANSACTION AlterFunction;
 
 -- =============================================
 -- Author:		Lynn Eagleton
@@ -11,15 +13,34 @@ GO
 -- Description:	Function to SELECT image data as a base 64 string for the WinMan REST API.
 -- =============================================
 
-CREATE FUNCTION [dbo].[wfn_RestApiGetImageString] 
+IF NOT EXISTS
 (
-	@image VARBINARY(max)
+	SELECT 
+		[name]
+	FROM
+		sys.objects
+	WHERE
+		[object_id] = OBJECT_ID(N'[dbo].[wfn_RestApiGetImageString]')
+		AND [type] IN (N'FN', N'IF', N'TF', N'FS', N'FT')
 )
-RETURNS NVARCHAR(max)
+	BEGIN
+		EXECUTE('CREATE FUNCTION dbo.wfn_RestApiGetImageString() RETURNS nvarchar(100) AS BEGIN RETURN ''dbo.wfn_RestApiGetImageString''; END;');
+	END;
+GO
+
+ALTER FUNCTION [dbo].[wfn_RestApiGetImageString] 
+(
+	@image varbinary(max)
+)
+RETURNS nvarchar(max)
 AS
 BEGIN
-	DECLARE @result NVARCHAR(max)
-	SELECT @result = COALESCE((SELECT CAST('' AS XML).value('xs:base64Binary(sql:variable("@image"))', 'NVARCHAR(MAX)')), '')
-	RETURN @result
-END
+
+	DECLARE @result nvarchar(max);
+	SELECT @result = COALESCE((SELECT CAST('' AS xml).value('xs:base64Binary(sql:variable("@image"))', 'nvarchar(max)')), '');
+	RETURN @result;
+
+END;
 GO
+
+COMMIT TRANSACTION AlterFunction;

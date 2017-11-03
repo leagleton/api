@@ -1,21 +1,28 @@
 {
     "SupersedingProduct": {
         "type": "object",
+        "description": "The <strong>SupersedingProducts</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
+        "required": [
+            "SupersedingProductSku",
+            "SupersedingProductName"
+        ],         
         "xml": {
             "name": "SupersedingProduct"
         },
         "properties": {
-            "SupersedingProductSKU": {
+            "SupersedingProductSku": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
-                "example": "ABC00123",
-                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+                "example": "DEF00654",
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "SupersedingProductName": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 300,
-                "example": "Super awesome product",
-                "description": "Maps to the field <em>Products.ProductDescription</em> in your WinMan database."
+                "example": "Display stand with 4 shelves",
+                "description": "Maps to the field <em>Products.ProductDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             }
         }
     }

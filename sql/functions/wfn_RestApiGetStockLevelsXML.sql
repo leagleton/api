@@ -1,9 +1,11 @@
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 GO
+
+BEGIN TRANSACTION AlterFunction;
 
 -- =============================================
 -- Author:		Rob Cope / Lynn Eagleton
@@ -11,19 +13,33 @@ GO
 -- Description:	Function to SELECT product stock levels for the WinMan REST API in XML format.
 -- =============================================
 
-CREATE FUNCTION [dbo].[wfn_RestApiGetStockLevelsXML] 
+IF NOT EXISTS
+(
+	SELECT 
+		[name]
+	FROM
+		sys.objects
+	WHERE
+		[object_id] = OBJECT_ID(N'[dbo].[wfn_RestApiGetStockLevelsXML]')
+		AND [type] IN (N'FN', N'IF', N'TF', N'FS', N'FT')
+)
+	BEGIN
+		EXECUTE('CREATE FUNCTION dbo.wfn_RestApiGetStockLevelsXML() RETURNS nvarchar(100) AS BEGIN RETURN ''dbo.wfn_RestApiGetStockLevelsXML''; END;');
+	END;
+GO
+
+ALTER FUNCTION [dbo].[wfn_RestApiGetStockLevelsXML] 
 (
 	@Product bigint,
 	@Site bigint
 )
-RETURNS XML
+RETURNS xml
 AS
 BEGIN
 
-	DECLARE
-		@QuantityOnHand			decimal(17,5),
-		@QuantityHardAllocated	decimal(17,5),
-		@QuantitySoftAllocated	decimal(17,5)
+	DECLARE	@QuantityOnHand decimal(17,5);
+	DECLARE @QuantityHardAllocated decimal(17,5);
+	DECLARE	@QuantitySoftAllocated decimal(17,5);
 
 	SET @QuantityOnHand =
 		(SELECT
@@ -33,7 +49,7 @@ BEGIN
 		WHERE Inventory.Product = @Product
 			AND Inventory.Site = @Site
 			AND Inventory.Availability IN ('B','S','K','W')
-			AND Inventory.QuantityOutstanding > 0)
+			AND Inventory.QuantityOutstanding > 0);
 
 	SET @QuantityHardAllocated =
 		(SELECT
@@ -42,19 +58,19 @@ BEGIN
 		WHERE Inventory.Product = @Product
 			AND Inventory.Site = @Site
 			AND Inventory.Availability IN ('K','W')
-			AND Inventory.QuantityOutstanding > 0)
+			AND Inventory.QuantityOutstanding > 0);
 
-	DECLARE	@SOSystemType	nvarchar(4)
+	DECLARE	@SOSystemType nvarchar(4);
+
 	IF dbo.wfn_GetProgramProfile('MRP_IncludeHeldSalesOrders', 'N') = 'N'
-	BEGIN
-		SET @SOSystemType = 'F'
-	END
+		BEGIN
+			SET @SOSystemType = 'F';
+		END;
 	ELSE
-	BEGIN
-		SET @SOSystemType = '[HF]'
-	END
+		BEGIN
+			SET @SOSystemType = '[HF]';
+		END;
 
-	;
 	SET @QuantitySoftAllocated = 0;
 
 	WITH Requirements AS
@@ -76,12 +92,12 @@ BEGIN
 				FROM SalesOrderItems SI 
 					INNER JOIN SalesOrders S on SI.SalesOrder = S.SalesOrder
 					LEFT JOIN Customers C ON C.Customer = S.Customer
-				WHERE	SI.Product = @Product 
-					AND		SI.QuantityOutstanding > 0 
-					AND		SI.DueDate < dbo.wfn_GetMaxDate()
-					AND		SI.ItemType = 'P'
-					AND		S.SystemType LIKE @SOSystemType
-					AND		(SI.Site = @Site OR @Site = 0)
+				WHERE SI.Product = @Product 
+					AND SI.QuantityOutstanding > 0 
+					AND SI.DueDate < dbo.wfn_GetMaxDate()
+					AND SI.ItemType = 'P'
+					AND S.SystemType LIKE @SOSystemType
+					AND (SI.Site = @Site OR @Site = 0)
 					AND NOT S.Customer IN (SELECT Customer FROM Sites)
 
 				UNION ALL
@@ -97,10 +113,10 @@ BEGIN
 						AND Inventory.QuantityOutstanding > 0)
 				FROM WorkInProgress WIP
 					INNER JOIN ManufacturingOrders MO ON MO.ManufacturingOrder = WIP.ManufacturingOrder
-				WHERE	WIP.Product = @Product 
-					AND		WIP.QuantityOutstanding <> 0 
-					AND	 	MO.SystemType <> 'C'
-					AND		(MO.Site = @Site OR @Site = 0)
+				WHERE WIP.Product = @Product 
+					AND WIP.QuantityOutstanding <> 0 
+					AND MO.SystemType <> 'C'
+					AND (MO.Site = @Site OR @Site = 0)
 
 				UNION ALL
 
@@ -108,24 +124,26 @@ BEGIN
 					WIPRQ.WorkInProgressRequirement,
 					WIPRQ.Quantity,
 					0
-				FROM	WorkInProgressRequirements WIPRQ
+				FROM WorkInProgressRequirements WIPRQ
 					LEFT JOIN ManufacturingOrders MO ON MO.ManufacturingOrder = WIPRQ.ManufacturingOrder
-				WHERE	WIPRQ.Component = @Product
+				WHERE WIPRQ.Component = @Product
 					AND	(MO.Site = @Site OR @Site = 0)
 			) AS DTbl
 		WHERE QuantityOutstanding - ISNULL(QuantityHardAllocated,0) > 0
 	)
 	SELECT
 		@QuantitySoftAllocated = SUM(Requirements.QuantityRequired)
-	FROM Requirements
+	FROM Requirements;
 
-	DECLARE @stockLevels XML;
+	DECLARE @stockLevels xml;
 
-	SET @stockLevels = '<QuantityInStock>' + CAST(ISNULL(@QuantityOnHand,0) AS NVARCHAR(10)) + '</QuantityInStock>'
-						+ '<QuantityHardAllocated>' + CAST(ISNULL(@QuantityHardAllocated,0) AS NVARCHAR(10)) + '</QuantityHardAllocated>'
-						+ '<QuantitySoftAllocated>' + CAST(ISNULL(@QuantitySoftAllocated,0) AS NVARCHAR(10)) + '</QuantitySoftAllocated>';
+	SET @stockLevels = '<QuantityInStock>' + CAST(ISNULL(@QuantityOnHand,0) AS nvarchar(10)) + '</QuantityInStock>'
+						+ '<QuantityHardAllocated>' + CAST(ISNULL(@QuantityHardAllocated,0) AS nvarchar(10)) + '</QuantityHardAllocated>'
+						+ '<QuantitySoftAllocated>' + CAST(ISNULL(@QuantitySoftAllocated,0) AS nvarchar(10)) + '</QuantitySoftAllocated>';
 
 	RETURN @stockLevels;
 
-END
+END;
 GO
+
+COMMIT TRANSACTION AlterFunction;

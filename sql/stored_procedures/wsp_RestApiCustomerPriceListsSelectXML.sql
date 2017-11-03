@@ -1,9 +1,11 @@
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 GO
+
+BEGIN TRANSACTION AlterProcedure;
 
 -- =============================================
 -- Author:		Lynn Eagleton
@@ -11,33 +13,71 @@ GO
 -- Description:	Stored procedure for SELECTing customer price lists for the WinMan REST API in XML format.
 -- =============================================
 
-CREATE PROCEDURE dbo.wsp_RestApiCustomerPriceListsSelectXML
-	@guid NVARCHAR(36),
-	@website NVARCHAR(100),
-	@seconds BIGINT = 315360000,
-	@results NVARCHAR(max) OUTPUT
+IF NOT EXISTS
+(
+    SELECT 
+		p.[name] 
+	FROM 
+		sys.procedures p
+		INNER JOIN sys.schemas s ON p.[schema_id] = s.[schema_id]
+    WHERE
+        p.[type] = 'P'
+		AND p.[name] = 'wsp_RestApiCustomerPriceListsSelectXML'
+		AND s.[name] = 'dbo'
+)
+	BEGIN
+		EXECUTE('CREATE PROCEDURE dbo.wsp_RestApiCustomerPriceListsSelectXML AS PRINT ''dbo.wsp_RestApiCustomerPriceListsSelectXML''');
+	END;
+GO
+
+ALTER PROCEDURE dbo.wsp_RestApiCustomerPriceListsSelectXML
+	@guid nvarchar(36),
+	@website nvarchar(100),
+	@seconds bigint = 315360000,
+	@scope nvarchar(50),
+	@results nvarchar(max) OUTPUT
 AS
 BEGIN
 
 	IF dbo.wfn_BespokeSPExists('bsp_RestApiCustomerPriceListsSelectXML') = 1 
-	BEGIN
-		EXEC dbo.bsp_RestApiCustomerPriceListsSelectXML
-			@guid = @guid,
-			@website = @website,
-			@seconds = @seconds,
-			@results = @results
-		RETURN	
-	END
+		BEGIN
+			EXEC dbo.bsp_RestApiCustomerPriceListsSelectXML
+				@guid = @guid,
+				@website = @website,
+				@seconds = @seconds,
+				@scope = @scope,
+				@results = @results;
+			RETURN;
+		END;
 
 	SET NOCOUNT ON;
 
-	DECLARE
-		@lastModifiedDate DATETIME
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	BEGIN TRANSACTION;	
+
+	IF NOT EXISTS (
+		SELECT 
+			s.RestApiScope 
+		FROM 
+			RestApiScopeEcommerceWebsites sw
+			INNER JOIN RestApiScopes s ON sw.RestApiScope = s.RestApiScope
+			INNER JOIN EcommerceWebsites w ON sw.EcommerceWebsite = w.EcommerceWebsite
+		WHERE
+			s.RestApiScopeId = @scope
+			AND w.EcommerceWebsiteId = @website
+	)
+		BEGIN
+			SELECT 'ERROR: Scope not enabled for specified website.' AS ErrorMessage;
+			ROLLBACK TRANSACTION;
+			RETURN;
+		END;
+
+	DECLARE @lastModifiedDate datetime;
 
 	SET @lastModifiedDate = (SELECT DATEADD(second,-@seconds,GETDATE()));
 
 	SELECT @results =
-		(SELECT
+		CONVERT(nvarchar(max), (SELECT
 			cust.CustomerGUID AS [Guid],
 			(SELECT
 				PriceListId,
@@ -78,14 +118,27 @@ BEGIN
 				WHERE
 					EcommerceWebsiteId = @website)
 			))
-		FOR XML PATH('CustomerPriceList'))
+		GROUP BY
+			cust.CustomerGUID,
+			cust.PriceList			
+		FOR XML PATH('CustomerPriceList'), TYPE));
 
-	OPTION (OPTIMIZE FOR (@guid UNKNOWN, @website UNKNOWN, @lastModifiedDate UNKNOWN, @results UNKNOWN))
+	--OPTION (OPTIMIZE FOR (@guid UNKNOWN, @website UNKNOWN, @lastModifiedDate UNKNOWN));
 
-	IF (@results IS NOT NULL)
-		SELECT @results = CONCAT('<CustomerPriceLists>', @results, '</CustomerPriceLists>')
+	IF @results IS NOT NULL AND @results <> ''
+		BEGIN
+			SELECT @results = '<CustomerPriceLists>' + @results + '</CustomerPriceLists>';
+		END;
+	ELSE
+		BEGIN
+			SELECT @results = '<CustomerPriceLists/>';
+		END;
 
-	SELECT @results
+	SELECT @results AS Results;
 
-END
+	COMMIT TRANSACTION;
+
+END;
 GO
+
+COMMIT TRANSACTION AlterProcedure;

@@ -1,74 +1,119 @@
 {
     "Product": {
         "type": "object",
+        "description": "The <strong>Products</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
+        "required": [
+            "Guid",
+            "Sku",
+            "Name",
+            "StandardPrice",
+            "WebPrice",
+            "Rrp",
+            "Surcharge",
+            "LongDescription",
+            "ShortDescription",
+            "Taxable",
+            "MetaTitle",
+            "MetaKeywords",
+            "MetaDescription",
+            "PackSize",
+            "Length",
+            "Width",
+            "Height",
+            "Weight",
+            "UnitOfMeasure",
+            "DimensionQuantity",
+            "ConfigurableProduct",
+            "Barcode",
+            "CrossReference",
+            "SalesLeadTime",
+            "RoHS",
+            "Notes",
+            "PromptText",
+            "Classification",
+            "LastModifiedDate"
+        ],        
         "xml": {
             "name": "Product"
         },
         "properties": {
             "Guid": {
                 "type": "string",
+                "format": "uuid",
                 "minLength": 36,
                 "maxLength": 36,
                 "example": "CC5821D6-66C7-423B-A7EC-7EE1E838C69F",
-                "description": "Maps to the field <em>Products.ProductGUID</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.ProductGUID</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },            
             "Sku": {
                 "type": "string",
+                "minLength": 1,
                 "maxLength": 100,
                 "example": "ABC00123",
-                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "Name": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 300,
-                "example": "Super awesome product",
-                "description": "Maps to the field <em>Products.ProductDescription</em> in your WinMan database."
+                "example": "Display stand with 3 shelves",
+                "description": "Maps to the field <em>Products.ProductDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "StandardPrice": {
                 "type": "number",
-                "example": 5.1654,
-                "description": "Maps to the field <em>Products.StandardPrice</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 5.99005,
+                "description": "Maps to the field <em>Products.StandardPrice</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "WebPrice": {
                 "type": "number",
-                "example": 5.16,
-                "description": "Maps to the field <em>Products.WebPrice</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 5.9905,
+                "description": "Maps to the field <em>Products.WebPrice</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Rrp": {
                 "type": "number",
-                "example": 5.99,
-                "description": "Maps to the field <em>Products.WebRRP</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 6.9905,
+                "description": "Maps to the field <em>Products.WebRRP</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Surcharge": {
                 "type": "number",
-                "example": 0.5,
-                "description": "Maps to the field <em>Products.SurCharge</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 0.10001,
+                "description": "Maps to the field <em>Products.SurCharge</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "ProductPricingClassification": {
                 "$ref": "#/definitions/ProductPricingClassification"
             },            
             "LongDescription": {
                 "type": "string",
-                "example": "This is a super awesome product! You need to buy it because it's the bestest. :).",
-                "description": "Maps to the field <em>Products.WebDescription</em> in your WinMan database."
+                "minLength": 0,
+                "example": "A metal display stand which includes 3 shelves made of glass.",
+                "description": "Maps to the field <em>Products.WebDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "ShortDescription": {
                 "type": "string",
-                "example": "Awesome product! Buy it :).",
-                "description": "Maps to the field <em>Products.WebSummary</em> in your WinMan database."
+                "minLength": 0,
+                "example": "A display stand with 3 shelves.",
+                "description": "Maps to the field <em>Products.WebSummary</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "Taxable": {
                 "type": "boolean",
                 "example": true,
-                "description": "Maps to the field <em>Products.Taxable</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.Taxable</em> in your WinMan database.<br/>Null values: not allowed"
             },
             "TaxCode": {
                 "$ref": "#/definitions/TaxCode"
             },
-            "SalesDicount": {
+            "SalesDiscount": {
                 "$ref": "#/definitions/SalesDiscount"
             },
-            "PriceLists": {
+            "ProcudtPriceLists": {
                 "type": "array",
                 "items": {
                     "$ref": "#/definitions/ProductPriceList"
@@ -80,93 +125,111 @@
             },
             "MetaTitle": {
                 "type": "string",
-                "example": "A meta title",
-                "description": "Maps to the field <em>Products.TitleTag</em> in your WinMan database."
+                "minLength": 0,
+                "example": "Display stand with 3 shelves",
+                "description": "Maps to the field <em>Products.TitleTag</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "MetaKeywords": {
                 "type": "string",
-                "example": "Some meta keywords",
-                "description": "Maps to the field <em>Products.KeywordsTag</em> in your WinMan database."
+                "minLength": 0,
+                "example": "display, stand, shelves, glass, metal",
+                "description": "Maps to the field <em>Products.KeywordsTag</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "MetaDescription": {
                 "type": "string",
-                "example": "A meta description",
-                "description": "Maps to the field <em>Products.DescriptionTag</em> in your WinMan database."
+                "minLength": 0,
+                "example": "A metal display stand which includes 3 shelves made of glass.",
+                "description": "Maps to the field <em>Products.DescriptionTag</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "PackSize": {
                 "type": "integer",
+                "format": "int32",
                 "example": 12,
-                "description": "Maps to the field <em>Products.PackSize</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.PackSize</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Length": {
                 "type": "number",
-                "example": 123.456789,
-                "description": "Maps to the field <em>Products.Length</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.000001,
+                "example": 1.000001,
+                "description": "Maps to the field <em>Products.Length</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Width": {
                 "type": "number",
-                "example": 123.456789,
-                "description": "Maps to the field <em>Products.Weight</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.000001,
+                "example": 1.000001,
+                "description": "Maps to the field <em>Products.Weight</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Height": {
                 "type": "number",
-                "example": 123.456789,
-                "description": "Maps to the field <em>Products.Height</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.000001,
+                "example": 1.000001,
+                "description": "Maps to the field <em>Products.Height</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "Weight": {
                 "type": "number",
-                "example": 123.456789,
-                "description": "Maps to the field <em>Products.Weight</em> in your WinMan database."
+                "format": "float",
+                "multipleOf": 0.000001,
+                "example": 1.000001,
+                "description": "Maps to the field <em>Products.Weight</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "UnitOfMeasure": {
                 "$ref": "#/definitions/UnitOfMeasure"
             },
             "DimensionQuantity": {
                 "type": "integer",
+                "format": "int32",
                 "example": 1,
-                "description": "Maps to the field <em>Products.DimensionQuantity</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.DimensionQuantity</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "ConfigurableProduct": {
                 "type": "boolean",
                 "example": false,
-                "description": "Maps to the field <em>Products.ConfiguratorOption</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.ConfiguratorOption</em> in your WinMan database.<br/>Null values: not allowed"
             },
             "Brand": {
                 "$ref": "#/definitions/Manufacturer"
             },
             "Barcode": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 20,
                 "example": "ABC123456",
-                "description": "Maps to the field <em>Products.Barcode</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.Barcode</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "CrossReference": {
                 "type": "string",
+                "minLength": 0,
                 "maxLength": 100,
                 "example": "Some example",
-                "description": "Maps to the field <em>Products.CrossReference</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.CrossReference</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "SalesLeadTime": {
                 "type": "integer",
-                "example": 16,
-                "description": "Maps to the field <em>Products.SalesLeadTime</em> in your WinMan database."
+                "format": "int32",
+                "example": 5,
+                "description": "Maps to the field <em>Products.SalesLeadTime</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "RoHS": {
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 1,
                 "example": "C",
-                "description": "Maps to the field <em>Products.RoHS</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.RoHS</em> in your WinMan database where <em>C</em> = <em>Compliant</em>, <em>N</em> = <em>Non-Compliant</em>, <em>E</em> = <em>Exempt</em>, <em>U</em> = <em>Unknown</em>.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "Notes": {
                 "type": "string",
-                "example": "Some notes about this product",
-                "description": "Maps to the field <em>Products.Notes</em> in your WinMan database."
+                "minLength": 0,
+                "example": "Cannot be backordered.",
+                "description": "Maps to the field <em>Products.Notes</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "PromptText": {
                 "type": "string",
-                "example": "Here's a prompt",
-                "description": "Maps to the field <em>Products.PromptText</em> in your WinMan database."
+                "minLength": 0,
+                "example": "Cannot be backordered.",
+                "description": "Maps to the field <em>Products.PromptText</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "Classification": {
                 "$ref": "#/definitions/Classification"
@@ -211,11 +274,11 @@
                 "type": "string",
                 "format": "date-time",
                 "example": "2017-07-31T10:48:06.200",
-                "description": "Maps to the field <em>Products.LastModifiedDate</em> in your WinMan database."
+                "description": "Maps to the field <em>Products.LastModifiedDate</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CustomColumns": {
-                "type": "string",
-                "description": "Please see your WinMan application for data types for user defined custom columns."
+                "type": "array",
+                "description": "Please see your WinMan application for data types for user defined custom columns.<br/>Null values: not allowed<br/>Empty arrays: allowed"
             }
         }
     }

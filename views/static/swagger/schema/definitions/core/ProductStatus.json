@@ -1,14 +1,29 @@
 {
     "ProductStatus": {
         "type": "object",
+        "description": "The <strong>ProductStatus</strong> object <strong>cannot</strong> be null but <strong>can</strong> be an empty object.",
+        "required": [
+            "ProductStatusId",
+            "ProductStatusDisplayName"
+        ],         
         "xml": {
             "name": "ProductStatus"
         },
         "properties": {
-            "ProductStatusName": {
+            "ProductStatusId": {
                 "type": "string",
-                "example": "something"
-            }
+                "minLength": 1,
+                "maxLength": 100,
+                "example": "DISCONTINUED",
+                "description": "Maps to the field <em>ProductStatuses.ProductStatusId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "ProductStatusDisplayName": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 100,
+                "example": "Discountinued as of 1st August 2017",
+                "description": "Maps to the field <em>ProductStatuses.DisplayName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            }            
         }
     }
 }

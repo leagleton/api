@@ -94,6 +94,29 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Get Token Modal -->
+                        <div class="modal" id="requestTokenModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close close-modal" data-dismiss="modal" aria-hidden="true"><svg width="20" height="20"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close"></use></svg></button>
+                                        <h3 class="modal-title">Get Token</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            Which website would you like your new access token to be for?
+                                        </p>
+                                        <form role="form" name="requestToken" id="requestToken">
+                                            <input type="hidden" name="tokenClient" id="tokenClient" value="0"/>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-success" onclick="$('#requestToken').submit()">Get Token</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
                         <!-- Delete Client Modal -->
                         <div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                             <div class="modal-dialog">

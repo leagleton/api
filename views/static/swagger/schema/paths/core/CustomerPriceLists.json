@@ -18,6 +18,7 @@
                     "description": "Fetch price lists for a single web-enabled customer with the supplied <em>guid</em>.",
                     "required": true,
                     "type": "string",
+                    "minLength": 36,
                     "maxLength": 36
                 },
                 {
@@ -26,6 +27,7 @@
                     "description": "Fetch only price lists for web-enabled customers which are attached to the supplied <em>website</em>.",
                     "required": true,
                     "type": "string",
+                    "minLength": 1,
                     "maxLength": 100
                 },
                 {
@@ -34,6 +36,7 @@
                     "description": "Fetch web-enabled customers modified within the specified number of seconds.",
                     "required": false,
                     "type": "integer",
+                    "format": "int32",
                     "minimum": 0
                 }
             ],
@@ -52,7 +55,10 @@
                     }
                 },
                 "400": {
-                    "description": "Bad input parameter."
+                    "description": "Bad input parameter.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
                 },
                 "401": {
                     "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."

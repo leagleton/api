@@ -44,16 +44,18 @@ server.grant(oauth2orize.grant.code((client, redirectURI, user, ares, done) => {
   if (ares.hasOwnProperty('response') && ares.response == 'ajax') {
     source = "account";
   }
-
-  const code = utils.createToken({ sub: user.id, exp: expiresIn, src: source, scp: ares.scope });
+  
+  const eCommerceWebsite = ares.website;
+  const code = utils.createToken({ sub: user.user, exp: expiresIn, src: source, scp: ares.scope });
   const uuid = jwt.decode(code).jti;
 
   tp.sql("EXEC wsp_RestApiAuthorisationCodesInsert \
             @uuid = '" + uuid + "', \
             @expires = '" + expires + "', \
             @scopes = '" + client.scope + "', \
-            @client = " + client.id + ", \
-            @user = " + user.id + ", \
+            @client = " + client.client + ", \
+            @user = " + user.user + ", \
+            @website = " + eCommerceWebsite + ", \
             @redirectUri = '" + redirectURI + "'")
     .execute()
     .then(() => {
@@ -89,7 +91,8 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectURI, done) => {
         "RedirectURI": authorisationCodes[0].RedirectURI,
         "user": authorisationCodes[0].RestApiUser,
         "scope": scope,
-        "source": source
+        "source": source,
+        "website": authorisationCodes[0].EcommerceWebsite
       };
 
       if (source == "swagger") {
@@ -115,7 +118,7 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectURI, done) => {
         return done(null, token.token, false, params);
       }
       throw new Error('Error exchanging auth code for tokens');
-    })
+    }) 
     .catch(err => done(err, false, false));
 }));
 
@@ -157,7 +160,7 @@ exports.authorization = [
         }
 
         const client = {
-          'id': clients[0].RestApiClient,
+          'client': clients[0].RestApiClient,
           'clientId': clients[0].RestApiClientId,
           'clientSecret': clients[0].Secret,
           'scope': clients[0].Scopes,
@@ -176,10 +179,11 @@ exports.authorization = [
   (req, res, next) => {
     server.decision({ loadTransaction: false }, (serverReq, callback) => {
       let response = '';
+
       if (req.query.hasOwnProperty('response')) {
         response = req.query.response;
       }
-      callback(null, { allow: true, scope: req.query.scope, response: response });
+      callback(null, { allow: true, scope: req.query.scope, response: response, website: req.query.website });
     })(req, res, next);
   }
 
@@ -225,15 +229,15 @@ exports.token = [
 // simple matter of serializing the client's ID, and deserializing by finding
 // the client by ID from the database.
 
-server.serializeClient((client, done) => done(null, client.id));
+server.serializeClient((client, done) => done(null, client.client));
 
 server.deserializeClient((RestApiClient, done) => {
-  tp.sql("EXEC wsp_RestApiClientsSelect @client = " + RestApiClient) // TODO: use stored proecures instead of inline qry.
+  tp.sql("EXEC wsp_RestApiClientsSelect @client = " + RestApiClient)
     .execute()
     .then(function (clients) {
       if (clients.length > 0) {
         const client = {
-          "id": clients[0].RestApiClient,
+          "client": clients[0].RestApiClient,
           "clientId": clients[0].RestApiClientId,
           "clientSecret": clients[0].Secret,
           "scope": clients[0].Scopes

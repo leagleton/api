@@ -78,9 +78,6 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-	BEGIN TRANSACTION;	
-
 	DECLARE	@customer bigint;
 	DECLARE @creditCard bigint;
 	DECLARE @creditCardType bigint;
@@ -99,7 +96,6 @@ BEGIN
 		BEGIN
 			SET @error = 'ERROR: Required parameter missing: Sales Order Number.';
 			SELECT @error AS ErrorMessage;
-			ROLLBACK TRANSACTION;
 			RETURN;
 		END;
 	ELSE
@@ -120,7 +116,6 @@ BEGIN
 		BEGIN
 			SET @error = 'ERROR: Required parameter missing: Transaction Value.';
 			SELECT @error AS ErrorMessage;
-			ROLLBACK TRANSACTION;
 			RETURN;
 		END;
 
@@ -128,7 +123,6 @@ BEGIN
 		BEGIN
 			SET @error = 'ERROR: Required parameter missing: Payment Type.';
 			SELECT @error AS ErrorMessage;
-			ROLLBACK TRANSACTION;
 			RETURN;
 		END;
 	ELSE
@@ -140,7 +134,6 @@ BEGIN
 		BEGIN
 			SET @error = 'ERROR: Could not find credit card type with the specified credit card type ID. Please check your input data.';
 			SELECT @error AS ErrorMessage;
-			ROLLBACK TRANSACTION;
 			RETURN;
 		END;
 
@@ -202,7 +195,6 @@ BEGIN
 		BEGIN
 			SET @error = 'ERROR: Could not find country with the specified country code. Please check your input data.';
 			SELECT @error AS ErrorMessage;
-			ROLLBACK TRANSACTION;
 			RETURN;
 		END;
 
@@ -268,8 +260,6 @@ BEGIN
 		@Cash = null;
 		
 	SELECT @error AS ErrorMessage;
-
-	COMMIT TRANSACTION;
 
 END;
 GO

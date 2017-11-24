@@ -85,6 +85,7 @@ BEGIN
 		SELECT
 			ROW_NUMBER() OVER (ORDER BY cust.Customer) AS rowNumber,
 			cust.Customer,
+			cust.CustomerName,
 			cust.CustomerGUID,
 			cust.[Site],
 			cust.CustomerId,
@@ -129,6 +130,7 @@ BEGIN
 			AND ctct.PortalUserName IS NOT NULL
 		GROUP BY
 			cust.Customer,
+			cust.CustomerName,
 			cust.CustomerGUID,
 			cust.[Site],
 			cust.CustomerId,
@@ -159,6 +161,7 @@ BEGIN
 	SELECT @results =    
 		CONVERT(nvarchar(max), (SELECT
 			cust.CustomerGUID AS [Guid],
+			cust.CustomerName,
 			COALESCE(dbo.wfn_RestApiGetSiteName(cust.[Site]), '') AS [Site],
 			'' AS [Site],
 			cust.CustomerId,

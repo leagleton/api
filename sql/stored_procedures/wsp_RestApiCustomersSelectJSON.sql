@@ -85,6 +85,7 @@ BEGIN
 		SELECT
 			ROW_NUMBER() OVER (ORDER BY cust.Customer) AS rowNumber,
 			cust.Customer,
+			cust.CustomerName,
 			cust.CustomerGUID,
 			cust.[Site],
 			cust.CustomerId,
@@ -129,6 +130,7 @@ BEGIN
 			AND ctct.PortalUserName IS NOT NULL
 		GROUP BY
 			cust.Customer,
+			cust.CustomerName,
 			cust.CustomerGUID,
 			cust.[Site],
 			cust.CustomerId,
@@ -161,6 +163,7 @@ BEGIN
 			STUFF( 
 				(SELECT ',{
 						"Guid":"' + CAST(cust.CustomerGUID AS nvarchar(36)) + '",
+						"CustomerName":"' + cust.CustomerName + '",						
 						"Site":' + CASE WHEN dbo.wfn_RestApiGetSiteName(cust.[Site]) IS NULL THEN 'null' ELSE '"' + dbo.wfn_RestApiGetSiteName(cust.[Site]) + '"' END + ',
 						"CustomerId":"' + REPLACE(cust.CustomerId, '"','&#34;') + '",
 						"Branch":"' + REPLACE(cust.Branch, '"','&#34;') + '",

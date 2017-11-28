@@ -48,9 +48,6 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-	BEGIN TRANSACTION;	
-
 	DECLARE	@systemOrderValue money;
 		
 	SET @error = '';
@@ -107,8 +104,6 @@ BEGIN
 		END;
 
 	SELECT @error AS ErrorMessage;
-
-	COMMIT TRANSACTION;
 
 END;
 GO

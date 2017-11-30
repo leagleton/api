@@ -1,0 +1,115 @@
+{
+    "DeliveryAddress": {
+        "type": "object",
+        "description": "The <strong>DeliveryAddress</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
+        "required": [
+            "IsDefault"
+        ],           
+        "xml": {
+            "name": "DeliveryAddress"
+        },
+        "properties": {
+            "DeliveryName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50,
+                "example": "Systemware Service Ltd.",
+                "description": "Maps to the field <em>DeliveryAddresses.Address</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "Address": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "example": "1 Industrial Drive",
+                "description": "Maps to the field <em>DeliveryAddresses.Address</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "City": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "Birmingham",
+                "description": "Maps to the field <em>DeliveryAddresses.City</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "Region": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "West Midlands",
+                "description": "Maps to the field <em>DeliveryAddresses.Region</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "PostalCode": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 20,
+                "example": "B24 6GH",
+                "description": "Maps to the field <em>DeliveryAddresses.PostalCode</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },            
+            "Country": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3,
+                "example": "GBR",
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },            
+            "PhoneNumber": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 30,
+                "example": "+44 (0)121 123 4567",
+                "description": "Maps to the field <em>DeliveryAddresses.PhoneNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },            
+            "LastName": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 25,
+                "example": "John",
+                "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "FirstName": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 25,
+                "example": "Smith",
+                "description": "Maps to the field <em>DeliveryAddresses.FirstName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "Title": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 25,
+                "example": "Mr",
+                "description": "Maps to the field <em>DeliveryAddresses.Title</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "Comments": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 500,
+                "example": "Email communication preferred.",
+                "description": "Maps to the field <em>Discounts.DiscountDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "EmailAddress": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 450,
+                "example": "jsmith@email.com",
+                "description": "Maps to the field <em>DeliveryAddresses.EmailAddress</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "Notes": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 250,
+                "example": "Email communication preferred.",
+                "description": "Maps to the field <em>Discounts.DiscountDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "SalesTaxExempt": {
+                "type": "boolean",
+                "example": true,
+                "description": "Maps to the field <em>DeliveryAddresses.SalesTaxExempt</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "IsDefault": {
+                "type": "boolean",
+                "example": true,
+                "description": "A calculated value from the field <em>Customers.DeliveryAddress</em> in your WinMan database.<br/>Null values: not allowed"
+            }
+        }
+    }
+}

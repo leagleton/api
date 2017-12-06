@@ -4,7 +4,7 @@
             "tags": [
                 "Products"
             ],
-            "summary": "Fetch a product category or product categories from WinMan",
+            "summary": "Fetch a product category or product categories from WinMan.",
             "operationId": "getProductCategories",
             "description": "<p>Fetch product categories which contain web-enabled products from WinMan.</p>",
             "produces": [

@@ -3,6 +3,20 @@
         "type": "object",
         "description": "The <strong>DeliveryAddress</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
         "required": [
+            "DeliveryName",
+            "Address",
+            "City",
+            "Region",
+            "PostalCode",
+            "Country",
+            "PhoneNumber",
+            "LastName",
+            "FirstName",
+            "Title",
+            "Comments",
+            "EmailAddress",
+            "Notes",
+            "SalesTaxExempt",
             "IsDefault"
         ],           
         "xml": {

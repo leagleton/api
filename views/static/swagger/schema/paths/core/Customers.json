@@ -4,7 +4,7 @@
             "tags": [
                 "Customers"
             ],
-            "summary": "Fetch a customer or customers from WinMan",
+            "summary": "Fetch a customer or customers from WinMan.",
             "operationId": "getCustomers",
             "description": "<p>Fetch web-enabled customers from WinMan.</p>",
             "produces": [

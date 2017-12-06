@@ -113,7 +113,7 @@
             "SalesDiscount": {
                 "$ref": "#/definitions/SalesDiscount"
             },
-            "ProcudtPriceLists": {
+            "ProductPriceLists": {
                 "type": "array",
                 "items": {
                     "$ref": "#/definitions/ProductPriceList"

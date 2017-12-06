@@ -4,7 +4,7 @@
             "tags": [
                 "Customers"
             ],
-            "summary": "Fetch price lists for a customer from WinMan",
+            "summary": "Fetch price lists for a customer from WinMan.",
             "operationId": "getCustomerPriceLists",
             "description": "<p>Fetch price lists for a web-enabled customer from WinMan.</p>",
             "produces": [

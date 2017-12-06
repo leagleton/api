@@ -54,7 +54,7 @@
                 "minLength": 1,
                 "maxLength": 200,
                 "example": "22 Acacia Avenue",
-                "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+                "description": "Maps to the field <em>DeliveryAddresses.Address</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "ShippingCity": {
                 "type": "string",

@@ -4,7 +4,7 @@
             "tags": [
                 "Customers"
             ],
-            "summary": "Fetch delivery addresses for a customer from WinMan",
+            "summary": "Fetch delivery addresses for a customer from WinMan.",
             "operationId": "getCustomerDeliveryAddresses",
             "description": "<p>Fetch delivery addresses for a web-enabled customer from WinMan.</p>",
             "produces": [

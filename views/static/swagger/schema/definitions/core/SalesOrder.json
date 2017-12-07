@@ -6,7 +6,6 @@
             "Website",
             "CustomerOrderNumber", 
             "TotalOrderValue",
-            "CustomerContact",
             "CurrencyCode", 
             "WebsiteUserName",
             "SalesOrderItems",
@@ -23,13 +22,6 @@
                 "maxLength": 100,
                 "example": "www.example.co.uk",
                 "description": "Maps to the field <em>EcommerceWebsites.EcommerceWebsiteId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
-            },            
-            "SiteName": {
-                "type": "string",
-                "minLength": 0,
-                "maxLength": 20,
-                "example": "Dudley",
-                "description": "Maps to the field <em>Sites.SiteName</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "CustomerGuid": {
                 "type": "string",
@@ -59,13 +51,6 @@
                 "multipleOf": 0.0001,
                 "example": 72.4801,
                 "description": "The total order value after discounts are applied, including tax, including delivery.<br/>Null values: not allowed<br/>Zero values: not allowed"
-            },            
-            "CreditTermsId": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 15,
-                "example": "30 DAYS",
-                "description": "Maps to the field <em>CreditTerms.CreditTermsId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "EffectiveDate": {
                 "type": "string",
@@ -80,13 +65,6 @@
                 "example": "WEB000123",
                 "description": "Maps to the field <em>SalesOrders.CustomerOrderNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
-            "CustomerContact": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 50,
-                "example": "John Smith",
-                "description": "Maps to the field <em>SalesOrders.CustomerContact</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
-            },
             "CurrencyCode": {
                 "type": "string",
                 "minLength": 3,
@@ -100,13 +78,6 @@
                 "maxLength": 50,
                 "example": "jsmith@example.com",
                 "description": "Maps to the field <em>CRMContacts.PortalUserName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
-            },
-            "SalesOrderPrefixId": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 15,
-                "example": "SO-",
-                "description": "Maps to the field <em>SalesOrderPrefixes.SalesOrderPrefixId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "SalesOrderItems": {
                 "type": "array",

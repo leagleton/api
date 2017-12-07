@@ -33,20 +33,6 @@ GO
 ALTER PROCEDURE dbo.wsp_RestApiSalesOrdersPayment
 	@salesOrder bigint = null,
 	@creditCardTypeId nvarchar(20) = null,
-	@cardName nvarchar(50) = null,
-	@cardNumber nvarchar(100) = null,
-	@startMonth int = null,
-	@startYear int = null,
-	@expiryMonth int = null,
-	@expiryYear int = null,
-	@issue nvarchar(10) = null,
-	@address nvarchar(100) = null,
-	@city nvarchar(50) = null,
-	@region nvarchar(50) = null,
-	@postalCode nvarchar(20) = null,
-	@countryCode nvarchar(3) = null,
-	@lastDigits nvarchar(4) = null,
-	@authorisation nvarchar(50) = null,
 	@curTransactionValue money,
 	@error nvarchar(1000) OUTPUT
 AS
@@ -57,20 +43,6 @@ BEGIN
 			EXEC dbo.bsp_RestApiSalesOrdersPayment
 				@salesOrder = @salesOrder,
 				@creditCardTypeId = @creditCardTypeId,
-				@cardName = @cardName,
-				@cardNumber = @cardNumber,
-				@startMonth = @startMonth,
-				@startYear = @startYear,
-				@expiryMonth = @expiryMonth,
-				@expiryYear = @expiryYear,
-				@issue = @issue,
-				@address = @address,
-				@city = @city,
-				@region = @region,
-				@postalCode = @postalCode,
-				@countryCode = @countryCode,
-				@lastDigits = @lastDigits,
-				@authorisation = @authorisation,
 				@curTransactionValue = @curTransactionValue,
 				@error = @error OUTPUT
 			RETURN;
@@ -137,95 +109,24 @@ BEGIN
 			RETURN;
 		END;
 
-	IF @cardName IS NULL
-		BEGIN
-			SET @cardName = '';
-		END;
-
-	IF @cardNumber IS NULL
-		BEGIN
-			SET @cardNumber = '';
-		END;
-
-	IF @expiryMonth IS NULL
-		BEGIN
-			SET @expiryMonth = 0;
-		END;
-
-	IF @expiryYear IS NULL
-		BEGIN
-			SET @expiryYear = 0;
-		END;
-
-	IF @issue IS NULL
-		BEGIN
-			SET @issue = '';
-		END;
-
-	IF @address IS NULL
-		BEGIN
-			SET @address = '';
-		END;
-
-	IF @city IS NULL
-		BEGIN
-			SET @city = '';
-		END;
-
-	IF @region IS NULL
-		BEGIN
-			SET @region = '';
-		END;
-
-	IF @postalCode IS NULL
-		BEGIN
-			SET @postalCode = '';
-		END;
-
-	IF @countryCode IS NULL OR @countryCode = ''
-		BEGIN
-			SET @country = (SELECT Country FROM ApplicationSettings);
-		END;
-	ELSE
-		BEGIN
-			SET @country = (SELECT Country FROM Countries WHERE ISO3Chars = @countryCode);
-		END;
-
-	IF @country IS NULL
-		BEGIN
-			SET @error = 'ERROR: Could not find country with the specified country code. Please check your input data.';
-			SELECT @error AS ErrorMessage;
-			RETURN;
-		END;
-
-	IF @lastDigits IS NULL
-		BEGIN
-			SET @lastDigits = '';
-		END;
-
-	IF @authorisation IS NULL
-		BEGIN
-			SET @authorisation = '';
-		END;
-
 	EXEC dbo.wsp_SalesOrdersAddCreditCard
 		@SalesOrder = @salesOrder,
 		@Customer = @customer,
 		@CreditCard = @creditCard OUTPUT,
 		@CreditCardType = @creditCardType,
-		@CardName = @cardName,
-		@CardNumber = @cardNumber,
-		@LastDigits = @lastDigits,
-		@StartMonth = @startMonth,
-		@StartYear = @startYear,
-		@ExpiryMonth = @expiryMonth,
-		@ExpiryYear = @expiryYear,
-		@Issue = @issue,
-		@Address = @address,
-		@City = @city,
-		@Region = @region,
-		@PostalCode = @postalCode,
-		@Country = @country,
+		@CardName = '',
+		@CardNumber = '',
+		@LastDigits = '',
+		@StartMonth = '',
+		@StartYear = '',
+		@ExpiryMonth = '',
+		@ExpiryYear = '',
+		@Issue = '',
+		@Address = '',
+		@City = '',
+		@Region = '',
+		@PostalCode = '',
+		@Country = '',
 		@Active = 1,
 		@LastModifiedUser = @user,
 		@Original_LastModifiedDate = @originalLastModifiedDate;
@@ -237,7 +138,7 @@ BEGIN
 		@CurTransactionValue = @curTransactionValue,
 		@ExchangeRate = @exchangeRate,
 		@Currency = @currency,
-		@Authorisation = @authorisation,
+		@Authorisation = '',
 		@Status = 'CS',
 		@Notes = '',
 		@TransactionCode = '',

@@ -3,13 +3,14 @@
         "type": "object",
         "description": "The <strong>SalesOrderShipping</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
         "required": [
-            "Price",
+            "ShippingValue",
+            "ShippingTaxValue",
             "ShippingName",
             "ShippingAddress",
             "ShippingCountryCode",
             "ShippingPostalCode",
             "FreightMethodId"
-        ],         
+        ],
         "xml": {
             "name": "SalesOrderShipping"
         },
@@ -98,26 +99,19 @@
                 "example": "jane.smithexample.com; jsmith@example.com",
                 "description": "Maps to the field <em>DeliveryAddresses.EmailAddress</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
-            "TaxCodeId": {
-                "type": "string",
-                "minLength": 0,
-                "maxLength": 15,
-                "example": "STD",
-                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
-            },
-            "TaxCodeSecondaryId": {
-                "type": "string",
-                "minLength": 0,
-                "maxLength": 15,
-                "example": "STD17.5",
-                "description": "Maps to the field <em>TaxCodes.TaxCodeId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
-            },
-            "Price": {
+            "ShippingValue": {
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.0001,
-                "example": 5.8601,
-                "description": "The price paid for shipping, excluding tax.<br/>Null values: not allowed<br/>Zero values: allowed"
+                "example": 29.6701,
+                "description": "The total price due in the customer's currency for shipping, after discounts, including tax.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "ShippingTaxValue": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.6701,
+                "description": "The total amount of tax due in the customer's currency for shipping.<br/>Null values: not allowed<br/>Zero values: allowed"
             }                                                                                                                                                                                                                                                                                                                                                                                          
         }
     }

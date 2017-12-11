@@ -3,8 +3,7 @@
         "type": "object",
         "description": "The <strong>SalesOrderBilling</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
         "required": [
-            "PaymentType",
-            "CardPaymentReceived"
+            "PaymentType"
         ],        
         "xml": {
             "name": "SalesOrderBilling"
@@ -15,14 +14,14 @@
                 "minLength": 1,
                 "maxLength": 20,
                 "example": "VISA",
-                "description": "Maps to the field <em>CreditCardTypes.CreditCardTypeId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+                "description": "Maps to the field <em>CreditCardTypes.CreditCardTypeId</em> in your WinMan database. If the customer wishes to pay on account, set this field to 'On Account'.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "CardPaymentReceived": {
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.0001,
                 "example": 72.4801,
-                "description": "The total payment amount received for this order.<br/>Null values: not allowed<br/>Zero values: not allowed"
+                "description": "The total payment amount received for this order. If the customer wishes to pay on account, this field can be set to 0, null, or it can be omitted.<br/>Null values: allowed<br/>Zero values: allowed"
             }                                                                                                                                               
         }
     }

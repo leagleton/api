@@ -31,8 +31,8 @@ IF NOT EXISTS
 GO
 
 ALTER PROCEDURE dbo.wsp_RestApiSalesOrdersPayment
-	@salesOrder bigint = null,
-	@creditCardTypeId nvarchar(20) = null,
+	@salesOrder bigint,
+	@creditCardTypeId nvarchar(20),
 	@curTransactionValue money,
 	@error nvarchar(1000) OUTPUT
 AS
@@ -84,6 +84,8 @@ BEGIN
 				SalesOrder = @salesOrder;
 		END;
 
+	SET @country = dbo.wfn_GetDefault('Country', @site);		
+
 	IF @curTransactionValue IS NULL
 		BEGIN
 			SET @error = 'ERROR: Required parameter missing: Transaction Value.';
@@ -126,7 +128,7 @@ BEGIN
 		@City = '',
 		@Region = '',
 		@PostalCode = '',
-		@Country = '',
+		@Country = @country,
 		@Active = 1,
 		@LastModifiedUser = @user,
 		@Original_LastModifiedDate = @originalLastModifiedDate;

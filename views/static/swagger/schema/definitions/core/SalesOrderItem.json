@@ -5,7 +5,7 @@
         "required": [
             "Sku",
             "Quantity",
-            "Price"
+            "OrderLineValue"
         ],         
         "xml": {
             "name": "SalesOrderItem"
@@ -25,13 +25,20 @@
                 "example": 2.00006,
                 "description": "Maps to the field <em>SalesOrderItems.Quantity</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: not allowed"
             },
-            "Price": {
+            "OrderLineValue": {
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.0001,
                 "example": 29.6701,
-                "description": "The price paid per item for the specified <em>Sku</em>, before discounts, excluding tax.<br/>Null values: not allowed<br/>Zero values: allowed"
-            }
+                "description": "The total price due in the customer's currency for the <em>Sku</em>, after discounts, including tax. For example, if the customer has purchased 3 x ABC123 which cost 1.00 each after tax and discounts, <em>OrderLineValue</em> will be 3.00.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "OrderLineTaxValue": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.6701,
+                "description": "The total amount of tax due in the customer's currency for the <em>Sku</em>. For example, if the <em>OrderLineValue</em> is 3.00 and tax is 20%, <em>OrderLineTaxValue</em> will be 0.50.<br/>Null values: not allowed<br/>Zero values: allowed"
+            }            
         }
     }
 }

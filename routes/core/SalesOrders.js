@@ -32,7 +32,8 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
     const customerGuid = req.body.CustomerGuid || '';
     const customerId = req.body.CustomerId || '';
     const customerBranch = req.body.CustomerBranch || '';
-    const effectiveDate = req.body.EffectiveDate || new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString();
+    const dueDate = req.body.dueDate || new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString();
+    const orderDate = req.body.orderDate || new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString();
     const customerOrderNumber = req.body.CustomerOrderNumber || '';
     let customerContact = '';
     let delName = req.body.SalesOrderShipping.ShippingName || '';
@@ -50,14 +51,22 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
     const portalUserName = req.body.WebsiteUserName || '';
     const freightMethodId = req.body.SalesOrderShipping.FreightMethodId || '';
     const totalOrderValue = req.body.TotalOrderValue || 0;
+    const totalTaxValue = req.body.TotalTaxValue || 0;
+    const curTransactionValue = req.body.SalesOrderBilling.CardPaymentReceived || 0;
+    const notes = req.body.Notes || '';
+    const coupon = req.body.Coupon || '';
     let salesOrder = 0;
     let salesOrderId = '';
 
-    if (isNaN(parseFloat(totalOrderValue)) || isNaN(parseFloat(req.body.SalesOrderShipping.Price))) {
+    if (isNaN(parseFloat(totalOrderValue))
+        || isNaN(parseFloat(req.body.SalesOrderShipping.ShippingValue))
+        || isNaN(parseFloat(totalTaxValue))
+        || isNaN(parseFloat(curTransactionValue))) {
         return utils.reject(res, req, utils.reasons.invalidParam);
     }
 
-    if (typeof req.body.TotalOrderValue === 'undefined') {
+    if (typeof req.body.TotalOrderValue === 'undefined'
+        || typeof req.body.TotalTaxValue === 'undefined') {
         return utils.reject(res, req, utils.reasons.requiredParam);
     }
 
@@ -80,7 +89,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
         return utils.reject(res, req, utils.reasons.requiredParam);
     }
 
-    if (typeof req.body.SalesOrderShipping.Price === 'undefined') {
+    if (typeof req.body.SalesOrderShipping.ShippingValue === 'undefined') {
         return utils.reject(res, req, utils.reasons.requiredParam);
     }
 
@@ -95,7 +104,8 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                     @customerGuid = '" + customerGuid + "',\
                     @customerId = '" + customerId + "',\
                     @customerBranch = '" + customerBranch + "',\
-                    @effectiveDate = '" + effectiveDate + "',\
+                    @dueDate = '" + dueDate + "',\
+                    @orderDate = '" + orderDate + "',\
                     @customerOrderNumber = '" + customerOrderNumber + "',\
                     @customerContact = '" + customerContact + "',\
                     @delName = '" + delName + "',\
@@ -112,6 +122,9 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                     @currencyCode = '" + currencyCode + "',\
                     @portalUserName = '" + portalUserName + "',\
                     @freightMethodId = '" + freightMethodId + "',\
+                    @notes = '" + notes + "',\
+                    @coupon = '" + coupon + "',\
+                    @curValuePaid = " + curTransactionValue + ",\
                     @scope = 'postSalesOrders'")
                 .execute();
         })
@@ -124,8 +137,18 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
             } else {
                 throw new Error(result);
             }
-            
-            const curPrice = req.body.SalesOrderShipping.Price;
+
+            const curValue = req.body.SalesOrderShipping.ShippingValue;
+            const curTaxValue = req.body.SalesOrderShipping.ShippingTaxValue;
+
+            if (isNaN(parseFloat(curTaxValue)) || isNaN(parseFloat(curValue))) {
+                return reject(utils.reasons.invalidParam);
+            }
+
+            if (typeof req.body.SalesOrderShipping.ShippingValue === 'undefined'
+                || typeof req.body.SalesOrderShipping.ShippingTaxValue === 'undefined') {
+                return reject(utils.reasons.requiredParam);
+            }
 
             return transaction.sql("EXEC wsp_RestApiSalesOrderItemsInsert \
                     @salesOrder = " + salesOrder + ",\
@@ -143,7 +166,8 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                     @delPhoneNumber = '" + delPhoneNumber + "',\
                     @delEmailAddress = '" + delEmailAddress + "',\
                     @freightMethodId = '" + freightMethodId + "',\
-                    @curPrice = " + curPrice)
+                    @curValue = " + curValue + ",\
+                    @curTaxValue = " + curTaxValue)
                 .execute();
         })
         .then((results) => {
@@ -164,17 +188,19 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                         return reject(utils.reasons.requiredParam);
                     }
 
-                    const curPrice = salesOrderItem.Price || 0;
+                    const curValue = salesOrderItem.OrderLineValue || 0;
+                    const curTaxValue = salesOrderItem.OrderLineTaxValue || 0;
 
                     if (!quantity) {
                         return reject(utils.reasons.requiredParam);
                     }
 
-                    if (isNaN(parseFloat(curPrice)) || isNaN(parseFloat(quantity))) {
+                    if (isNaN(parseFloat(curTaxValue)) || isNaN(parseFloat(quantity)) || isNaN(parseFloat(curValue))) {
                         return reject(utils.reasons.invalidParam);
                     }
 
-                    if (typeof salesOrderItem.Price === 'undefined') {
+                    if (typeof salesOrderItem.OrderLineValue === 'undefined'
+                        || typeof salesOrderItem.OrderLineTaxValue === 'undefined') {
                         return reject(utils.reasons.requiredParam);
                     }
 
@@ -194,7 +220,8 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                         @delCountryCode = '" + delCountryCode + "',\
                         @delPhoneNumber = '" + delPhoneNumber + "',\
                         @delEmailAddress = '" + delEmailAddress + "',\
-                        @curPrice = " + curPrice + ";";
+                        @curValue = " + curValue + ",\
+                        @curTaxValue = " + curTaxValue + ";";
 
                     return resolve();
                 });
@@ -213,22 +240,18 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
             }
 
             const creditCardTypeId = req.body.SalesOrderBilling.PaymentType || '';
-            const curTransactionValue = req.body.SalesOrderBilling.CardPaymentReceived || 0;
 
-            if (typeof curTransactionValue === 'undefined' || !creditCardTypeId) {
-                throw new Error(utils.reasons.requiredParam);
-            }
-
-            if (isNaN(parseFloat(curTransactionValue))) {
-                throw new Error(utils.reasons.invalidParam);
-            }
-
-            return transaction.sql("DECLARE @error NVARCHAR(1000) EXEC wsp_RestApiSalesOrdersPayment \
+            if (creditCardTypeId.toLowerCase().replace(/\s/g, '') === 'onaccount') {
+                const results = [ { ErrorMessage: '' } ];
+                return results;
+            } else {
+                return transaction.sql("DECLARE @error NVARCHAR(1000) EXEC wsp_RestApiSalesOrdersPayment \
                     @salesOrder = " + salesOrder + ",\
                     @creditCardTypeId = '" + creditCardTypeId + "',\
                     @curTransactionValue = " + curTransactionValue + ",\
                     @error = @error OUTPUT")
-                .execute();
+                    .execute();
+            }
         })
         .then((results) => {
             result = results[0].ErrorMessage || '';

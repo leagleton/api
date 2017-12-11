@@ -103,14 +103,14 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.0001,
-                "example": 29.6701,
+                "example": 1.2006,
                 "description": "The total price due in the customer's currency for shipping, after discounts, including tax.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "ShippingTaxValue": {
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.0001,
-                "example": 29.6701,
+                "example": 0.2001,
                 "description": "The total amount of tax due in the customer's currency for shipping.<br/>Null values: not allowed<br/>Zero values: allowed"
             }                                                                                                                                                                                                                                                                                                                                                                                          
         }

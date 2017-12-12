@@ -93,7 +93,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
     let allowCommunication = req.body.AllowCommunication || false;
     const address = req.body.Address || '';
     const city = req.body.City || '';
-    const region = req.body.City || '';
+    const region = req.body.Region || '';
     const postalCode = req.body.PostalCode || '';
     const countryCode = req.body.CountryCode || '';
 
@@ -108,7 +108,10 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
 
     allowCommunication = (allowCommunication) ? 1 : 0;
 
-    tp.sql("DECLARE @error NVARCHAR(1000) EXEC wsp_RestApiContactsInsert \
+    tp.sql("DECLARE @error nvarchar(1000);\
+            DECLARE @contact bigint;\
+            DECLARE @company bigint;\
+            EXEC wsp_RestApiContactsInsert \
                 @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
                 @firstName = '" + firstName + "',\
                 @lastName = '" + lastName + "',\
@@ -127,7 +130,9 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                 @postalCode = '" + postalCode + "',\
                 @countryCode = '" + countryCode + "',\
                 @scope = 'postCustomers',\
-                @error = @error OUTPUT")
+                @error = @error OUTPUT,\
+                @contact = @contact OUTPUT,\
+                @company = @company OUTPUT;")
         .execute()
         .then((results) => {
             const result = results[0].ErrorMessage || '';

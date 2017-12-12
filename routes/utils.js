@@ -12,8 +12,8 @@ const contentTypes = {
 
 exports.reasons = {
     rejectHeader: 'This API produces XML or JSON only. Please alter your accept header accordingly.',
-    requiredParam: 'A required parameter is missing.',
-    invalidParam: 'One or more parameters are of the wrong type.',
+    requiredParam: 'A required parameter is missing:',
+    invalidParam: 'A parameter is of the wrong type:',
     inadequateAccess: 'The client has not been granted adequate access to this resource.',
     unspecified: 'There was a problem trying to execute your request. Please contact WinMan support if the problem persists.'
 };

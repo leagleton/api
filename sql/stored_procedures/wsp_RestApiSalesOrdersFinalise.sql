@@ -61,7 +61,7 @@ BEGIN
 
 	IF @totalOrderValue <> @systemOrderValue
 		BEGIN;
-			SET @error = @error + CHAR(13) + CHAR(10) + 'Website order total does not match system order total of ' + CAST(@systemOrderValue AS nvarchar(100)) + '.';		
+			SET @error = @error + CHAR(13) + CHAR(10) + 'The sum of the OrderLineValues + ShippingValue comes to ' + CAST(@systemOrderValue AS nvarchar(100)) + ', but the TotalOrderValue was specified as ' + CAST(@totalOrderValue AS nvarchar(100)) + '. These values do not match. Please check your input data.';		
 		END;
 
 	DECLARE @customer bigint;
@@ -102,6 +102,8 @@ BEGIN
 			WHERE
 				SalesOrder = @salesOrder;
 		END;
+
+	SELECT @error = REPLACE(REPLACE(@error, CHAR(13), ''), CHAR(10), '');		
 
 	SELECT @error AS ErrorMessage;
 

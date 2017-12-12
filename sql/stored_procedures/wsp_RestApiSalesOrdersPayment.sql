@@ -66,7 +66,7 @@ BEGIN
 
 	IF @salesOrder IS NULL OR @salesOrder = 0
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Sales Order Number.';
+			SET @error = 'A required parameter is missing: SalesOrder.';
 			SELECT @error AS ErrorMessage;
 			RETURN;
 		END;
@@ -88,14 +88,14 @@ BEGIN
 
 	IF @curTransactionValue IS NULL
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Transaction Value.';
+			SET @error = 'A required parameter is missing: CardPaymentReceived. This field is required when the PaymentType is not On Account.';
 			SELECT @error AS ErrorMessage;
 			RETURN;
 		END;
 
 	IF @creditCardTypeId IS NULL OR @creditCardTypeId = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Payment Type.';
+			SET @error = 'A required parameter is missing: PaymentType.';
 			SELECT @error AS ErrorMessage;
 			RETURN;
 		END;
@@ -106,7 +106,7 @@ BEGIN
 
 	IF @creditCardType IS NULL
 		BEGIN
-			SET @error = 'ERROR: Could not find credit card type with the specified credit card type ID. Please check your input data.';
+			SET @error = 'Could not find the credit card type with the specified PaymentType. Please check your input data.';
 			SELECT @error AS ErrorMessage;
 			RETURN;
 		END;

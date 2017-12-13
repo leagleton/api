@@ -49,7 +49,9 @@ ALTER PROCEDURE [dbo].[wsp_RestApiContactsInsert]
 	@postalCode nvarchar(20) = null,
 	@countryCode nvarchar(3) = null,
 	@scope nvarchar(50),
-	@error nvarchar(1000) OUTPUT
+	@error nvarchar(1000) OUTPUT,
+	@contact bigint OUTPUT,
+	@company bigint OUTPUT
 AS
 BEGIN
 
@@ -74,7 +76,9 @@ BEGIN
 				@postalCode = @postalCode,
 				@countryCode = @countryCode,
 				@scope = @scope,
-				@error = @error OUTPUT;
+				@error = @error OUTPUT,
+				@contact = @contact OUTPUT,
+				@company = @company OUTPUT;
 			RETURN;	
 		END;
 
@@ -95,7 +99,7 @@ BEGIN
 			AND w.EcommerceWebsiteId = @eCommerceWebsiteId
 	)
 		BEGIN
-			SET @error = 'ERROR: Scope not enabled for specified website.';
+			SET @error = 'The relevant REST API scope is not enabled for the specified website.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -103,7 +107,7 @@ BEGIN
 
 	IF @eCommerceWebsiteId IS NULL OR @eCommerceWebsiteId = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Website.';
+			SET @error = 'A required parameter is missing: Website.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -111,7 +115,7 @@ BEGIN
 
 	IF @portalUserName IS NULL OR @portalUserName = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: User Name.';
+			SET @error = 'A required parameter is missing: WebsiteUserName.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -146,7 +150,7 @@ BEGIN
 					ctct.PortalUserName = @portalUserName
 					AND comp.Customer IS NULL)
 		BEGIN
-			SET @error = 'ERROR: Specified User Name already exists. Please check your input data.';
+			SET @error = 'The specified WebsiteUserName already exists for the specified Website. Please check your input data.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -195,7 +199,7 @@ BEGIN
 
 	IF @site IS NULL
 		BEGIN
-			SET @error = 'ERROR: Could not find specified website. Please check your input data.';
+			SET @error = 'Could not find the specified Website. Please check your input data.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -203,7 +207,7 @@ BEGIN
 
 	IF @firstName IS NULL OR @firstName = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: First Name.';
+			SET @error = 'A required parameter is missing: FirstName.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -211,7 +215,7 @@ BEGIN
 
 	IF @lastName IS NULL OR @lastName = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Last Name.';
+			SET @error = 'A required parameter is missing: LastName.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -256,7 +260,7 @@ BEGIN
 
 	IF @address IS NULL OR @address = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Address.';
+			SET @error = 'A required parameter is missing: Address.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -274,7 +278,7 @@ BEGIN
 
 	IF @postalCode IS NULL OR @postalCode = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Postal Code.';
+			SET @error = 'A required parameter is missing: PostalCode.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -282,7 +286,7 @@ BEGIN
 
 	IF @countryCode IS NULL OR @countryCode = ''
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Country Code.';
+			SET @error = 'A required parameter is missing: CountryCode.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -294,7 +298,7 @@ BEGIN
 
 	IF @country IS NULL
 		BEGIN
-			SET @error = 'ERROR: Could not find country with specified county code. Please check your input data.';
+			SET @error = 'Could not find a country with the specified CountryCode. Please check your input data, ensuring you have supplied a valid 3-character code.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -302,7 +306,7 @@ BEGIN
 
 	IF @allowCommunication IS NULL
 		BEGIN
-			SET @error = 'ERROR: Required parameter missing: Allow Communication.';
+			SET @error = 'A required parameter is missing: AllowCommunication.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
@@ -466,7 +470,10 @@ BEGIN
 		@PortalUserName = @portalUserName,
 		@CRMContact = @crmContact OUTPUT;
 
-	SELECT @error AS ErrorMessage;
+	SET @contact = @crmContact;
+	SET @company = @crmCompany;
+
+	SELECT @error AS ErrorMessage, @contact AS CRMContact, @company AS CRMCompany;
 
 	COMMIT TRANSACTION;
 

@@ -29,14 +29,14 @@
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.0001,
-                "example": 29.6701,
+                "example": 29.6706,
                 "description": "The total price due in the customer's currency for the <em>Sku</em>, after discounts, including tax. For example, if the customer has purchased 3 x ABC123 which cost 1.00 each after tax and discounts, <em>OrderLineValue</em> will be 3.00.<br/>Null values: not allowed<br/>Zero values: allowed"
             },
             "OrderLineTaxValue": {
                 "type": "number",
                 "format": "float",
                 "multipleOf": 0.0001,
-                "example": 29.6701,
+                "example": 4.9451,
                 "description": "The total amount of tax due in the customer's currency for the <em>Sku</em>. For example, if the <em>OrderLineValue</em> is 3.00 and tax is 20%, <em>OrderLineTaxValue</em> will be 0.50.<br/>Null values: not allowed<br/>Zero values: allowed"
             }            
         }

@@ -8,6 +8,86 @@ const config = require('../../config');
 const tp = require('tedious-promises');
 tp.setPromiseLibrary('es6');
 
+function createCustomer(
+    eCommerceWebsiteId,
+    firstName,
+    lastName,
+    portalUserName,
+    address,
+    postalCode,
+    countryCode) {
+
+    let customerGuid = '';
+    let customerId = '';
+    let customerBranch = '';
+    let error = '';
+
+    return tp.sql("DECLARE @error nvarchar(1000);\
+                    DECLARE @contact bigint;\
+                    DECLARE @company bigint;\
+                    EXEC wsp_RestApiContactsInsert \
+                        @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
+                        @firstName = '" + firstName + "',\
+                        @lastName = '" + lastName + "',\
+                        @portalUserName = '" + portalUserName + "',\
+                        @address = '" + address + "',\
+                        @postalCode = '" + postalCode + "',\
+                        @countryCode = '" + countryCode + "',\
+                        @scope = 'postCustomers',\
+                        @error = @error OUTPUT,\
+                        @contact = @contact OUTPUT,\
+                        @company = @company OUTPUT;")
+        .execute()
+        .then((results) => {
+            const result = results[0].ErrorMessage || '';
+
+            if (result !== '') {
+                throw new Error(result);
+            } else {
+                return tp.sql("DECLARE @error nvarchar(1000);\
+                                DECLARE @customerGuid nvarchar(36);\
+                                DECLARE @customerId nvarchar(10);\
+                                DECLARE @customerBranch nvarchar(4);\
+                                EXEC wsp_RestApiCompaniesPromote \
+                                    @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
+                                    @crmCompany = " + results[0].CRMCompany + ",\
+                                    @scope = 'postCustomers',\
+                                    @error = @error OUTPUT,\
+                                    @customerGuid = @customerGuid OUTPUT,\
+                                    @customerId = @customerId OUTPUT,\
+                                    @customerBranch = @customerBranch OUTPUT;")
+                    .execute()
+                    .then((results) => {
+                        const result = results[0].ErrorMessage || '';
+
+                        if (result !== '') {
+                            throw new Error(result);
+                        } else {
+                            return {
+                                customerGuid: results[0].CustomerGUID,
+                                customerId: results[0].CustomerId,
+                                customerBranch: results[0].CustomerBranch,
+                                errorMessage: error
+                            };
+                        }
+                    })
+                    .catch((err) => {
+                        throw new Error(err.message);
+                    });
+            }
+        })
+        .catch((err) => {
+            error = err.message;
+
+            return {
+                customerGuid: customerGuid,
+                customerId: customerId,
+                customerBranch: customerBranch,
+                errorMessage: error
+            };
+        });
+}
+
 /* Create new sales orders in WinMan. */
 router.post('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
     const scopes = req.authInfo.scope.split(',');
@@ -28,283 +108,411 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
 
     let result = '';
 
+    let customerGuid = req.body.CustomerGuid || '';
+    let customerId = req.body.CustomerId || '';
+    let customerBranch = req.body.CustomerBranch || '';
+
     const eCommerceWebsiteId = req.body.Website || '';
-    const customerGuid = req.body.CustomerGuid || '';
-    const customerId = req.body.CustomerId || '';
-    const customerBranch = req.body.CustomerBranch || '';
     const dueDate = req.body.dueDate || new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString();
     const orderDate = req.body.orderDate || new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000)).toISOString();
     const customerOrderNumber = req.body.CustomerOrderNumber || '';
     let customerContact = '';
-    let delName = req.body.SalesOrderShipping.ShippingName || '';
-    let delTitle = req.body.SalesOrderShipping.ShippingTitle || '';
-    let delFirstName = req.body.SalesOrderShipping.ShippingFirstName || '';
-    let delLastName = req.body.SalesOrderShipping.ShippingLastName || '';
-    let delAddress = req.body.SalesOrderShipping.ShippingAddress || '';
-    let delCity = req.body.SalesOrderShipping.ShippingCity || '';
-    let delRegion = req.body.SalesOrderShipping.ShippingRegion || '';
-    let delPostalCode = req.body.SalesOrderShipping.ShippingPostalCode || '';
-    let delCountryCode = req.body.SalesOrderShipping.ShippingCountryCode || '';
-    let delPhoneNumber = req.body.SalesOrderShipping.ShippingPhoneNumber || '';
-    let delEmailAddress = req.body.SalesOrderShipping.ShippingEmailAddress || '';
+    const delName = req.body.SalesOrderShipping.ShippingName || '';
+    const delTitle = req.body.SalesOrderShipping.ShippingTitle || '';
+    const delFirstName = req.body.SalesOrderShipping.ShippingFirstName || '';
+    const delLastName = req.body.SalesOrderShipping.ShippingLastName || '';
+    const delAddress = req.body.SalesOrderShipping.ShippingAddress || '';
+    const delCity = req.body.SalesOrderShipping.ShippingCity || '';
+    const delRegion = req.body.SalesOrderShipping.ShippingRegion || '';
+    const delPostalCode = req.body.SalesOrderShipping.ShippingPostalCode || '';
+    const delCountryCode = req.body.SalesOrderShipping.ShippingCountryCode || '';
+    const delPhoneNumber = req.body.SalesOrderShipping.ShippingPhoneNumber || '';
+    const delEmailAddress = req.body.SalesOrderShipping.ShippingEmailAddress || '';
     const currencyCode = req.body.CurrencyCode || '';
     const portalUserName = req.body.WebsiteUserName || '';
     const freightMethodId = req.body.SalesOrderShipping.FreightMethodId || '';
     const totalOrderValue = req.body.TotalOrderValue || 0;
     const totalTaxValue = req.body.TotalTaxValue || 0;
     const curTransactionValue = req.body.SalesOrderBilling.CardPaymentReceived || 0;
+    const shippingValue = req.body.SalesOrderShipping.ShippingValue || 0;
+    const shippingTaxValue = req.body.SalesOrderShipping.ShippingTaxValue || 0;
+    const creditCardTypeId = req.body.SalesOrderBilling.PaymentType || '';
     const notes = req.body.Notes || '';
     const coupon = req.body.Coupon || '';
     let salesOrder = 0;
     let salesOrderId = '';
 
-    if (isNaN(parseFloat(totalOrderValue))
-        || isNaN(parseFloat(req.body.SalesOrderShipping.ShippingValue))
-        || isNaN(parseFloat(totalTaxValue))
-        || isNaN(parseFloat(curTransactionValue))) {
-        return utils.reject(res, req, utils.reasons.invalidParam);
+    if (!eCommerceWebsiteId) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' Website.');
     }
 
-    if (typeof req.body.TotalOrderValue === 'undefined'
-        || typeof req.body.TotalTaxValue === 'undefined') {
-        return utils.reject(res, req, utils.reasons.requiredParam);
+    if (!customerOrderNumber) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' CustomerOrderNumber.');
     }
 
-    if (!eCommerceWebsiteId || !customerOrderNumber || !freightMethodId || !delName ||
-        !delAddress || !delCountryCode || !delPostalCode || !currencyCode || !portalUserName) {
-        return utils.reject(res, req, utils.reasons.requiredParam);
-    } else {
-        customerContact = delName;
+    if (!freightMethodId) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' FreightMethodId.');
     }
 
-    if (!customerGuid && (!customerId && !customerBranch)) {
-        return utils.reject(res, req, utils.reasons.requiredParam);
+    if (!delName) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' ShippingName.');
+    }
+
+    if (!delAddress) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' ShippingAddress.');
+    }
+
+    if (!delCountryCode) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' ShippingCountryCode.');
+    }
+
+    if (!delPostalCode) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' ShippingPostalCode.');
+    }
+
+    if (!currencyCode) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' CurrencyCode.');
+    }
+
+    if (!portalUserName) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' WebsiteUserName.');
+    }
+
+    if (!creditCardTypeId) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' PaymentType.');
     }
 
     if (!req.body.hasOwnProperty('SalesOrderBilling')) {
-        return utils.reject(res, req, utils.reasons.requiredParam);
+        return utils.reject(res, req, utils.reasons.requiredParam + ' SalesOrderBilling object.');
     }
 
     if (!req.body.hasOwnProperty('SalesOrderShipping')) {
-        return utils.reject(res, req, utils.reasons.requiredParam);
+        return utils.reject(res, req, utils.reasons.requiredParam + ' SalesOrderShipping object.');
+    }
+
+    if (typeof req.body.TotalOrderValue === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' TotalOrderValue.');
+    }
+
+    if (typeof req.body.TotalTaxValue === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' TotalTaxValue.');
     }
 
     if (typeof req.body.SalesOrderShipping.ShippingValue === 'undefined') {
-        return utils.reject(res, req, utils.reasons.requiredParam);
+        return utils.reject(res, req, utils.reasons.requiredParam + ' ShippingValue.');
     }
 
-    let transaction;
+    if (typeof req.body.SalesOrderShipping.ShippingTaxValue === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' ShippingTaxValue.');
+    }
 
-    tp.beginTransaction()
-        .then(function (trans) {
-            transaction = trans;
+    customerContact = delName;
 
-            return transaction.sql("EXEC wsp_RestApiSalesOrdersInsert \
-                    @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
-                    @customerGuid = '" + customerGuid + "',\
-                    @customerId = '" + customerId + "',\
-                    @customerBranch = '" + customerBranch + "',\
-                    @dueDate = '" + dueDate + "',\
-                    @orderDate = '" + orderDate + "',\
-                    @customerOrderNumber = '" + customerOrderNumber + "',\
-                    @customerContact = '" + customerContact + "',\
-                    @delName = '" + delName + "',\
-                    @delTitle = '" + delTitle + "',\
-                    @delFirstName = '" + delFirstName + "',\
-                    @delLastName = '" + delLastName + "',\
-                    @delAddress = '" + delAddress + "',\
-                    @delCity = '" + delCity + "',\
-                    @delRegion = '" + delRegion + "',\
-                    @delPostalCode = '" + delPostalCode + "',\
-                    @delCountryCode = '" + delCountryCode + "',\
-                    @delPhoneNumber = '" + delPhoneNumber + "',\
-                    @delEmailAddress = '" + delEmailAddress + "',\
-                    @currencyCode = '" + currencyCode + "',\
-                    @portalUserName = '" + portalUserName + "',\
-                    @freightMethodId = '" + freightMethodId + "',\
-                    @notes = '" + notes + "',\
-                    @coupon = '" + coupon + "',\
-                    @curValuePaid = " + curTransactionValue + ",\
-                    @scope = 'postSalesOrders'")
-                .execute();
-        })
-        .then((results) => {
-            result = results[0].ErrorMessage || '';
+    const numeric = 'This field should be numeric but a ';
 
-            if (result === '') {
-                salesOrder = results[0].SalesOrder;
-                salesOrderId = results[0].SalesOrderId;
-            } else {
-                throw new Error(result);
-            }
+    if (isNaN(parseFloat(totalOrderValue))) {
+        return utils.reject(res, req, utils.reasons.invalidParam + ' TotalOrderValue. ' + numeric + typeof totalOrderValue + ' was detected.');
+    }
 
-            const curValue = req.body.SalesOrderShipping.ShippingValue;
-            const curTaxValue = req.body.SalesOrderShipping.ShippingTaxValue;
+    if (isNaN(parseFloat(shippingValue))) {
+        return utils.reject(res, req, utils.reasons.invalidParam + ' ShippingValue. ' + numeric + typeof shippingValue + ' was detected.');
+    }
 
-            if (isNaN(parseFloat(curTaxValue)) || isNaN(parseFloat(curValue))) {
-                return reject(utils.reasons.invalidParam);
-            }
+    if (isNaN(parseFloat(shippingTaxValue))) {
+        return utils.reject(res, req, utils.reasons.invalidParam + ' ShippingValue. ' + numeric + typeof shippingTaxValue + ' was detected.');
+    }
 
-            if (typeof req.body.SalesOrderShipping.ShippingValue === 'undefined'
-                || typeof req.body.SalesOrderShipping.ShippingTaxValue === 'undefined') {
-                return reject(utils.reasons.requiredParam);
-            }
+    if (isNaN(parseFloat(totalTaxValue))) {
+        return utils.reject(res, req, utils.reasons.invalidParam + ' TotalTaxValue. ' + numeric + typeof totalTaxValue + ' was detected.');
+    }
 
-            return transaction.sql("EXEC wsp_RestApiSalesOrderItemsInsert \
-                    @salesOrder = " + salesOrder + ",\
-                    @itemType = 'F',\
-                    @quantity = 1,\
-                    @delName = '" + delName + "',\
-                    @delTitle = '" + delTitle + "',\
-                    @delFirstName = '" + delFirstName + "',\
-                    @delLastName = '" + delLastName + "',\
-                    @delAddress = '" + delAddress + "',\
-                    @delCity = '" + delCity + "',\
-                    @delRegion = '" + delRegion + "',\
-                    @delPostalCode = '" + delPostalCode + "',\
-                    @delCountryCode = '" + delCountryCode + "',\
-                    @delPhoneNumber = '" + delPhoneNumber + "',\
-                    @delEmailAddress = '" + delEmailAddress + "',\
-                    @freightMethodId = '" + freightMethodId + "',\
-                    @curValue = " + curValue + ",\
-                    @curTaxValue = " + curTaxValue)
-                .execute();
-        })
-        .then((results) => {
-            result = results[0].ErrorMessage || '';
+    if (isNaN(parseFloat(curTransactionValue))) {
+        return utils.reject(res, req, utils.reasons.invalidParam + ' CardPaymentReceived. ' + numeric + typeof curTransactionValue + ' was detected.');
+    }
 
-            if (result !== '') {
-                throw new Error(result);
-            }
+    let customer;
 
-            let sql = '';
+    /**
+     * If all 3 of customerGuid, customerId and customerBranch are missing,
+     * assume customer is new and create records in WinMan.
+     */
+    if (!customerGuid && !customerId && !customerBranch) {
+        let firstName = delFirstName;
+        let lastName = delLastName;
 
-            const salesOrderItems = req.body.SalesOrderItems.map((salesOrderItem) => {
-                return new Promise((resolve, reject) => {
-                    const sku = salesOrderItem.Sku || '';
-                    const quantity = salesOrderItem.Quantity || 0;
+        if (!firstName || !lastName) {
+            let names = customerContact.split(' ');
+            lastName = names.pop();
+            firstName = names.join(' ');
+        }
 
-                    if (!delName || !delAddress || !delCountryCode || !delPostalCode) {
-                        return reject(utils.reasons.requiredParam);
-                    }
+        firstName = (firstName) ? firstName : 'unknown';
+        lastName = (lastName) ? lastName : 'unknown';
 
-                    const curValue = salesOrderItem.OrderLineValue || 0;
-                    const curTaxValue = salesOrderItem.OrderLineTaxValue || 0;
+        customer = createCustomer(
+            eCommerceWebsiteId,
+            firstName,
+            lastName,
+            portalUserName,
+            delAddress,
+            delPostalCode,
+            delCountryCode);
+    } else {
+        customer = new Promise((resolve) => {
+            const info = {
+                customerGuid: customerGuid,
+                customerId: customerId,
+                customerBranch: customerBranch,
+                errorMessage: ''
+            };
+            resolve(info);
+        });
+    }
 
-                    if (!quantity) {
-                        return reject(utils.reasons.requiredParam);
-                    }
+    Promise.all([customer]).then((data) => {
+        customerGuid = data[0].customerGuid;
+        customerId = data[0].customerId;
+        customerBranch = data[0].customerBranch;
 
-                    if (isNaN(parseFloat(curTaxValue)) || isNaN(parseFloat(quantity)) || isNaN(parseFloat(curValue))) {
-                        return reject(utils.reasons.invalidParam);
-                    }
+        if (data[0].errorMessage !== '') {
+            return utils.reject(res, req, data[0].errorMessage);
+        } else {
+            /** 
+             * If customerId supplied and customerBranch missing (or vice versa) 
+             * and customerGuid also missing, return error.
+             */
+            if (!customerGuid && (!customerId || !customerBranch)) {
+                let missingParameter;
+                let suppliedParameter;
 
-                    if (typeof salesOrderItem.OrderLineValue === 'undefined'
-                        || typeof salesOrderItem.OrderLineTaxValue === 'undefined') {
-                        return reject(utils.reasons.requiredParam);
-                    }
-
-                    sql = sql + "EXEC wsp_RestApiSalesOrderItemsInsert \
-                        @salesOrder = " + salesOrder + ",\
-                        @itemType = 'P',\
-                        @sku = '" + sku + "',\
-                        @quantity = " + quantity + ",\
-                        @delName = '" + delName + "',\
-                        @delTitle = '" + delTitle + "',\
-                        @delFirstName = '" + delFirstName + "',\
-                        @delLastName = '" + delLastName + "',\
-                        @delAddress = '" + delAddress + "',\
-                        @delCity = '" + delCity + "',\
-                        @delRegion = '" + delRegion + "',\
-                        @delPostalCode = '" + delPostalCode + "',\
-                        @delCountryCode = '" + delCountryCode + "',\
-                        @delPhoneNumber = '" + delPhoneNumber + "',\
-                        @delEmailAddress = '" + delEmailAddress + "',\
-                        @curValue = " + curValue + ",\
-                        @curTaxValue = " + curTaxValue + ";";
-
-                    return resolve();
-                });
-            });
-
-            return Promise.all(salesOrderItems).then(() => {
-                return transaction.sql(sql)
-                    .execute();
-            });
-        })
-        .then((results) => {
-            result = results[0].ErrorMessage || '';
-
-            if (result !== '') {
-                throw new Error(result);
-            }
-
-            const creditCardTypeId = req.body.SalesOrderBilling.PaymentType || '';
-
-            if (creditCardTypeId.toLowerCase().replace(/\s/g, '') === 'onaccount') {
-                const results = [ { ErrorMessage: '' } ];
-                return results;
-            } else {
-                return transaction.sql("DECLARE @error NVARCHAR(1000) EXEC wsp_RestApiSalesOrdersPayment \
-                    @salesOrder = " + salesOrder + ",\
-                    @creditCardTypeId = '" + creditCardTypeId + "',\
-                    @curTransactionValue = " + curTransactionValue + ",\
-                    @error = @error OUTPUT")
-                    .execute();
-            }
-        })
-        .then((results) => {
-            result = results[0].ErrorMessage || '';
-
-            if (result !== '') {
-                throw new Error(result);
-            }
-
-            return transaction.sql("DECLARE @error NVARCHAR(1000) EXEC wsp_RestApiSalesOrdersFinalise \
-                    @salesOrder = " + salesOrder + ",\
-                    @totalOrderValue = " + totalOrderValue + ",\
-                    @error = @error OUTPUT")
-                .execute();
-        })
-        .then((results) => {
-            result = results[0].ErrorMessage || '';
-
-            if (result !== '') {
-                throw new Error(result);
-            } else {
-                utils.success(res, req, {
-                    Status: "Success",
-                    SalesOrder: salesOrder,
-                    SalesOrderId: salesOrderId
-                });
-                return transaction.commitTransaction();
-            }
-        })
-        .catch((err) => {
-            let status = 500;
-
-            for (const reason in utils.reasons) {
-                if (err.message === utils.reasons[reason] && utils.reasons[reason] !== utils.reasons.unspecified) {
-                    status = 400;
+                if (customerId) {
+                    missingParameter = 'CustomerBranch';
+                    suppliedParameter = 'CustomerId';
+                } else {
+                    missingParameter = 'CustomerId';
+                    suppliedParameter = 'CustomerBranch';
                 }
+
+                return utils.reject(res, req, utils.reasons.invalidParam + ' '
+                    + missingParameter + '. You have supplied ' + suppliedParameter
+                    + ' but not ' + missingParameter + '.');
             }
 
-            if (err.message.indexOf('input data') > -1 ||
-                err.message.indexOf('parameter missing') > -1 ||
-                err.message.indexOf('converting data type') > -1 ||
-                err.message.indexOf('expects parameter') > -1) {
-                status = 400;
-            }
+            let transaction;
 
-            if (status === 500) {
-                logger.error(err.stack);
-                utils.error(res, req, err.message);
-            } else {
-                utils.reject(res, req, err.message);
-            }
+            tp.beginTransaction()
+                .then(function (trans) {
+                    transaction = trans;
 
-            return transaction.rollbackTransaction();
-        })
+                    return transaction.sql("DECLARE @error nvarchar(1000);\
+                                            DECLARE @salesOrder bigint;\
+                                            DECLARE @salesOrderId nvarchar(15);\
+                                            DECLARE @guid nvarchar(36);\
+                                            DECLARE @id nvarchar(10);\
+                                            DECLARE @branch nvarchar(4);\
+                                            EXEC wsp_RestApiSalesOrdersInsert \
+                                                @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
+                                                @customerGuid = '" + customerGuid + "',\
+                                                @customerId = '" + customerId + "',\
+                                                @customerBranch = '" + customerBranch + "',\
+                                                @dueDate = '" + dueDate + "',\
+                                                @orderDate = '" + orderDate + "',\
+                                                @customerOrderNumber = '" + customerOrderNumber + "',\
+                                                @customerContact = '" + customerContact + "',\
+                                                @delName = '" + delName + "',\
+                                                @delTitle = '" + delTitle + "',\
+                                                @delFirstName = '" + delFirstName + "',\
+                                                @delLastName = '" + delLastName + "',\
+                                                @delAddress = '" + delAddress + "',\
+                                                @delCity = '" + delCity + "',\
+                                                @delRegion = '" + delRegion + "',\
+                                                @delPostalCode = '" + delPostalCode + "',\
+                                                @delCountryCode = '" + delCountryCode + "',\
+                                                @delPhoneNumber = '" + delPhoneNumber + "',\
+                                                @delEmailAddress = '" + delEmailAddress + "',\
+                                                @currencyCode = '" + currencyCode + "',\
+                                                @portalUserName = '" + portalUserName + "',\
+                                                @freightMethodId = '" + freightMethodId + "',\
+                                                @notes = '" + notes + "',\
+                                                @coupon = '" + coupon + "',\
+                                                @curValuePaid = " + curTransactionValue + ",\
+                                                @scope = 'postSalesOrders',\
+                                                @error = @error OUTPUT,\
+                                                @salesOrder = @salesOrder OUTPUT,\
+                                                @guid = @guid OUTPUT,\
+                                                @id = @id OUTPUT,\
+                                                @branch = @branch OUTPUT,\
+                                                @salesOrderId = @salesOrderId OUTPUT;")
+                        .execute();
+                })
+                .then((results) => {
+                    result = results[0].ErrorMessage || '';
+
+                    if (result === '') {
+                        salesOrder = results[0].SalesOrder;
+                        salesOrderId = results[0].SalesOrderId;
+
+                        customerGuid = (customerGuid) ? customerGuid : results[0].CustomerGUID;
+                        customerId = (customerId) ? customerId : results[0].CustomerId;
+                        customerBranch = (customerBranch) ? customerBranch : results[0].CustomerBranch;
+                    } else {
+                        throw new Error(result);
+                    }
+
+                    return transaction.sql("EXEC wsp_RestApiSalesOrderItemsInsert \
+                                                @salesOrder = " + salesOrder + ",\
+                                                @itemType = 'F',\
+                                                @quantity = 1,\
+                                                @delName = '" + delName + "',\
+                                                @delTitle = '" + delTitle + "',\
+                                                @delFirstName = '" + delFirstName + "',\
+                                                @delLastName = '" + delLastName + "',\
+                                                @delAddress = '" + delAddress + "',\
+                                                @delCity = '" + delCity + "',\
+                                                @delRegion = '" + delRegion + "',\
+                                                @delPostalCode = '" + delPostalCode + "',\
+                                                @delCountryCode = '" + delCountryCode + "',\
+                                                @delPhoneNumber = '" + delPhoneNumber + "',\
+                                                @delEmailAddress = '" + delEmailAddress + "',\
+                                                @freightMethodId = '" + freightMethodId + "',\
+                                                @curValue = " + shippingValue + ",\
+                                                @curTaxValue = " + shippingTaxValue)
+                        .execute();
+                })
+                .then((results) => {
+                    result = results[0].ErrorMessage || '';
+
+                    if (result !== '') {
+                        throw new Error(result);
+                    }
+
+                    let sql = '';
+
+                    const salesOrderItems = req.body.SalesOrderItems.map((salesOrderItem) => {
+                        return new Promise((resolve, reject) => {
+                            const sku = salesOrderItem.Sku || '';
+                            const quantity = salesOrderItem.Quantity || 0;
+
+                            const curValue = salesOrderItem.OrderLineValue || 0;
+                            const curTaxValue = salesOrderItem.OrderLineTaxValue || 0;
+
+                            if (!quantity) {
+                                return reject(utils.reasons.requiredParam + ' Quantity.');
+                            }
+
+                            if (isNaN(parseFloat(curTaxValue))) {
+                                return reject(utils.reasons.invalidParam + ' OrderLineTaxValue. ' + numeric + typeof salesOrderItem.OrderLineTaxValue + ' was detected.');
+                            }
+
+                            if (isNaN(parseFloat(quantity))) {
+                                return reject(utils.reasons.invalidParam + ' Quantity. ' + numeric + typeof salesOrderItem.Quantity + ' was detected.');
+                            }
+                            
+                            if (isNaN(parseFloat(curValue))) {
+                                return reject(utils.reasons.invalidParam + ' OrderLineValue. ' + numeric + typeof salesOrderItem.OrderLineValue + ' was detected.');
+                            }
+
+                            if (typeof salesOrderItem.Sku === 'undefined') {
+                                return reject(utils.reasons.requiredParam + ' Sku.');
+                            }                                                       
+
+                            if (typeof salesOrderItem.OrderLineValue === 'undefined') {
+                                return reject(utils.reasons.requiredParam + ' OrderLineValue.');
+                            }
+
+                            if (typeof salesOrderItem.OrderLineTaxValue === 'undefined') {
+                                return reject(utils.reasons.requiredParam + ' OrderLineTaxValue.');
+                            }
+
+                            sql = sql + "EXEC wsp_RestApiSalesOrderItemsInsert \
+                                            @salesOrder = " + salesOrder + ",\
+                                            @itemType = 'P',\
+                                            @sku = '" + sku + "',\
+                                            @quantity = " + quantity + ",\
+                                            @delName = '" + delName + "',\
+                                            @delTitle = '" + delTitle + "',\
+                                            @delFirstName = '" + delFirstName + "',\
+                                            @delLastName = '" + delLastName + "',\
+                                            @delAddress = '" + delAddress + "',\
+                                            @delCity = '" + delCity + "',\
+                                            @delRegion = '" + delRegion + "',\
+                                            @delPostalCode = '" + delPostalCode + "',\
+                                            @delCountryCode = '" + delCountryCode + "',\
+                                            @delPhoneNumber = '" + delPhoneNumber + "',\
+                                            @delEmailAddress = '" + delEmailAddress + "',\
+                                            @curValue = " + curValue + ",\
+                                            @curTaxValue = " + curTaxValue + ";";
+
+                            return resolve();
+                        });
+                    });
+
+                    return Promise.all(salesOrderItems).then(() => {
+                        return transaction.sql(sql)
+                            .execute();
+                    })
+                    .catch((message) => {
+                        throw new Error(message); 
+                    });
+                })
+                .then((results) => {
+                    result = results[0].ErrorMessage || '';
+
+                    if (result !== '') {
+                        throw new Error(result);
+                    }
+
+                    if (creditCardTypeId.toLowerCase().replace(/\s/g, '') === 'onaccount') {
+                        const results = [{ ErrorMessage: '' }];
+                        return results;
+                    } else {
+                        return transaction.sql("DECLARE @error nvarchar(1000);\
+                                                EXEC wsp_RestApiSalesOrdersPayment \
+                                                    @salesOrder = " + salesOrder + ",\
+                                                    @creditCardTypeId = '" + creditCardTypeId + "',\
+                                                    @curTransactionValue = " + curTransactionValue + ",\
+                                                    @error = @error OUTPUT")
+                            .execute();
+                    }
+                })
+                .then((results) => {
+                    result = results[0].ErrorMessage || '';
+
+                    if (result !== '') {
+                        throw new Error(result);
+                    }
+
+                    return transaction.sql("DECLARE @error nvarchar(1000);\
+                                            EXEC wsp_RestApiSalesOrdersFinalise \
+                                                @salesOrder = " + salesOrder + ",\
+                                                @totalOrderValue = " + totalOrderValue + ",\
+                                                @error = @error OUTPUT;")
+                        .execute();
+                })
+                .then((results) => {
+                    result = results[0].ErrorMessage || '';
+
+                    if (result !== '') {
+                        throw new Error(result);
+                    } else {
+                        utils.success(res, req, {
+                            Status: "Success",
+                            SalesOrderId: salesOrderId,
+                            CustomerGUID: customerGuid,
+                            CustomerId: customerId,
+                            CustomerBranch: customerBranch
+                        });
+                        return transaction.commitTransaction();
+                    }
+                })
+                .catch((err) => {
+                    logger.error(err.stack);
+                    utils.reject(res, req, err.message);
+
+                    return transaction.rollbackTransaction();
+                });
+        }
+    });
 });
 
 module.exports = router;

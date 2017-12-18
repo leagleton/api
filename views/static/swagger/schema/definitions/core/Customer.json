@@ -5,6 +5,7 @@
         "required": [
             "Guid",
             "CustomerName",
+            "Site",
             "CustomerId",
             "Branch",
             "Address",
@@ -17,16 +18,22 @@
             "Email",
             "WebSite",
             "CustomerAlias",
+            "PreferredCulture",
+            "TaxNumber",
             "Currency",
             "CreditTerms",
             "Discount",
             "TaxCode",
+            "TaxCodeSecondary",
             "Industry",
+            "CommissionAgents",
             "Contacts",
             "TheirIdentifier",
+            "CustomerPricingClassification",
+            "CrossReferences",
             "Notes",
             "PromptText"
-        ],        
+        ],    
         "xml": {
             "name": "Customer"
         },
@@ -143,6 +150,13 @@
                 "maxLength": 20,
                 "example": "en-GB",
                 "description": "Maps to the field <em>Customers.PreferredCulture</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+            },
+            "TaxNumber": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "165924368",
+                "description": "Maps to the field <em>Customers.TaxNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "Currency": {
                 "$ref": "#/definitions/Currency"

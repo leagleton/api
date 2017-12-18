@@ -5,7 +5,8 @@
         "required": [
             "Sku",
             "Quantity",
-            "OrderLineValue"
+            "OrderLineValue",
+            "OrderLineTaxValue"
         ],         
         "xml": {
             "name": "SalesOrderItem"

@@ -101,6 +101,7 @@ BEGIN
 			cust.WebSite,
 			cust.CustomerAlias,
 			cust.PreferredCulture,
+			cust.TaxNumber,
 			cust.Currency,
 			cust.CreditTerms,
 			cust.Discount,
@@ -146,6 +147,7 @@ BEGIN
 			cust.WebSite,
 			cust.CustomerAlias,
 			cust.PreferredCulture,
+			cust.TaxNumber,
 			cust.Currency,
 			cust.CreditTerms,
 			cust.Discount,
@@ -178,6 +180,7 @@ BEGIN
 						"WebSite":"' + REPLACE(cust.WebSite, '"','&#34;') + '",
 						"CustomerAlias":"' + REPLACE(cust.CustomerAlias, '"','&#34;') + '",
 						"PreferredCulture":' + CASE WHEN cust.PreferredCulture IS NULL THEN 'null' ELSE '"' + cust.PreferredCulture + '"' END + ',
+						"TaxNumber":"' + REPLACE(cust.TaxNumber, '"','&#34;') + '",
 						"Currency":' + 
 							COALESCE(
 								(SELECT 
@@ -314,10 +317,12 @@ BEGIN
 										(SELECT ',{
 											"CrmContactGuid":"' + CAST(CRMContactGUID AS nvarchar(36)) + '",
 											"CrmContactId":"' + REPLACE(CRMContactId, '"','&#34;') + '",
+											"Title":"' + REPLACE(Title, '"','&#34;') + '",
 											"FirstName":"' + REPLACE(FirstName, '"','&#34;') + '",
 											"LastName":"' + REPLACE(LastName, '"','&#34;') + '",
 											"PhoneNumberWork":"' + REPLACE(PhoneNumberWork, '"','&#34;') + '",
 											"PhoneNumberHome":"' + REPLACE(PhoneNumberHome, '"','&#34;') + '",
+											"PhoneNumberMobile":"' + REPLACE(PhoneNumberMobile, '"','&#34;') + '",
 											"FaxNumber":"' + REPLACE(CRMContacts.FaxNumber, '"','&#34;') + '",
 											"EmailAddressWork":"' + REPLACE(EmailAddressWork, '"','&#34;') + '",
 											"EmailAddressHome":"' + REPLACE(EmailAddressHome, '"','&#34;') + '",

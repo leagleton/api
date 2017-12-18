@@ -5,17 +5,19 @@
         "required": [
             "CrmContactGuid",
             "CrmContactId",
+            "Title",
             "FirstName",
             "LastName",
             "PhoneNumberWork",
             "PhoneNumberHome",
+            "PhoneNumberMobile",
             "FaxNumber",
             "EmailAddressWork",
             "EmailAddressHome",
             "WebsiteUserName",
             "JobTitle",
             "AllowCommunication"
-        ],           
+        ],
         "xml": {
             "name": "Contact"
         },
@@ -35,6 +37,13 @@
                 "example": "CT000123",
                 "description": "Maps to the field <em>CRMContacts.CRMContactId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
+            "Title": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 5,
+                "example": "Dr",
+                "description": "Maps to the field <em>CRMContacts.Title</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },            
             "FirstName": {
                 "type": "string",
                 "minLength": 1,
@@ -63,6 +72,13 @@
                 "example": "+44 (0)121 123 4568",
                 "description": "Maps to the field <em>CRMContacts.PhoneNumberHome</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
+            "PhoneNumberMobile": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 30,
+                "example": "+44 (0)121 123 4568",
+                "description": "Maps to the field <em>CRMContacts.PhoneNumberMobile</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },            
             "FaxNumber": {
                 "type": "string",
                 "minLength": 0,

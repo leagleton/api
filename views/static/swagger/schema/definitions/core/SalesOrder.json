@@ -30,21 +30,21 @@
                 "minLength": 36,
                 "maxLength": 36,
                 "example": "5A0D8842-9C33-45A2-90F1-82FF07120947",
-                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database.<br/>Null values: allowed if both <em>CustomerId</em> and <em>CustomerBranch</em> are not null or empty.<br/>Empty strings: allowed if both <em>CustomerId</em> and <em>CustomerBranch</em> are not null or empty."
+                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "CustomerId": {
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 10,
                 "example": "C000123",
-                "description": "Maps to the field <em>Customers.CustomerId</em> in your WinMan database.<br/>Null values: allowed if <em>CustomerGuid</em> is not null or empty<br/>Empty strings: allowed if <em>CustomerGuid</em> is not null or empty"
+                "description": "Maps to the field <em>Customers.CustomerId</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "CustomerBranch": {
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 4,
                 "example": "0000",
-                "description": "Maps to the field <em>Customers.Branch</em> in your WinMan database.<br/>Null values: allowed if <em>CustomerGuid</em> is not null or empty<br/>Empty strings: allowed if <em>CustomerGuid</em> is not null or empty"
+                "description": "Maps to the field <em>Customers.Branch</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },
             "TotalOrderValue": {
                 "type": "number",
@@ -83,7 +83,7 @@
                 "type": "string",
                 "format": "date-time",
                 "example": "2017-07-31T10:48:06.200",
-                "description": "Maps to the field <em>SalesOrders.RequestedDate</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+                "description": "Maps to the field <em>SalesOrders.EffectiveDate</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
             },            
             "CustomerOrderNumber": {
                 "type": "string",

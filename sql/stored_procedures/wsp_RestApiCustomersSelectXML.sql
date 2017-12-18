@@ -101,6 +101,7 @@ BEGIN
 			cust.WebSite,
 			cust.CustomerAlias,
 			cust.PreferredCulture,
+			cust.TaxNumber,
 			cust.Currency,
 			cust.CreditTerms,
 			cust.Discount,
@@ -146,6 +147,7 @@ BEGIN
 			cust.WebSite,
 			cust.CustomerAlias,
 			cust.PreferredCulture,
+			cust.TaxNumber,
 			cust.Currency,
 			cust.CreditTerms,
 			cust.Discount,
@@ -178,6 +180,8 @@ BEGIN
 			cust.CustomerAlias,
 			cust.PreferredCulture,
 			'' AS PreferredCulture,
+			cust.TaxNumber,
+			'' AS TaxNumber,
 			(SELECT
 				CurrencyId,
 				CurrencyDescription,
@@ -278,6 +282,7 @@ BEGIN
 			(SELECT
 				CRMContactGUID AS CrmContactGuid,
 				CRMContactId AS CrmContactId,
+				Title,
 				FirstName,
 				LastName,
 				PhoneNumberWork,

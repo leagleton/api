@@ -4,7 +4,10 @@
         "description": "The <strong>SalesOrderResponse</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
         "required": [
             "Status",
-            "SalesOrderId"
+            "SalesOrderId",
+            "CustomerGUID",
+            "CustomerId",
+            "CustomerBranch"
         ],        
         "xml": {
             "name": "Response"
@@ -23,7 +26,29 @@
                 "maxLength": 100,
                 "example": "SO-0000509",
                 "description": "Maps to the field <em>SalesOrders.SalesOrderId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
-            }                                                                                                                                            
+            },
+            "CustomerGUID": {
+                "type": "string",
+                "format": "uuid",                
+                "minLength": 36,
+                "maxLength": 36,
+                "example": "CC5821D6-66C7-423B-A7EC-7EE1E838C69F",
+                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "CustomerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 10,
+                "example": "C00123",
+                "description": "Maps to the field <em>Customers.CustomerId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "CustomerBranch": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4,
+                "example": "0000",
+                "description": "Maps to the field <em>Customers.Branch</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            }            
         }
     }
 }

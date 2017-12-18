@@ -25,6 +25,7 @@ function createCustomer(
     return tp.sql("DECLARE @error nvarchar(1000);\
                     DECLARE @contact bigint;\
                     DECLARE @company bigint;\
+                    DECLARE @exists bit;\
                     EXEC wsp_RestApiContactsInsert \
                         @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
                         @firstName = '" + firstName + "',\
@@ -36,13 +37,45 @@ function createCustomer(
                         @scope = 'postCustomers',\
                         @error = @error OUTPUT,\
                         @contact = @contact OUTPUT,\
-                        @company = @company OUTPUT;")
+                        @company = @company OUTPUT,\
+                        @exists = @exists OUTPUT;")
         .execute()
         .then((results) => {
             const result = results[0].ErrorMessage || '';
 
             if (result !== '') {
                 throw new Error(result);
+            } else if (results[0].hasOwnProperty('Exists')) {
+                return tp.sql("DECLARE @error nvarchar(1000);\
+                                DECLARE @customerGuid nvarchar(36);\
+                                DECLARE @customerId nvarchar(10);\
+                                DECLARE @customerBranch nvarchar(4);\
+                                EXEC wsp_RestApiCustomersSelectByPortalUserName \
+                                    @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
+                                    @portalUserName = '" + portalUserName + "',\
+                                    @scope = 'postCustomers',\
+                                    @error = @error OUTPUT,\
+                                    @customerGuid = @customerGuid OUTPUT,\
+                                    @customerId = @customerId OUTPUT,\
+                                    @customerBranch = @customerBranch OUTPUT;")
+                    .execute()
+                    .then((results) => {
+                        const result = results[0].ErrorMessage || '';
+
+                        if (result !== '') {
+                            throw new Error(result);
+                        } else {
+                            return {
+                                customerGuid: results[0].CustomerGUID,
+                                customerId: results[0].CustomerId,
+                                customerBranch: results[0].CustomerBranch,
+                                errorMessage: error
+                            };
+                        }
+                    })
+                    .catch((err) => {
+                        throw new Error(err.message);
+                    });
             } else {
                 return tp.sql("DECLARE @error nvarchar(1000);\
                                 DECLARE @customerGuid nvarchar(36);\
@@ -303,7 +336,6 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
             tp.beginTransaction()
                 .then(function (trans) {
                     transaction = trans;
-
                     return transaction.sql("DECLARE @error nvarchar(1000);\
                                             DECLARE @salesOrder bigint;\
                                             DECLARE @salesOrderId nvarchar(15);\
@@ -407,14 +439,14 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                             if (isNaN(parseFloat(quantity))) {
                                 return reject(utils.reasons.invalidParam + ' Quantity. ' + numeric + typeof salesOrderItem.Quantity + ' was detected.');
                             }
-                            
+
                             if (isNaN(parseFloat(curValue))) {
                                 return reject(utils.reasons.invalidParam + ' OrderLineValue. ' + numeric + typeof salesOrderItem.OrderLineValue + ' was detected.');
                             }
 
                             if (typeof salesOrderItem.Sku === 'undefined') {
                                 return reject(utils.reasons.requiredParam + ' Sku.');
-                            }                                                       
+                            }
 
                             if (typeof salesOrderItem.OrderLineValue === 'undefined') {
                                 return reject(utils.reasons.requiredParam + ' OrderLineValue.');
@@ -451,9 +483,9 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                         return transaction.sql(sql)
                             .execute();
                     })
-                    .catch((message) => {
-                        throw new Error(message); 
-                    });
+                        .catch((message) => {
+                            throw new Error(message);
+                        });
                 })
                 .then((results) => {
                     result = results[0].ErrorMessage || '';

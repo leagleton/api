@@ -41,7 +41,7 @@ router.get('/', passport.authenticate('bearer', { session: false }), function (r
         } else {
             return utils.reject(res, req, utils.reasons.invalidParam);
         }
-    }    
+    }
 
     if (typeof res.locals.guid !== 'undefined') {
         inputParams.push("@guid = '" + res.locals.guid + "'");
@@ -111,6 +111,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
     tp.sql("DECLARE @error nvarchar(1000);\
             DECLARE @contact bigint;\
             DECLARE @company bigint;\
+            DECLARE @exists bit;\
             EXEC wsp_RestApiContactsInsert \
                 @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
                 @firstName = '" + firstName + "',\
@@ -132,13 +133,16 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                 @scope = 'postCustomers',\
                 @error = @error OUTPUT,\
                 @contact = @contact OUTPUT,\
-                @company = @company OUTPUT;")
+                @company = @company OUTPUT,\
+                @exists = @exists OUTPUT;")
         .execute()
         .then((results) => {
             const result = results[0].ErrorMessage || '';
 
             if (result !== '') {
                 throw new Error(result);
+            } else if (results[0].hasOwnProperty('Exists')) {
+                throw new Error('The specified WebsiteUserName already exists for the specified Website. Please check your input data.');
             } else {
                 utils.success(res, req, {
                     Status: "Success",
@@ -147,23 +151,9 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
             }
         })
         .catch((err) => {
-            let status = 500;
-
-            if (err.message.indexOf('input data') > -1 || 
-                err.message.indexOf('parameter missing') > -1 ||
-                err.message.indexOf('converting data type') > -1 ||
-                err.message.indexOf('expects parameter') > -1)
-            {
-                status = 400;
-            }
-
-            if (status === 500) {
-                logger.error(err.stack);
-                utils.error(res, req, err.message);
-            } else {
-                utils.reject(res, req, err.message);
-            }
-        });       
+            logger.error(err.stack);
+            utils.error(res, req, err.message);
+        });
 });
 
 module.exports = router;

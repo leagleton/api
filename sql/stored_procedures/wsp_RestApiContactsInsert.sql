@@ -51,7 +51,8 @@ ALTER PROCEDURE [dbo].[wsp_RestApiContactsInsert]
 	@scope nvarchar(50),
 	@error nvarchar(1000) OUTPUT,
 	@contact bigint OUTPUT,
-	@company bigint OUTPUT
+	@company bigint OUTPUT,
+	@exists bit OUTPUT
 AS
 BEGIN
 
@@ -78,7 +79,8 @@ BEGIN
 				@scope = @scope,
 				@error = @error OUTPUT,
 				@contact = @contact OUTPUT,
-				@company = @company OUTPUT;
+				@company = @company OUTPUT,
+				@exists = @exists OUTPUT;
 			RETURN;	
 		END;
 
@@ -141,17 +143,9 @@ BEGIN
 				WHERE 
 					cust.[Site] IS NULL
 					AND ctct.PortalUserName = @portalUserName)
-	OR EXISTS (SELECT
-					ctct.PortalUserName
-				FROM
-					CRMContacts ctct
-					INNER JOIN CRMCompanies comp ON ctct.CRMCompany = comp.CRMCompany
-				WHERE
-					ctct.PortalUserName = @portalUserName
-					AND comp.Customer IS NULL)
 		BEGIN
-			SET @error = 'The specified WebsiteUserName already exists for the specified Website. Please check your input data.';
-			SELECT @error AS ErrorMessage;
+			SET @exists = 1;
+			SELECT @exists AS [Exists], @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
 		END;

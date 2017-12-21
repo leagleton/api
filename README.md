@@ -1,32 +1,13 @@
 ﻿# WinMan REST API
 
-## Prerequisites
+## Quick Start Guide
 
-Before the WinMan REST API can be installed on a customer's server, several steps must be completed:
-
-1. **Create a new DNS entry:**
-a. This needs to be completed by Mike. The new DNS entry should be of the format `[customername]rest.winman.net`, e.g. `talkingtablesrest.winman.net`, and should point to the customer's WinMan application server.
-
-2. **Create a new Firewall rule:**
-a. The API will run on port 3000 by default. To accommodate this, port 3000 must be accessible on the customer's WinMan application server. Create a new TCP Firewall rule to allow traffic on this port. A discussion with the customer will need to be had to determine whether this rule should apply for all remote IPs or just specified ones.
-
-3. **Install NodeJS:**
-a. NodeJS version 6.11.2 needs to be installed on the customer's WinMan application server. The installation of NodeJS requires a restart, so please schedule this in with the customer carefully.
-
-## Building the API package for release
-
-### TODO
-```BASH
-npm run build
-```
-- change config file to reflect customer's db info/url
-- change session cookie secret
+For a full list of prerequisites and installation instructions, please see the WinMan REST API Installation Guide which is available in Dropbox -> WinMan Team Folder -> Help ->REST API and Magento 2 Bridge.
 
 ## Installing the API
 
-1. Copy the **contents** of your `dist` directory (not the directory itself!) onto the client's WinMan application server in a suitable location (e.g. `C:\Program Files\winman-rest-api`). 
-2. Log on to the client's server as an Administrator and open an **elevated** command prompt.
-3. Issue the following command:
+1. Copy the API application files onto the client's WinMan application server in a suitable location (e.g. `C:\WinManV7\winman-rest-api`). 
+2. In an **elevated** command prompt on the client's WinMan application server, issue the following command:
     ```BASH
     npm install --global --production windows-build-tools
     ```

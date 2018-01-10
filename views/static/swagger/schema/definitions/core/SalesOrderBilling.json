@@ -3,7 +3,12 @@
         "type": "object",
         "description": "The <strong>SalesOrderBilling</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
         "required": [
-            "PaymentType"
+            "PaymentType",
+            "BillingName",
+            "BillingAddress",
+            "BillingCountryCode",
+            "BillingPostalCode"
+
         ],        
         "xml": {
             "name": "SalesOrderBilling"
@@ -22,7 +27,84 @@
                 "multipleOf": 0.0001,
                 "example": 72.4801,
                 "description": "The total payment amount received for this order. If the customer wishes to pay on account, this field can be set to 0, null, or it can be omitted.<br/>Null values: allowed<br/>Zero values: allowed"
-            }                                                                                                                                               
+            },
+            "BillingName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50,
+                "example": "Systemware Services Ltd.",
+                "description": "Maps to the fields <em>Customers.CustomerName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "BillingTitle": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 5,
+                "example": "Mrs",
+                "description": "Maps to the field <em>CRMContacts.Title</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+            },
+            "BillingFirstName": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 25,
+                "example": "Jane",
+                "description": "Maps to the field <em>CRMContacts.FirstName</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+            },
+            "BillingLastName": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 25,
+                "example": "Smith",
+                "description": "Maps to the field <em>CRMContacts.LastName</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+            },
+            "BillingAddress": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "example": "22 Acacia Avenue",
+                "description": "Maps to the field <em>Customers.Address</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "BillingCity": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "Birmingham",
+                "description": "Maps to the field <em>Customers.City</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+            },
+            "BillingRegion": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "West Midlands",
+                "description": "Maps to the field <em>Customers.Region</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+            },
+            "BillingPostalCode": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 20,
+                "example": "B21 1SB",
+                "description": "Maps to the field <em>Customers.PostalCode</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "BillingCountryCode": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3,
+                "example": "GBR",
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "BillingPhoneNumber": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 30,
+                "example": "+44 (0)121 123 4567",
+                "description": "Maps to the field <em>Customers.PhoneNumber</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+            },
+            "BillingEmailAddress": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 450,
+                "example": "jane.smithexample.com; jsmith@example.com",
+                "description": "Maps to the field <em>Customers.EmailAddress</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+            }                                                                                                                                                    
         }
     }
 }

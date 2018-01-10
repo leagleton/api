@@ -10,12 +10,29 @@ tp.setPromiseLibrary('es6');
 
 function createCustomer(
     eCommerceWebsiteId,
+    title,
     firstName,
     lastName,
+    companyName,
     portalUserName,
     address,
+    city,
+    region,
     postalCode,
-    countryCode) {
+    countryCode,
+    phoneNumber,
+    emailAddress,
+    deliveryTitle,
+    deliveryFirstName,
+    deliveryLastName,
+    deliveryName,
+    deliveryAddress,
+    deliveryCity,
+    deliveryRegion,
+    deliveryPostalCode,
+    deliveryCountryCode,
+    deliveryPhoneNumber,
+    deliveryEmailAddress) {
 
     let customerGuid = '';
     let customerId = '';
@@ -28,12 +45,18 @@ function createCustomer(
                     DECLARE @exists bit;\
                     EXEC wsp_RestApiContactsInsert \
                         @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
+                        @title = '" + title + "',\
                         @firstName = '" + firstName + "',\
                         @lastName = '" + lastName + "',\
+                        @companyName = '" + companyName + "',\
                         @portalUserName = '" + portalUserName + "',\
                         @address = '" + address + "',\
+                        @city = '" + city + "',\
+                        @region = '" + region + "',\
                         @postalCode = '" + postalCode + "',\
                         @countryCode = '" + countryCode + "',\
+                        @workPhoneNumber = '" + phoneNumber + "',\
+                        @workEmailAddress = '" + emailAddress + "',\
                         @scope = 'postCustomers',\
                         @error = @error OUTPUT,\
                         @contact = @contact OUTPUT,\
@@ -109,6 +132,42 @@ function createCustomer(
                     });
             }
         })
+        .then((results) => {
+            const customer = results;
+
+            return tp.sql("DECLARE @error nvarchar(1000);\
+                            EXEC wsp_RestApiCustomerDeliveryAddressesInsert \
+                                @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
+                                @customerGuid = '" + customer.customerGuid + "',\
+                                @title = '" + deliveryTitle + "',\
+                                @firstName = '" + deliveryFirstName + "',\
+                                @lastName = '" + deliveryLastName + "',\
+                                @deliveryName = '" + deliveryName + "',\
+                                @companyName = '" + companyName + "',\
+                                @address = '" + deliveryAddress + "',\
+                                @city = '" + deliveryCity + "',\
+                                @region = '" + deliveryRegion + "',\
+                                @postalCode = '" + deliveryPostalCode + "',\
+                                @countryCode = '" + deliveryCountryCode + "',\
+                                @phoneNumber = '" + deliveryPhoneNumber + "',\
+                                @emailAddress = '" + deliveryEmailAddress + "',\
+                                @isDefault = 1,\
+                                @scope = 'postCustomers',\
+                                @error = @error OUTPUT;")
+                .execute()
+                .then((results) => {
+                    const result = results[0].ErrorMessage || '';
+
+                    if (result !== '') {
+                        throw new Error(result);
+                    } else {
+                        return customer;
+                    }
+                })
+                .catch((err) => {
+                    throw new Error(err.message);
+                });
+        })
         .catch((err) => {
             error = err.message;
 
@@ -161,6 +220,19 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
     const delCountryCode = req.body.SalesOrderShipping.ShippingCountryCode || '';
     const delPhoneNumber = req.body.SalesOrderShipping.ShippingPhoneNumber || '';
     const delEmailAddress = req.body.SalesOrderShipping.ShippingEmailAddress || '';
+
+    const billingCompanyName = req.body.SalesOrderBilling.BillingName || '';
+    const billingTitle = req.body.SalesOrderBilling.BillingTitle || '';
+    const billingFirstName = req.body.SalesOrderBilling.BillingFirstName || '';
+    const billingLastName = req.body.SalesOrderBilling.BillingLastName || '';
+    const billingAddress = req.body.SalesOrderBilling.BillingAddress || '';
+    const billingCity = req.body.SalesOrderBilling.BillingCity || '';
+    const billingRegion = req.body.SalesOrderBilling.BillingRegion || '';
+    const billingPostalCode = req.body.SalesOrderBilling.BillingPostalCode || '';
+    const billingCountryCode = req.body.SalesOrderBilling.BillingCountryCode || '';
+    const billingPhoneNumber = req.body.SalesOrderBilling.BillingPhoneNumber || '';
+    const billingEmailAddress = req.body.SalesOrderBilling.BillingEmailAddress || '';
+
     const currencyCode = req.body.CurrencyCode || '';
     const portalUserName = req.body.WebsiteUserName || '';
     const freightMethodId = req.body.SalesOrderShipping.FreightMethodId || '';
@@ -201,6 +273,22 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
 
     if (!delPostalCode) {
         return utils.reject(res, req, utils.reasons.requiredParam + ' ShippingPostalCode.');
+    }
+
+    if (!billingCompanyName) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' BillingName.');
+    }
+
+    if (!billingAddress) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' BillingAddress.');
+    }
+
+    if (!billingCountryCode) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' BillingCountryCode.');
+    }
+
+    if (!billingPostalCode) {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' BillingPostalCode.');
     }
 
     if (!currencyCode) {
@@ -270,11 +358,11 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
      * assume customer is new and create records in WinMan.
      */
     if (!customerGuid && !customerId && !customerBranch) {
-        let firstName = delFirstName;
-        let lastName = delLastName;
+        let firstName = billingFirstName;
+        let lastName = billingLastName;
 
         if (!firstName || !lastName) {
-            let names = customerContact.split(' ');
+            let names = billingCompanyName.split(' ');
             lastName = names.pop();
             firstName = names.join(' ');
         }
@@ -284,12 +372,29 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
 
         customer = createCustomer(
             eCommerceWebsiteId,
+            billingTitle,
             firstName,
             lastName,
+            billingCompanyName,
             portalUserName,
+            billingAddress,
+            billingCity,
+            billingRegion,
+            billingPostalCode,
+            billingCountryCode,
+            billingPhoneNumber,
+            billingEmailAddress,
+            delTitle,
+            delFirstName,
+            delLastName,
+            delName,
             delAddress,
+            delCity,
+            delRegion,
             delPostalCode,
-            delCountryCode);
+            delCountryCode,
+            delPhoneNumber,
+            delEmailAddress);
     } else {
         customer = new Promise((resolve) => {
             const info = {

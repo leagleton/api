@@ -30,10 +30,16 @@ IF NOT EXISTS
 	END;
 GO
 
+-- 10Jan18 LAE Added companyName and title parameters
+
 ALTER PROCEDURE [dbo].[wsp_RestApiContactsInsert]
 	@eCommerceWebsiteId nvarchar(100) = null,
+	-- 10Jan18 LAE
+	@title nvarchar(5) = null,
 	@firstName nvarchar(25) = null,
 	@lastName nvarchar(25) = null,
+	-- 10Jan18 LAE 
+	@companyName nvarchar(50) = null,
 	@workPhoneNumber nvarchar(30) = null,
 	@homePhoneNumber nvarchar(30) = null,
 	@mobilePhoneNumber nvarchar(30) = null,
@@ -62,6 +68,7 @@ BEGIN
 				@eCommerceWebsiteId = @eCommerceWebsiteId,
 				@firstName = @firstName,
 				@lastName = @lastName,
+				@companyName = @companyName,
 				@workPhoneNumber = @workPhoneNumber,
 				@homePhoneNumber = @homePhoneNumber,
 				@mobilePhoneNumber = @mobilePhoneNumber,
@@ -152,7 +159,8 @@ BEGIN
 
 	DECLARE @site bigint;
 	DECLARE @crmCompany bigint;
-	DECLARE @name nvarchar(50);
+	-- 10Jan18 LAE
+	--DECLARE @name nvarchar(50);
 	DECLARE @country bigint;
 	DECLARE @department bigint;
 	DECLARE @customerIndustry bigint;
@@ -215,7 +223,22 @@ BEGIN
 			RETURN;
 		END;
 
-	SET @name = @firstName + ' ' + @lastName;
+	-- 10Jan18 LAE
+	--SET @name = @firstName + ' ' + @lastName;
+	IF @companyName IS NULL OR @companyName = ''
+		BEGIN
+			SET @companyName = @firstName + ' ' + @lastName;
+		END;
+	ELSE
+		BEGIN
+			SET @companyName = @companyName;
+		END;
+
+	-- 10Jan18 LAE
+	IF @title IS NULL
+		BEGIN
+			SET @title = '';
+		END;		
 
 	IF @workPhoneNumber IS NULL
 		BEGIN
@@ -336,7 +359,9 @@ BEGIN
 		ApplicationSettings;
 
 	EXEC wsp_CRMCompaniesInsert
-		@CompanyName = @name,
+		-- 10Jan18 LAE
+		--@CompanyName = @name,
+		@CompanyName = @companyName,
 		@Address = @address,
 		@City = @city,
 		@Region = @region,
@@ -402,13 +427,21 @@ BEGIN
 		@DC_005_INT = 0,
 		@DC_006_DAT = null,
 		@CustomerDiscount = null,
-		@SupplierDiscount = null;	
+		@SupplierDiscount = null;
+
+	-- 10Jan18 LAE
+	DECLARE @contactName nvarchar(50);
+	SET @contactName = @firstName + ' ' + @lastName;
 
 	EXEC wsp_CRMContactsInsert
-		@ContactName = @name,
+		-- 10Jan18 LAE
+		--@contactName = @name,
+		@ContactName = @contactName,
 		@FirstName = @firstName,
 		@LastName = @lastName,
-		@Title = '',
+		-- 10Jan18 LAE
+		--@Title = '',
+		@Title = @title,
 		@JobTitle = @jobTitle,
 		@PhoneNumberHome = @homePhoneNumber,
 		@PhoneNumberWork = @workPhoneNumber,
@@ -423,7 +456,9 @@ BEGIN
 		@LeadType = 'L',
 		@Active = 1,
 		@CRMCompany = @crmCompany,
-		@CompanyName = @name,
+		-- 10Jan18 LAE
+		--@CompanyName = @name,
+		@CompanyName = @companyName,
 		@ContactCompanyAddress = @address,
 		@ContactCompanyCity = @city,
 		@ContactCompanyRegion = @region,

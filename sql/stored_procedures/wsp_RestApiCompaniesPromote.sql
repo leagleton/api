@@ -43,7 +43,7 @@ BEGIN
 
 	IF dbo.wfn_BespokeSPExists('bsp_RestApiCompaniesPromote') = 1 
 		BEGIN
-			EXEC dbo.bsp_RestApiContactsInsert
+			EXEC dbo.bsp_RestApiCompaniesPromote
 				@eCommerceWebsiteId = @eCommerceWebsiteId,
 				@crmCompany = @crmCompany,
 				@scope = @scope,

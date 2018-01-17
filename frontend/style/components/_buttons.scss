@@ -1,0 +1,117 @@
+.btn {
+  @include rem(border, 2px solid $colour-gray);
+  @include rem(padding, 5px 23px);
+  @include text_body();
+  background: transparent;
+  font-weight: bold;
+  transition: all .3s;
+
+  &.btn-sm {
+    @include rem(font-size, 12px);
+    @include rem(padding, 4px 23px);
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: .3;
+  }
+
+  &:hover {
+    @include rem(box-shadow, 0 0 5px $colour-mineshaft);
+  }
+
+  &.cancel {
+    @include text_body($colour-crimson);
+    border-color: $colour-crimson;
+  }
+
+  &.execute {
+    animation: swagger-ui-pulse 2s infinite;
+    border-color: $colour-japaneselaural;
+    color: $colour-white;
+  }
+}
+
+@keyframes swagger-ui-pulse {
+  0% {
+    background: $colour-japaneselaural;
+    box-shadow: 0 0 0 0 rgba($colour-japaneselaural, .8);
+    color: $colour-white;
+  }
+
+  70% {
+    @include rem(box-shadow, 0 0 0 5px rgba($colour-japaneselaural, 0));
+  }
+
+  100% {
+    background: $colour-japaneselaural;
+    box-shadow: 0 0 0 0 rgba($colour-japaneselaural, 0);
+    color: $colour-white;
+  }
+}
+
+.btn-group {
+  @include rem(padding, 20px 20px 0 20px);
+  display: flex;
+
+  .btn {
+    flex: 1;
+  }
+}
+
+.authorization__btn {
+  @include rem(padding, 0 10px);
+  background: none;
+  border: none;
+  margin-left: auto;
+
+  &.locked {
+    opacity: 1;
+  }
+
+  &.unlocked {
+    opacity: .4;
+  }
+
+  svg {
+    vertical-align: bottom;
+  }
+}
+
+.expand-methods,
+.expand-operation {
+  background: none;
+  border: none;
+  margin-left: auto;
+  vertical-align: middle;
+
+  svg {
+    @include rem(height, 20px);
+    @include rem(width, 20px);
+    fill: $colour-gainsboro;
+  }
+}
+
+.expand-methods {
+  @include rem(padding, 0 10px);
+
+  &:hover {
+    svg {
+      fill: $colour-dimgray;
+    }
+  }
+
+  svg {
+    fill: $colour-gray;
+    transition: all .3s;
+  }
+}
+
+button {
+  cursor: pointer;
+  outline: none;
+
+  &.invalid {
+    @include invalidFormElement();
+  }
+}

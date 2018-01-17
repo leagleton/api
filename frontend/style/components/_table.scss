@@ -1,0 +1,135 @@
+table {
+  @include rem(padding, 0 10px);
+  width: 100%;
+
+  &.model {
+    @include rem(margin-top, 15px);
+
+    tbody {
+      tr {
+        td {
+          padding: 0;
+          vertical-align: top;
+
+          &:first-of-type {
+            @include rem(width, 100px);
+            padding: 0;
+          }
+        }
+      }
+    }
+  }
+
+  &.headers {
+    td {
+      @include rem(font-size, 12px);
+      @include text_code();
+      font-weight: 300;
+      vertical-align: middle;
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        @include rem(padding, 10px 0 0 0);
+        vertical-align: top;
+
+        &:first-of-type {
+          @include rem(padding, 10px 0);
+          width: 20%;
+        }
+      }
+    }
+  }
+
+  thead {
+    tr {
+      th,
+      td {
+        @include rem(border-bottom, 1px solid $colour-gray);
+        @include rem(font-size, 12px);
+        @include rem(padding, 12px 0);
+        @include text_body();
+        font-weight: bold;
+        text-align: left;
+      }
+    }
+  }
+
+  &.parameters {
+    col {
+      @include rem(width, 80px);
+    }
+  }
+
+  &.responses-table {
+    col {
+      @include rem(width, 50px);
+    }
+  }
+
+  &.parameters,
+  &.responses-table {
+    table-layout: fixed;
+    width: 100%;
+
+    .model {
+      .markdown {
+        @include rem(padding-right, 24px);
+      }
+    }
+
+    .model-box-container {
+      @include rem(padding, 5px);
+      background-color: $colour-mineshaft;
+    }
+  }
+}
+
+.parameters-col_description {
+  p {
+    @include rem(font-size, 14px);
+    @include text_body();
+    margin: 0;
+  }
+
+  input[type=text] {
+    @include rem(max-width, 340px);
+    width: 100%;
+  }
+
+  select {
+    border-width: 1px;
+  }
+}
+
+.parameter__name {
+  @include rem(font-size, 16px);
+  @include text_body();
+  font-weight: normal;
+
+  &.required {
+    font-weight: bold;
+
+    &:after {
+      @include rem(font-size, 10px);
+      @include rem(padding, 5px);
+      @include rem(top, -6px);
+      color: $colour-crimson;
+      content: 'required';
+      display: none;
+      position: relative;
+    }
+  }
+}
+
+.parameter__in {
+  @include rem(font-size, 12px);
+  @include text_code($colour-gray);
+  font-style: italic;
+}
+
+.table-container {
+  @include rem(padding, 20px 20px 0 20px);
+}

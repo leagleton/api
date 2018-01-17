@@ -1,0 +1,556 @@
+html {
+  @include rem-baseline;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  @include text_body();
+  background: $colour-charcoal;
+  margin: 0;
+}
+
+.wrapper {
+  @include rem(max-width, 1460px);
+  @include rem(padding, 0 20px);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.opblock-tag-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.opblock-tag {
+  @include rem(border-bottom, 1px solid $colour-charcoal);
+  @include rem(padding, 10px 20px 10px 10px);
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  transition: all .2s;
+
+  small {
+    display: none;
+  }
+}
+
+@mixin method($colour) {
+  background: $colour-charcoal;
+  border-color: $colour;
+
+  .opblock-summary-method {
+    background: $colour;
+  }
+
+  .opblock-summary {
+    border-color: $colour;
+
+    &:hover {
+      background-color: $colour-mineshaft;
+    }
+  }
+
+  .tab-header .tab-item.active h4 span:after {
+    background: $colour;
+  }
+}
+
+.opblock-tag {
+  @include rem(margin, 0 0 5px 0);
+  @include text_body();
+
+  &.no-desc {
+    span {
+      flex: 1;
+    }
+  }
+
+  svg {
+    transition: all .4s;
+  }
+
+  small {
+    @include rem(font-size, 14px);
+    @include rem(padding, 0 10px);
+    @include text_body($colour-gray);
+    flex: 1;
+    font-weight: normal;
+    padding-top: inherit;
+  }
+}
+
+.parameter__type {
+  @include rem(font-size, 12px);
+  @include rem(padding, 5px 0);
+  @include text_code();
+}
+
+.view-line-link {
+  @include rem(margin, 0 5px);
+  @include rem(top, 3px);
+  @include rem(width, 20px);
+  cursor: pointer;
+  position: relative;
+  transition: all .5s;
+}
+
+.opblock {
+  @include rem(border, 1px solid $colour-black);
+  @include rem(box-shadow, 0 0 3px $colour-mineshaft);
+  @include rem(margin, 0 0 15px 0);
+
+  .tab-header {
+    display: flex;
+    flex: 1;
+
+    .tab-item {
+      @include rem(padding, 0 40px);
+      cursor: pointer;
+
+      &:first-of-type {
+        @include rem(padding, 0 40px 0 0);
+      }
+
+      &.active {
+        h4 {
+          span {
+            position: relative;
+
+            &:after {
+              @include rem(bottom, -15px);
+              @include rem(height, 4px);
+              background: $colour-gray;
+              content: '';
+              left: 50%;
+              position: absolute;
+              transform: translateX(-50%);
+              width: 120%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.is-open {
+    .opblock-summary {
+      @include rem(border-bottom, 1px solid $colour-black);
+    }
+  }
+
+  .opblock-section-header {
+    @include rem(padding, 8px 20px);
+    @include rem(min-height, 50px);
+    @include rem(width, calc(100% - 2px));
+    align-items: center;
+    background: $colour-mineshaft;
+    margin: 0 auto;
+
+    label {
+      @include rem(font-size, 12px);
+      @include text_body();
+      align-items: center;
+      font-weight: bold;
+
+      span {
+        @include rem(margin, 10px 0 0);
+        @include rem(padding, 0 10px 0 0);
+        display: block;
+      }
+    }
+
+    h6 {
+      @include text_body();
+      flex: 1;
+      margin: 0;
+    }
+  }
+
+  .opblock-section {
+    .opblock-section-header {
+      display: flex;
+    }
+  }
+
+  .opblock-summary-method {
+    @include rem(font-size, 14px);
+    @include rem(min-width, 80px);
+    @include rem(padding, 6px 15px);
+    @include rem(text-shadow, 0 1px 0 $colour-mineshaft);
+    @include text_body($colour-white);
+    background: $colour-black;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .opblock-summary-path,
+  .opblock-summary-operation-id,
+  .opblock-summary-path__deprecated {
+    @include rem(font-size, 16px);
+    @include rem(padding, 0 10px);
+    @include text_code();
+    align-items: center;
+    display: flex;
+
+    .view-line-link {
+      @include rem(top, 2px);
+      cursor: pointer;
+      margin: 0;
+      position: relative;
+      transition: all .5s;
+      width: 0;
+    }
+
+    &:hover {
+      .view-line-link {
+        @include rem(margin, 0 5px);
+        @include rem(width, 18px);
+      }
+    }
+  }
+
+  .opblock-summary-path__deprecated {
+    text-decoration: line-through;
+  }
+
+  .opblock-summary-operation-id {
+    @include rem(font-size, 14px);
+  }
+
+  .opblock-summary-description {
+    @include rem(font-size, 13px);
+    @include text_body($colour-gray);
+    flex: 1;
+    padding-top: inherit;
+  }
+
+  .opblock-summary {
+    @include rem(padding, 5px);
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+
+    .unlocked {
+      svg {
+        fill: $_colour-delete;
+        transition: all .4s;
+      }
+    }
+
+    .locked {
+      svg {
+        fill: $_colour-post;
+        transition: all .4s;
+      }
+    }
+  }
+
+  &.opblock-post {
+    @include method($_colour-post);
+  }
+
+  &.opblock-put {
+    @include method($_colour-put);
+  }
+
+  &.opblock-delete {
+    @include method($_colour-delete);
+  }
+
+  &.opblock-get {
+    @include method($_colour-get);
+  }
+
+  &.opblock-patch {
+    @include method($_colour-patch);
+  }
+
+  &.opblock-head {
+    @include method($_colour-head);
+  }
+
+  &.opblock-options {
+    @include method($_colour-options);
+  }
+
+  &.opblock-deprecated {
+    @include method($_colour-disabled);
+    opacity: .6;
+  }
+
+  .opblock-schemes {
+    @include rem(padding, 8px 20px);
+
+    .schemes-title {
+      @include rem(padding, 0 10px 0 0);
+    }
+  }
+}
+
+.filter {
+  .operation-filter-input {
+    @include rem(border, 2px solid $colour-gainsboro);
+    @include rem(margin, 20px 0);
+    @include rem(padding, 10px 10px);
+    width: 100%;
+  }
+}
+
+.tab {
+  @include rem(margin, 20px 0 10px 0);
+  display: flex;
+  list-style: none;
+  padding: 0;
+
+  li {
+    @include rem(font-size, 12px);
+    @include rem(min-width, 90px);
+    @include text_body();
+    cursor: pointer;
+    padding: 0;
+
+    &:first-of-type {
+      padding-left: 0;
+      position: relative;
+
+      &:after {
+        @include rem(right, 4px);
+        @include rem(width, 1px);
+        background: $colour-dimgray;
+        content: '';
+        height: 100%;
+        position: absolute;
+        top: 0;
+      }
+    }
+
+    &.active {
+      font-weight: bold;
+    }
+  }
+}
+
+.opblock-description-wrapper,
+.opblock-external-docs-wrapper,
+.opblock-title_normal {
+  @include rem(font-size, 12px);
+  @include rem(margin, 0 0 5px 0);
+  @include rem(padding, 15px 20px);
+  @include text_body();
+
+  h4 {
+    @include rem(margin, 0 0 5px 0);
+    @include text_body();
+  }
+
+  p {
+    @include rem(font-size, 14px);
+    @include text_body();
+    margin: 0;
+  }
+}
+
+.opblock-external-docs-wrapper {
+  h4 {
+    padding-left: 0;
+  }
+}
+
+.execute-wrapper {
+  @include rem(padding, 0 20px 0 20px);
+  text-align: right;
+
+  .btn {
+    @include rem(margin, 20px 0 0 0);
+    @include rem(padding, 8px 40px);
+    width: 100%;
+  }
+}
+
+.body-param-options {
+  display: flex;
+  flex-direction: column;
+
+  .body-param-edit {
+    @include rem(padding, 10px 0);
+  }
+
+  label {
+    @include rem(padding, 8px 0 0 0);
+    margin: 0;
+
+    select {
+      @include rem(margin, 3px 0 0 0);
+    }
+  }
+}
+
+.responses-inner {
+  @include rem(padding, 5px 20px 20px);
+
+  h5,
+  h6 {
+    @include rem(margin, 10px 0 5px 0);
+    @include text_body();
+  }
+}
+
+.response-col_status {
+  @include rem(font-size, 14px);
+  @include text_body();
+
+  .response-undocumented {
+    @include rem(font-size, 11px);
+    @include text_code($colour-darkgray);
+  }
+}
+
+.response-col_description__inner {
+  span {
+    @include rem(font-size, 12px);
+    @include rem(margin, 0 0 10px 0);
+    @include rem(padding, 10px);
+    @include text_code($colour-white);
+    background: $colour-tundora;
+    display: block;
+    font-style: italic;
+
+    p {
+      margin: 0;
+    }
+
+    a {
+      @include text_code($colour-yellowgreen);
+      text-decoration: underline;
+
+      &:hover {
+        color: $colour-yellowgreen;
+      }
+    }
+  }
+}
+
+.opblock-body pre {
+  @include rem(font-size, 12px);
+  @include rem(padding, 10px);
+  @include text_code($colour-white);
+  background: $colour-tundora;
+  hyphens: auto;
+  margin: 0;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+
+  span {
+    color: $colour-white;
+    font-weight: bold;
+  }
+
+  .headerline {
+    display: block;
+  }
+}
+
+.scheme-container {
+  @include rem(margin, 32px 0 20px 0);
+  background: $colour-charcoal;
+  padding: 0;
+
+  .schemes {
+    align-items: center;
+    display: flex;
+
+    >label {
+      display: none;
+    }
+  }
+}
+
+.loading-container {
+  @include rem(padding, 40px 0 60px);
+
+  .loading {
+    position: relative;
+
+    &:after {
+      @include rem(font-size, 10px);
+      @include text_body();
+      content: 'loading';
+      font-weight: bold;
+      left: 50%;
+      position: absolute;
+      text-transform: uppercase;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    &:before {
+      @include rem(border, 2px solid $colour-charcoal);
+      @include rem(height, 60px);
+      @include rem(margin, -30px -30px);
+      @include rem(width, 60px);
+      animation: rotation 1s infinite linear, opacity .5s;
+      backface-visibility: hidden;
+      border-radius: 100%;
+      border-top-color: $colour-mineshaft;
+      content: '';
+      display: block;
+      left: 50%;
+      opacity: 1;
+      position: absolute;
+      top: 50%;
+
+      @keyframes rotation {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    }
+  }
+}
+
+.renderedMarkdown {
+  p {
+    @include rem(font-size, 14px);
+    @include text_body();
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+}
+
+.content-type {
+  @include rem(margin, 0 0 10px 0);
+  width: 100%;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+section {
+  h3 {
+    @include text_body();
+  }
+}
+
+a.nostyle {
+  color: inherit;
+  cursor: auto;
+  display: inline;
+  text-decoration: inherit;
+
+  &:visited {
+    color: inherit;
+    cursor: auto;
+    text-decoration: inherit;
+  }
+}

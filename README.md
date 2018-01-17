@@ -2,7 +2,7 @@
 
 ## Quick Start Guide
 
-For a full list of prerequisites and installation instructions, please see the WinMan REST API Installation Guide which is available in Dropbox -> WinMan Team Folder -> Help ->REST API and Magento 2 Bridge.
+For a full list of prerequisites and installation instructions, please see the WinMan REST API Installation Guide which is available in Dropbox -> WinMan Team Folder -> Help -> REST API and Magento 2 Bridge.
 
 ## Installing the API
 

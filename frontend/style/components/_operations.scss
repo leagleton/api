@@ -1,0 +1,54 @@
+.opblock-tag {
+  small {
+    @include breakpoint('phablet') {
+      @include rem(margin, 0 0 2px 0);
+      display: block;
+    }
+  }
+}
+
+.opblock {
+  input[type=text] {
+    color: $colour-charcoal;
+  }
+
+  .opblock-summary-description {
+    @include breakpoint('phablet') {
+      @include rem(margin, 0 0 2px 0);
+      display: block;
+    }
+  }
+
+  .opblock-summary-path {
+    max-width: 60%;
+    overflow: hidden;
+
+    a {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .opblock-section-header {
+    @include breakpoint('phablet') {
+      display: flex;
+
+      label {
+        display: flex;
+
+        span {
+          margin: 0;
+        }
+      }
+
+      select {
+        @include rem(width, 250px);
+      }
+
+      label,
+      select {
+        margin: 0;
+      }
+    }
+  }
+}

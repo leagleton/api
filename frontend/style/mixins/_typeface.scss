@@ -1,0 +1,15 @@
+@mixin text_body($colour: $colour-gainsboro) {
+  color: $colour;
+  font-family: 'Segoe UI', 'Open Sans', sans-serif;
+}
+
+@mixin text_code($colour: $colour-gainsboro) {
+  color: $colour;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 600;
+}
+
+@mixin text_body($colour: $colour-gainsboro) {
+  color: $colour;
+  font-family: 'Segoe UI', 'Open Sans', sans-serif;
+}

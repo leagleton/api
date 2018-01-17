@@ -1,0 +1,39 @@
+body {
+  color: $colour-gainsboro;
+  font-family: 'Segoe UI', 'Open Sans', sans-serif;
+}
+
+@font-face {
+  font-family: 'metro';
+  font-style: normal;
+  font-weight: normal;
+  src: 
+    url('../fonts/metro.eot') format('embedded-opentype'), // sass-lint:disable-line indentation
+    url('../fonts/metro.woff') format('woff'), // sass-lint:disable-line indentation
+    url('../fonts/metro.ttf') format('truetype'), // sass-lint:disable-line indentation
+    url('../fonts/metro.svg') format('svg'); // sass-lint:disable-line indentation
+}
+
+h1 {
+  @include rem(font-size, 40px);
+}
+
+h2 {
+  @include rem(font-size, 32px);
+}
+
+h3 {
+  @include rem(font-size, 28px);
+}
+
+h4 {
+  @include rem(font-size, 24px);
+}
+
+h5 {
+  @include rem(font-size, 20px);
+}
+
+h6 {
+  @include rem(font-size, 16px);
+}

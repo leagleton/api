@@ -1,11 +1,31 @@
+/** 
+ * Enable strict mode. See:
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
+ * for more information.
+ */
 'use strict';
 
+/** 
+ * Initilaise required node modules. Similar to
+ * 'Imports <namespace>' statements in VB.NET.
+ * 
+ * 'router' is used for routing, i.e. determining which URL goes where.
+ * 'passport' is used for authentication.
+ * 'utils' refers to our custom functions for handling SQL queries and responses.
+ * 'logger' is used to define our custom logging functions.
+ * 'config' refers to our application's config settings.
+ * 'tp' is used for executing SQL queries.
+ */
 const router = require('express').Router();
 const passport = require('passport');
 const utils = require('../utils');
 const logger = require('../../middleware/logger');
 const config = require('../../config');
 const tp = require('tedious-promises');
+
+/**
+ * Set the default tp promise library to es6 instead of Q.
+ */
 tp.setPromiseLibrary('es6');
 
 function createCustomer(
@@ -180,7 +200,9 @@ function createCustomer(
         });
 }
 
-/* Create new sales orders in WinMan. */
+/**
+ * Create (POST) new sales orders in WinMan.
+ */
 router.post('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
     const scopes = req.authInfo.scope.split(',');
 

@@ -1,5 +1,12 @@
 node_modules/*
-bin/*.dll
+bin/*
 .vscode/*
 .idea/*
 views/static/swagger/schema/*.json
+*.log
+views/static/**/swagger*
+views/static/js/account*
+views/static/js/index*
+views/static/js/login*
+views/**/*.ejs
+views/static/css/winman.min.css

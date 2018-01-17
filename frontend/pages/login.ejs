@@ -1,0 +1,62 @@
+<% include partials/header %>
+
+<body class="login-body">
+    <div class="outer">
+        <div class="middle">
+            <div class="login-form block-shadow inner">
+                <form method="post" action="/login">
+                    <img class="logo" src="./img/WinMan.png" />
+                    <% if (message.length > 0) { %>
+                        <p class="errorbox">
+                            <span class="icon mif-warning"></span>
+                            <%= message %>
+                        </p>
+                        <% } %>
+                            <div class="input-control modern full-size iconic" data-role="input">
+                                <input type="text" name="username">
+                                <span class="label">Username</span>
+                                <span class="informer">Please enter your account username.</span>
+                                <span class="placeholder">Username</span>
+                                <span class="icon mif-user"></span>
+                            </div>
+                            <br/>
+                            <br/>
+                            <div class="input-control modern full-size iconic" data-role="input">
+                                <input type="password" name="password">
+                                <span class="label">Your password</span>
+                                <span class="informer">Please enter your account password.</span>
+                                <span class="placeholder">Password</span>
+                                <span class="icon mif-lock"></span>
+                            </div>
+                            <% if (mode === 'dual') { %>
+                                <div class="input-control modern full-size iconic system">
+                                    <label class="input-control radio">
+                                        <input type="radio" name="system" value="training" checked="checked">
+                                        <span class="check"></span>
+                                        <span class="caption">Training</span>
+                                    </label>
+                                    <label class="input-control radio">
+                                        <input type="radio" name="system" value="live">
+                                        <span class="check"></span>
+                                        <span class="caption">Live</span>
+                                    </label>
+                                </div>
+                                <% } else { %>
+                                    <br/>
+                                    <br/>
+                                    <% } %>
+                                        <div class="form-actions">
+                                            <span class="version">
+                                                REST API v<%= version %>
+                                                <span class="subtitle">API Portal</span>
+                                            </span>
+                                            <input type="submit" name="Login" class="button primary" value="Log In" />
+                                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="./js/login.min.js"></script>
+</body>
+
+</html>

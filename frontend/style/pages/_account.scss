@@ -1,0 +1,317 @@
+.access-tokens,
+.user-clients {
+  @include rem(border-top, 2px solid $colour-gainsboro);
+  @include rem(box-shadow, 0 .5px 0 $colour-gainsboro);
+  overflow: hidden;
+
+  @include breakpoint('tablet') {
+    border: 0;
+  }
+
+  .btn {
+    @include breakpoint('tablet') {
+      @include rem(margin, 5px);
+    }
+  }
+
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    @include rem(font-size, 16px);
+    display: block;
+
+    @include breakpoint('tablet') {
+      display: table-cell;
+    }
+  }
+
+  tr {
+    @include breakpoint('tablet') {
+      display: table-row;
+    }
+  }
+
+  th,
+  td {
+    @include breakpoint('tablet') {
+      display: table-cell;
+    }
+  }
+
+  thead {
+    @include breakpoint('tablet') {
+      display: table-header-group;
+    }
+  }
+
+  tbody {
+    @include breakpoint('tablet') {
+      display: table-row-group;
+    }
+  }
+
+  thead tr {
+    left: -9999px;
+    position: absolute;
+    top: -9999px;
+
+    @include breakpoint('tablet') {
+      position: static;
+    }
+  }
+
+  td {
+    width: 100%;
+
+    &:first-of-type {
+      width: 100%;
+    }
+
+    &::before {
+      float: left;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    &:nth-of-type(1),
+    &:nth-of-type(2) {
+      @include rem(border-bottom, 1px dotted $colour-gray);
+
+      @include breakpoint('tablet') {
+        border: 0;
+      }
+    }
+  }
+}
+
+.heading {
+  @include rem(margin-bottom, 16px);
+}
+
+.account {
+  .info {
+    .btn-success {
+      @include rem(margin-bottom, 20px);
+      width: 100%;
+
+      @include breakpoint('tablet') {
+        width: auto;
+      }
+    }
+  }
+}
+
+.access-tokens {
+  td {
+    &::before {
+      width: 25%;
+    }
+
+    &:nth-of-type(1) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &.overflown {
+        &:hover {
+          overflow: visible;
+          text-align: center;
+
+          &::before {
+            content: '';
+          }
+        }
+      }
+    }
+
+    &:nth-of-type(1) {
+      @include breakpoint('tablet') {
+        width: auto;
+      }
+
+      &::before {
+        content: 'Client ID';
+
+        @include breakpoint('tablet') {
+          display: none;
+        }
+      }
+    }
+
+    &:nth-of-type(2) {
+      @include breakpoint('tablet') {
+        text-align: center;
+        width: 25%;
+      }
+
+      &::before {
+        content: 'Expires';
+
+        @include breakpoint('tablet') {
+          display: none;
+        }
+      }
+    }
+
+    &:nth-of-type(3) {
+      @include breakpoint('tablet') {
+        text-align: center;
+        width: 20%;
+      }
+
+      &::before {
+        @include rem(margin-top, 5px);
+        content: 'Actions';
+
+        @include breakpoint('tablet') {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.user-clients {
+  @include rem(margin-bottom, -68px);
+
+  @include breakpoint('tablet') {
+    @include rem(margin-bottom, -34px);
+  }
+
+  td {
+    &::before {
+      width: 33%;
+    }
+
+    &:nth-of-type(1),
+    &:nth-of-type(2) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      @include breakpoint('tablet') {
+        width: 27%;
+      }
+
+      &.overflown {
+        &:hover {
+          overflow: visible;
+          text-align: center;
+
+          &::before {
+            content: '';
+          }
+        }
+      }
+    }
+
+    &:nth-of-type(1) {
+      &::before {
+        content: 'Client ID';
+
+        @include breakpoint('tablet') {
+          display: none;
+        }
+      }
+    }
+
+    &:nth-of-type(2) {
+      &::before {
+        content: 'Client Secret';
+
+        @include breakpoint('tablet') {
+          display: none;
+        }
+      }
+    }
+
+    &:nth-of-type(3) {
+      @include rem(margin-left, calc(33% - 6px));
+      position: relative;
+
+      @include breakpoint('tablet') {
+        width: 24%;
+      }
+
+      &::before {
+        @include rem(right, calc(100% - 14px));
+        @include rem(top, 8px);
+        bottom: 0;
+        content: 'Scopes';
+        position: absolute;
+
+        @include breakpoint('tablet') {
+          display: none;
+        }
+      }
+    }
+
+    &:nth-of-type(4) {
+      @include rem(border-top, 1px dotted $colour-gray);
+
+      @include breakpoint('tablet') {
+        border: 0;
+        text-align: center;
+        width: 22%;
+      }
+
+      .btn-success {
+        @include rem(margin-left, 5px);
+      }
+
+      &::before {
+        @include rem(margin-top, 5px);
+        content: 'Actions';
+
+        @include breakpoint('tablet') {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.clients {
+  @include rem(margin, 0 0 88px 0);
+
+  @include breakpoint('tablet') {
+    @include rem(margin, 40px 0 54px 0);
+  }
+
+  >.btn {
+    float: right;
+  }
+
+  .expand-operation {
+    @include rem(padding-left, 16px);
+  }
+}
+
+.open-section {
+  display: none;
+}
+
+.expand-operation {
+  float: right;
+}
+
+p {
+  &.break {
+    word-wrap: break-word;
+  }
+}
+
+.change-password {
+  input[type=password] {
+    color: $colour-black;
+  }
+}
+
+.create-client {
+  hr {
+    @include rem(border, 1px dotted $colour-gray);
+    @include rem(margin, 8px 0);
+  }
+}

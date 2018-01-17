@@ -1,0 +1,91 @@
+.btn {
+  &.authorize {
+    color: $_colour-post;
+  }
+}
+
+.auth-btn-wrapper {
+  @include rem(padding, 20px);
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+
+.auth-wrapper {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+
+  button {
+    &.unlocked {
+      svg {
+        fill: $_colour-delete;
+        opacity: .4;
+      }
+    }
+
+    &.locked {
+      svg {
+        fill: $_colour-post;
+      }
+    }
+
+    svg {
+      @include rem(margin, 0 0 0 10px);
+      vertical-align: sub;
+    }
+  }
+
+  svg {
+    @include rem(margin, 5px 0 0 0);
+    vertical-align: sub;
+  }
+}
+
+.dialog-ux .modal-ux-content .auth-container {
+  @include rem(border-bottom, 1px solid $colour-gainsboro);
+  @include rem(margin, 0 0 10px 0);
+  @include rem(padding, 10px 20px);
+
+  >div>div>div>p {
+    color: $colour-gray;
+
+    code {
+      color: $colour-gray;
+    }
+  }
+
+  &:last-of-type {
+    @include rem(padding, 10px 20px);
+    border: 0;
+    margin: 0;
+  }
+
+  h4 {
+    @include rem(margin, 5px 0 15px 0);
+  }
+
+  .wrapper {
+    margin: 0;
+    padding: 0;
+  }
+
+  input[type=text],
+  input[type=password] {
+    @include rem(min-width, 230px);
+  }
+
+  .errors {
+    @include rem(font-size, 12px);
+    @include rem(padding, 10px);
+    @include text_code();
+  }
+}
+
+.scopes {
+  h5 {
+    @include text_body();
+  }
+}

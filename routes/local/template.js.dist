@@ -1,8 +1,13 @@
-'use strict';
+/** 
+ * Enable strict mode. See:
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
+ * for more information.
+ */
+ 'use strict';
 
 const router    = require('express').Router();
 const passport  = require('passport');
-const utils     = require('../utils');
+const utils = require('../utils');
 
 /* Fetch data */
 router.get('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
@@ -14,7 +19,7 @@ router.get('/', passport.authenticate('bearer', { session: false }), function (r
         return;
     }
 
-    res.status(200);
+    res.status(501);
     res.send('Not yet implemented.');
 });
 
@@ -28,7 +33,7 @@ router.put('/', passport.authenticate('bearer', { session: false }), function (r
         return;
     }
 
-    res.status(200);
+    res.status(501);
     res.send('Not yet implemented.');
 });
 
@@ -42,8 +47,6 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
         return;
     }
 
-    res.status(200);
+    res.status(501);
     res.send('Not yet implemented.');
 });
-
-module.exports = router;

@@ -1,0 +1,248 @@
+.model {
+  @include rem(font-size, 12px);
+  @include text_code();
+  font-weight: 300;
+
+  .deprecated {
+    span,
+    td {
+      color: $colour-dimgray;
+    }
+  }
+
+  &-toggle {
+    @include rem(font-size, 10px);
+    @include rem(top, 6px);
+    cursor: pointer;
+    display: inline-block;
+    margin: auto .3em;
+    position: relative;
+    transform: rotate(90deg);
+    transform-origin: 50% 50%;
+    transition: transform .15s ease-in;
+
+    &.collapsed {
+      transform: rotate(0deg);
+    }
+
+    &:after {
+      @include rem(height, 20px);
+      @include rem(width, 20px);
+      background: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20fill%3D%22%23fffafa%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M10%206L8.59%207.41%2013.17%2012l-4.58%204.59L10%2018l6-6z%22/%3E%0A%3C/svg%3E%0A) center center no-repeat;
+      background-size: 100%;
+      content: '';
+      display: block;
+    }
+  }
+
+  &-jump-to-path {
+    cursor: pointer;
+    position: relative;
+
+    .view-line-link {
+      cursor: pointer;
+      position: absolute;
+      top: -.4em;
+    }
+
+    td {
+      @include rem(padding-right, 32px);
+    }
+  }
+
+  &-title {
+    position: relative;
+  }
+
+  &-hint {
+    background: $colour-mineshaft;
+    color: $colour-gainsboro;
+    padding: .1em .5em;
+    position: absolute;
+    top: -1.8em;
+    visibility: hidden;
+    white-space: nowrap;
+  }
+
+  p {
+    margin: 0 0 1em 0;
+  }
+}
+
+section.models {
+  @include rem(border, 1px solid $colour-gray);
+  @include rem(margin, 30px 0);
+
+  &.is-open {
+    @include rem(padding, 0 0 20px);
+
+    .model-container {
+      .model-box {
+        &::-webkit-scrollbar {
+          @include rem(height, 5px);
+          @include rem(width, 5px);
+          background: $colour-tundora;
+        }
+
+        &::-webkit-scrollbar-corner {
+          background: $colour-tundora;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          @include rem(border-radius, 5px);
+          background: $colour-charcoal;
+        }
+      }
+
+      &:hover {
+        .model-box {
+          &::-webkit-scrollbar {
+            background: $colour-mineshaft;
+          }
+
+          &::-webkit-scrollbar-corner {
+            background: $colour-mineshaft;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background: $colour-tundora;
+          }
+        }
+      }
+    }
+
+    h4 {
+      @include rem(border-bottom, 1px solid $colour-gray);
+      @include rem(margin, 0 0 5px 0);
+    }
+  }
+
+  h6 {
+    @include rem(padding, 10px 20px 10px 10px);
+    @include text_body();
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    margin: 0;
+    transition: all .2s;
+
+    svg {
+      fill: $colour-gainsboro;
+      transition: all .4s;
+    }
+
+    span {
+      flex: 1;
+    }
+
+    &:hover {
+      background: $colour-mineshaft;
+    }
+  }
+
+  h5 {
+    @include rem(margin, 0 0 10px 0);
+    @include text_body($colour-gray);
+  }
+
+  .model-jump-to-path {
+    @include rem(top, 5px);
+    position: relative;
+  }
+
+  .model-container {
+    @include rem(margin, 0 20px 15px);
+    @include rem(padding, 5px);
+    background: $colour-tundora;
+
+    &:hover {
+      background: $colour-mineshaft;
+    }
+
+    &:first-of-type {
+      @include rem(margin-top, 20px);
+    }
+
+    &:last-of-type {
+      @include rem(margin, 0 20px);
+    }
+  }
+
+  .model-box {
+    background: none;
+  }
+}
+
+.model-box {
+  @include rem(padding, 10px);
+  background: $colour-mineshaft;
+  overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    @include rem(height, 5px);
+    @include rem(width, 5px);
+    background: $colour-mineshaft;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: $colour-mineshaft;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @include rem(border-radius, 5px);
+    background: $colour-tundora;
+  }
+
+  .model-jump-to-path {
+    @include rem(top, 4px);
+    position: relative;
+  }
+
+  &.deprecated {
+    opacity: .5;
+  }
+}
+
+.model-title {
+  @include rem(font-size, 16px);
+  @include text_body();
+}
+
+.model-deprecated-warning {
+  @include rem(font-size, 16px);
+  @include text_body($_colour-delete);
+  font-weight: 600;
+  margin-right: 1em;
+}
+
+span {
+  >span.model {
+    @include rem(padding, 0 0 0 10px);
+
+    .brace-close {
+      @include rem(padding, 0 0 0 10px);
+    }
+  }
+}
+
+.prop-type {
+  color: $colour-mediumslateblue;
+}
+
+.prop-enum {
+  display: block;
+}
+
+.prop-format {
+  color: $colour-darkgray;
+}
+
+a {
+  &.tablinks {
+    color: $colour-gainsboro;
+  }
+}
+
+.responses-wrapper {
+  @include rem(margin, 20px 0 0 0);
+}

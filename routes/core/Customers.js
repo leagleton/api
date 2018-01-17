@@ -1,14 +1,36 @@
+/** 
+ * Enable strict mode. See:
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
+ * for more information.
+ */
 'use strict';
 
+/** 
+ * Initilaise required node modules. Similar to
+ * 'Imports <namespace>' statements in VB.NET.
+ * 
+ * 'router' is used for routing, i.e. determining which URL goes where.
+ * 'passport' is used for authentication.
+ * 'utils' refers to our custom functions for handling SQL queries and responses.
+ * 'logger' is used to define our custom logging functions.
+ * 'config' refers to our application's config settings.
+ * 'tp' is used for executing SQL queries.
+ */
 const router = require('express').Router();
 const passport = require('passport');
 const utils = require('../utils');
 const logger = require('../../middleware/logger');
 const config = require('../../config');
 const tp = require('tedious-promises');
+
+/**
+ * Set the default tp promise library to es6 instead of Q.
+ */
 tp.setPromiseLibrary('es6');
 
-/* Fetch all web enabled customers. */
+/**
+ * GET all web enabled customers.
+ */
 router.get('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
     const inputParams = [];
     const scopes = req.authInfo.scope.split(',');
@@ -61,7 +83,10 @@ router.get('/', passport.authenticate('bearer', { session: false }), function (r
     return utils.executeSelect(res, req, params);
 });
 
-/* Create a new CRM contact and company which can be converted to a customer in WinMan. */
+/**
+ * Create (POST) a new CRM contact and company which can be 
+ * converted to a customer in WinMan.
+ */
 router.post('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
     const scopes = req.authInfo.scope.split(',');
 
@@ -151,8 +176,14 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
             }
         })
         .catch((err) => {
+            let status = 400;
+
+            if (err.message.indexOf('not enabled') > -1) {
+                status = 401;
+            }
+
             logger.error(err.stack);
-            utils.error(res, req, err.message);
+            utils.reject(res, req, err.message, status);
         });
 });
 

@@ -1,0 +1,30 @@
+$_colour-post: #0b821b;
+$_colour-get: #037aa5;
+$_colour-put: #c71585;
+$_colour-delete: #f93e3e;
+$_colour-head: #9012fe;
+$_colour-patch: #50e3c2;
+$_colour-disabled: #ebebeb;
+$_colour-options: #0d5aa7;
+
+$methods: (post: $_colour-post), (get: $_colour-get), (put: $_colour-put), (delete: $_colour-delete), (head: $_colour-head), (patch: $_colour-patch), (deprecated: $_colour-disabled), (options: $_colour-options);
+
+$colour-black: #000000;
+$colour-blueviolet: #8a2be2;
+$colour-charcoal: #333333;
+$colour-cornflowerblue: #6495ed;
+$colour-crimson: #dc143c;
+$colour-darkgray: #a9a9a9;
+$colour-dimgray: #696969;
+$colour-gainsboro: #dcdcdc;
+$colour-gray: #808080;
+$colour-japaneselaural: #0b821b;
+$colour-mediumslateblue: #7b68ee;
+$colour-mediumvioletred: #c71585;
+$colour-mineshaft: #222222;
+$colour-olivedrab: #6b8e23;
+$colour-snow: #fffafa;
+$colour-tundora: #444444;
+$colour-white: #ffffff;
+$colour-whitesmoke: #f5f5f5;
+$colour-yellowgreen: #9acd32;

@@ -1,10 +1,25 @@
+/** 
+ * Enable strict mode. See:
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
+ * for more information.
+ */
 'use strict';
 
+/** 
+ * Initilaise required node modules. Similar to
+ * 'Imports <namespace>' statements in VB.NET.
+ * 
+ * 'router' is used for routing, i.e. determining which URL goes where.
+ * 'passport' is used for authentication.
+ * 'utils' refers to our custom functions for handling SQL queries and responses.
+ */
 const router = require('express').Router();
 const passport = require('passport');
 const utils = require('../utils');
 
-/* GET web enabled products. */
+/**
+ * GET web enabled products.
+ */
 router.get('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
     const inputParams = [];
     const scopes = req.authInfo.scope.split(',');

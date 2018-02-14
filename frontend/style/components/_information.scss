@@ -1,0 +1,118 @@
+.info {
+  @include rem(margin, 25px 0 0 0);
+
+  .btn-success {
+    float: right;
+  }
+
+  .section {
+    span {
+      @include rem(margin-bottom, 16px);
+    }
+  }
+}
+
+.title {
+  position: relative;
+
+  sub {
+    left: 0;
+    line-height: 0;
+    margin: 0;
+    position: absolute;
+    top: 0;
+  }
+}
+
+.info {
+  @include rem(margin, 50px 0);
+
+  .system-notice {
+    @include rem(border, 1px solid $_colour-post);
+    @include rem(padding, 20px);
+    background-color: rgba($_colour-post, .1);
+  }
+
+  hgroup.main {
+    @include rem(margin, 0 0 20px 0);
+
+    a {
+      @include rem(font-size, 12px);
+    }
+  }
+
+  p,
+  li,
+  table {
+    @include rem(font-size, 14px);
+    @include text_body();
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    @include text_body();
+  }
+
+  code {
+    @include rem(padding, 3px 5px);
+    @include text_code($colour-blueviolet);
+    background: $colour-mineshaft;
+  }
+
+  a {
+    @include rem(font-size, 14px);
+    @include text_body($colour-cornflowerblue);
+    transition: all .4s;
+
+    &:hover {
+      color: darken($colour-cornflowerblue, 5%);
+    }
+  }
+
+  >div {
+    @include rem(margin, 0 0 5px 0);
+  }
+
+  .base-url {
+    @include rem(font-size, 12px);
+    @include rem(line-height, 20px);
+    @include text_code();
+    font-weight: 300;
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .title {
+    @include text_body();
+    margin: 0;
+
+    small {
+      @include rem(border-radius, 57px);
+      @include rem(font-size, 10px);
+      @include rem(margin, 0 0 0 5px);
+      @include rem(padding, 2px 4px);
+      @include rem(top, -5px);
+      background: $colour-mediumvioletred;
+      display: inline-block;
+      position: relative;
+      vertical-align: super;
+
+      pre {
+        @include text_body($colour-white);
+        margin: 0;
+      }
+    }
+
+    sub {
+      @include rem(font-size, 16px);
+      bottom: 0;
+      font-style: italic;
+      font-weight: normal;
+      vertical-align: baseline;
+    }
+  }
+}

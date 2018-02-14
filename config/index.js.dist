@@ -1,0 +1,44 @@
+'use strict';
+
+exports.service = {
+  'serviceName': '',
+  'displayName': ''
+}
+
+exports.mode = 'dual';
+
+exports.connection = {
+  'liveServer': '',
+  'liveUserName': '',
+  'livePassword': '',
+  'options': { 'encrypt': true, 'liveDatabase': '', 'requestTimeout': 0, 'rowCollectionOnRequestCompletion': false }
+};
+
+exports.connectionTraining = {
+  'trainingServer': '',
+  'trainingUserName': '',
+  'trainingPassword': '',
+  'options': { 'encrypt': true, 'trainingDatabase': '', 'requestTimeout': 0, 'rowCollectionOnRequestCompletion': false }
+};
+
+exports.server = {
+  'scheme': 'https',
+  'host': '',
+  'port': ''
+};
+
+exports.token = {
+  expiresIn: 3600,
+  calculateExpirationDate: (seconds = this.token.expiresIn) =>
+    new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000) + (seconds * 1000)).toISOString()
+};
+
+exports.codeToken = {
+  expiresIn: 300,
+  calculateExpirationDate: (seconds = this.codeToken.expiresIn) =>
+    new Date(Date.now() - ((new Date()).getTimezoneOffset() * 60000) + (seconds * 1000)).toISOString()
+};
+
+exports.session = {
+  'secret': ''
+};

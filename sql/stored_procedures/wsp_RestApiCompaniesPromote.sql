@@ -49,7 +49,7 @@ BEGIN
 				@scope = @scope,
 				@error = @error OUTPUT,
 				@customerGuid = @customerGuid OUTPUT,
-				@customerId = @customerID OUTPUT,
+				@customerId = @customerId OUTPUT,
 				@customerBranch = @customerBranch OUTPUT;
 			RETURN;	
 		END;

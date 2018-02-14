@@ -1,13 +1,40 @@
+/** 
+ * Enable strict mode. See:
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
+ * for more information.
+ */
 'use strict';
 
+/** 
+ * Initilaise required node modules. Similar to
+ * 'Imports <namespace>' statements in VB.NET.
+ * 
+ * 'logger' is used to define our custom logging functions.
+ * 'fs' is used to interact with the file system.
+ * 'config' refers to our application's config settings.
+ * 'path' is used to correctly handle file paths.
+ * 'version' refers to the application's version number in the config file.
+ * 'tp' is used for executing SQL queries.
+ */
 const logger = require('./logger');
 const fs = require('fs');
 const config = require('../config');
 const path = require('path');
 const version = require('../package.json').version;
 const tp = require('tedious-promises');
+
+/**
+ * Set the default tp promise library to es6 instead of Q.
+ */
 tp.setPromiseLibrary('es6');
 
+/**
+ * Fetch all of the available scopes from the database to display
+ * in the authorisation pop-up on the API dashboard.
+ * 
+ * @param   {String}  system - The system in use (training or live).
+ * @returns {Promise} Resolved with the scopes and their descriptions.
+ */
 function fetchScopes(system) {
     if (system === 'training') {
         tp.setConnectionConfig(config.connectionTraining);
@@ -33,8 +60,9 @@ function fetchScopes(system) {
 
 /**
  * Helper function to sort array items into alphabetical order.
- * @param   {Object} a - An array item.
- * @param   {Object} b - Another array item to compare against.
+ * 
+ * @param   {Object}  a - An array item.
+ * @param   {Object}  b - Another array item to compare against.
  * @returns {Integer}
  */
 function compare(a, b) {
@@ -47,9 +75,10 @@ function compare(a, b) {
 
 /**
  * Read contents of core and local swagger files into an array.
- * @param   {String} coreDir - The path to the core directory.
- * @param   {String} localDir - The path to the local directory.
- * @returns {Promise} resolved with the array of file contents.
+ * 
+ * @param   {String}  coreDir    - The path to the core directory.
+ * @param   {String}  localDir   - The path to the local directory.
+ * @returns {Promise} Resolved with the array of file contents.
  */
 function read(coreDir, localDir) {
     const fileContents = [];
@@ -116,6 +145,8 @@ function read(coreDir, localDir) {
  * 
  * Dynamic generation ensures that attributes such as URLs only need to
  * be defined once in the system config file, and nowhere else.
+ * 
+ * @param {Object} req - The request.
  */
 exports.build = function (req) {
     if (typeof req.session.system == 'undefined' || typeof req.session.generating != 'undefined') {
@@ -224,8 +255,11 @@ exports.build = function (req) {
 
             json.securityDefinitions.OAuth2.tokenUrl = tokenUrl;
             json.securityDefinitions.OAuth2.authorizationUrl = authUrl;
+            json['x-system'] = req.session.system;
 
+            json['x-mode'] = config.mode;
             json.info.version = version;
+            json.info.title = config.service.displayName;
 
             json.securityDefinitions.OAuth2.scopes = swaggerScopes;
 

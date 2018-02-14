@@ -1,0 +1,207 @@
+.modal-dialog,
+.modal-content {
+  height: 100%;
+  width: 100%;
+
+  @include breakpoint('phablet') {
+    @include rem(max-height, 650px);
+    @include rem(max-width, 650px);
+  }
+}
+
+.modal-content,
+.modal-ux-content {
+  @include rem(padding, 0 5px 0 0);
+
+  .checkbox {
+    p {
+      @include rem(font-size, 14px);
+      @include rem(margin, 0 0 5px);
+
+      &.description {
+        color: $colour-gray;
+      }
+    }
+  }
+}
+
+.modal-body,
+.modal-ux-content {
+  @include rem(height, calc(100% - 135px));
+  @include rem(margin, 62px 0 0);
+  @include rem(padding, 20px 40px 0);
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    @include rem(width, 5px);
+    background: $colour-tundora;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: $colour-tundora;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @include rem(border-radius, 5px);
+    background: $colour-charcoal;
+  }
+}
+
+.modal-header,
+.modal-ux-header {
+  @include rem(padding, 16px);
+  background-color: $colour-tundora;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+
+  .close {
+    display: none;
+
+    @include breakpoint('phablet') {
+      display: block;
+    }
+  }
+}
+
+.modal-footer,
+.auth-btn-wrapper {
+  @include rem(padding, 20px);
+  background-color: $colour-tundora;
+  bottom: 0;
+  left: 0;
+  margin: 0 auto;
+  width: 100%;
+
+  .btn {
+    +.btn {
+      @include rem(margin, 0 0 0 5px);
+    }
+  }
+}
+
+.modal-footer {
+  @include rem(border, 1px solid $colour-black);
+  border-top: 0;
+  position: fixed;
+}
+
+.dialog-ux {
+  margin: auto;
+
+  @include breakpoint('phablet') {
+    @include rem(max-height, 650px);
+    @include rem(max-width, 650px);
+  }
+
+  .modal-ux {
+    @include rem(box-shadow, 0 2px 15px rgba($colour-black, .5));
+  }
+
+  .modal-ux,
+  .modal-dialog-ux,
+  .modal-ux-inner {
+    height: 100%;
+  }
+
+  .modal-ux-header {
+    @include rem(border-bottom, 1px solid $colour-dimgray);
+    @include rem(padding, 16px);
+    align-items: center;
+    display: flex;
+
+    .close-modal {
+      background: none;
+      border: 0;
+      margin-left: auto;
+    }
+
+    h5 {
+      margin: 0;
+    }
+  }
+}
+
+.dialog-ux {
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9999;
+
+  .backdrop-ux {
+    background: $colour-mineshaft;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+  }
+
+  .modal-ux {
+    background: $colour-tundora;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+
+    .modal-ux-inner {
+      @include rem(border, 1px solid rgba($colour-black, .2));
+      @include rem(padding, 0 5px 0 0);
+      border-bottom: 0;
+    }
+  }
+
+  .modal-ux-content {
+    @include rem(padding, 20px 20px 0);
+
+    &::-webkit-scrollbar {
+      @include rem(width, 5px);
+      background: $colour-tundora;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @include rem(border-radius, 5px);
+      background: $colour-charcoal;
+    }
+
+    .checkall {
+      p {
+        &.name {
+          @include rem(margin-top, 1px);
+          font-style: normal;
+        }
+      }
+    }
+
+    h5 {
+      @include rem(margin, 0 0 16px);
+      @include text_body($colour-gainsboro);
+      font-weight: 600;
+    }
+
+    .scopes {
+      .description {
+        color: $colour-gray;
+      }
+
+      hr {
+        @include rem(border, 1px dotted $colour-gray);
+        @include rem(margin, 8px 0);
+      }
+    }
+
+    select {
+      @include rem(height, 39px);
+      @include rem(width, 230px);
+    }
+
+    input {
+      color: $colour-charcoal;
+    }
+  }
+}

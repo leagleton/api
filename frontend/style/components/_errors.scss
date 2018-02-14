@@ -1,0 +1,50 @@
+.errors-wrapper {
+  @include rem(border, 2px solid $_colour-delete);
+  @include rem(margin, 20px);
+  @include rem(padding, 10px 20px);
+  animation: scaleUp .5s;
+  background: rgba($_colour-delete, .1);
+
+  .error-wrapper {
+    @include rem(margin, 0 0 10px 0);
+  }
+
+  .errors {
+    h6 {
+      @include text_code();
+      margin: 0;
+    }
+
+    small,
+    span {
+      color: $colour-dimgray;
+    }
+  }
+
+  hgroup {
+    align-items: center;
+    display: flex;
+
+    h5 {
+      @include text_body();
+      flex: 1;
+      margin: 0;
+    }
+  }
+}
+
+@keyframes scaleUp {
+  0% {
+    opacity: 0;
+    transform: scale(.8);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.response-error {
+  color: $colour-crimson;
+}

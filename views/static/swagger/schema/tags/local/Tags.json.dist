@@ -9,12 +9,12 @@
             "description": "Product operations"
         },
         {
-            "name": "RMAs",
-            "description": "RMA (Return Merchandise Authorisation) operations"
-        },
-        {
             "name": "Sales Orders",
             "description": "Sales Order operations"
-        }
+        },
+        {
+            "name": "Example",
+            "description": "Example additional operations."
+        }        
     ]
 }

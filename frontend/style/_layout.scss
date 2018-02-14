@@ -1,0 +1,27 @@
+html {
+  @include rem-baseline;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+.logo {
+  @include rem(width, 150px);
+  vertical-align: middle;
+
+  @include breakpoint(phablet) {
+    @include rem(width, 180px);
+  }
+
+  @include breakpoint(desktop) {
+    @include rem(width, 200px);
+  }
+}
+
+.opblock {
+  .opblock-summary-description {
+    display: none;
+  }
+}

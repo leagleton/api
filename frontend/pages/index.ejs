@@ -1,0 +1,30 @@
+<% include partials/header %>
+
+  <body>
+    <% include partials/svgs %>
+      <div id="swagger-ui"></div>
+      <script src="./js/swagger-ui.min.js"></script>
+      <script src="./js/index.min.js"></script>
+      <script>
+        /**
+         * Initialise the dashboard.
+         */
+        window.onload = function () {
+          const pathArray = location.href.split('/');
+          const protocol = pathArray[0];
+          const host = pathArray[2];
+          const url = protocol + '//' + host;
+
+          const ui = SwaggerUI({
+            url: url + "/swagger/schema/<%= session %>.json",
+            oauth2RedirectUrl: url + "/oauth2redirect"
+          })
+          window.ui = ui
+          ui.initOAuth({
+            scopeSeparator: ","
+          })
+        }       
+      </script>
+  </body>
+
+  </html>

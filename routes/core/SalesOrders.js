@@ -674,4 +674,136 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
     });
 });
 
+/**
+ * Fetch (GET) existing sales orders or quotes from WinMan.
+ */
+router.get('/', passport.authenticate('bearer', { session: false }), function (req, res, next) {
+    const inputParams = [];
+    const scopes = req.authInfo.scope.split(',');
+
+    if (scopes.indexOf('getSalesOrders') === -1) {
+        res.status(403);
+        res.send(utils.reasons.inadequateAccess);
+        return;
+    } else {
+        inputParams.push("@scope = 'getSalesOrders'");
+    }
+
+    const customerGuid = res.locals.customerguid || '';
+    const customerId = res.locals.customerid || '';
+    const customerBranch = res.locals.customerbranch || '';
+
+    if (!customerGuid) {
+        if (!customerId && !customerBranch) {
+            return utils.reject(res, req, utils.reasons.requiredParam
+                + ' You must supply either customerguid or customerid and customerbranch. You have supplied none of these.');
+        } else if (!customerId || !customerBranch) {
+            let missingParameter;
+            let suppliedParameter;
+
+            if (customerId) {
+                missingParameter = 'customerbranch';
+                suppliedParameter = 'customerid';
+            } else {
+                missingParameter = 'customerid';
+                suppliedParameter = 'customerbranch';
+            }
+
+            return utils.reject(res, req, utils.reasons.requiredParam + ' '
+                + missingParameter + '. You have supplied ' + suppliedParameter
+                + ' but not ' + missingParameter + '.');
+        } else {
+            inputParams.push("@customerId = '" + customerId + "'");
+            inputParams.push("@customerBranch = '" + customerBranch + "'");
+        }
+    } else {
+        inputParams.push("@customerGuid = '" + customerGuid + "'");
+    }
+
+    if (typeof res.locals.returntype !== 'undefined') {
+        if (res.locals.returntype.toLowerCase() !== 'orders' && res.locals.returntype.toLowerCase() !== 'quotes') {
+            return utils.reject(res, req, utils.reasons.invalidParam
+                + ' returntype. This field only accepts the values orders or quotes. You have supplied: '
+                + res.locals.returntype + '.');
+        } else {
+            inputParams.push("@systemType = '" + res.locals.returntype.charAt(0).toUpperCase() + "'");
+        }
+    } else {
+        inputParams.push("@systemType = 'O'");
+    }
+
+    if (typeof res.locals.orderby !== 'undefined') {
+        const acceptedValues = {
+            'salesorderid': 'SalesOrderId',
+            'quoteid': 'SalesOrderId',
+            'customerreference': 'CustomerOrderNumber',
+            'date': 'EffectiveDate',
+            'status': 'SystemType',
+            'value': 'OrderValue'
+        };
+
+        const column = res.locals.orderby.toLowerCase();
+
+        if (acceptedValues.hasOwnProperty(column)) {
+            inputParams.push("@orderBy = '" + acceptedValues[column] + "'");
+        } else {
+            return utils.reject(res, req, utils.reasons.invalidParam
+                + ' orderby. This field only accepts the values salesorderid, quoteid, customerreference, date, status or value. You have supplied: '
+                + res.locals.orderby + '.');
+        }
+    } else {
+        inputParams.push("@orderBy = 'SalesOrderId'");
+    }
+
+    if (typeof res.locals.salesorderid !== 'undefined'
+        && (typeof res.locals.returntype === 'undefined'
+            || res.locals.returntype.toLowerCase() === 'orders')) {
+        inputParams.push("@salesOrderId = '" + res.locals.salesorderid + "'");
+    }
+
+    if (typeof res.locals.quoteid !== 'undefined'
+        && typeof res.locals.returntype !== 'undefined'
+        && res.locals.returntype.toLowerCase() === 'quotes') {
+        inputParams.push("@salesOrderId = '" + res.locals.quoteid + "'");
+    }
+
+    if (typeof res.locals.customerordernumber !== 'undefined') {
+        inputParams.push("@customerOrderNumber = '" + res.locals.customerordernumber + "'");
+    }
+
+    if (typeof res.locals.website !== 'undefined') {
+        inputParams.push("@website = '" + res.locals.website + "'");
+    } else {
+        return utils.reject(res, req, utils.reasons.requiredParam
+            + ' website.');
+    }
+
+    if (typeof res.locals.page !== 'undefined') {
+        if (!isNaN(parseInt(res.locals.page))) {
+            inputParams.push("@pageNumber = " + res.locals.page);
+        } else {
+            return utils.reject(res, req, utils.reasons.invalidParam
+                + ' page. This field should be an integer but a '
+                + typeof res.locals.page + ' was detected.');
+        }
+    }
+
+    if (typeof res.locals.size !== 'undefined') {
+        if (!isNaN(parseInt(res.locals.size))) {
+            inputParams.push("@pageSize = " + res.locals.size);
+        } else {
+            return utils.reject(res, req, utils.reasons.invalidParam
+                + ' size. This field should be an integer but a '
+                + typeof res.locals.size + ' was detected.');
+        }
+    }
+
+    const params = {
+        sp: 'wsp_RestApiSalesOrdersSelect',
+        args: inputParams
+    };
+
+    return utils.executeSelect(res, req, params);
+});
+
 module.exports = router;

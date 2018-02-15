@@ -1,5 +1,142 @@
 {
     "/salesorders": {
+        "get": {
+            "tags": [
+                "Sales Orders"
+            ],
+            "summary": "Fetch sales orders or quotes for a customer from WinMan.",
+            "operationId": "getSalesOrders",
+            "description": "<p>Fetch sales orders or quotes for a customer from WinMan.</p>",
+            "produces": [
+                "application/json",
+                "application/xml"
+            ],
+            "parameters": [
+                {
+                    "in": "query",
+                    "name": "customerid",
+                    "description": "Fetch sales orders or quotes for a single customer with the supplied <em>customerid</em>. Must be used in conjunction with <em>customerbranch</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 10
+                },
+                {
+                    "in": "query",
+                    "name": "customerbranch",
+                    "description": "Fetch sales orders or quotes for a single customer with the supplied <em>customerbranch</em>. Must be used in conjunction with <em>customerid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4
+                },                
+                {
+                    "in": "query",
+                    "name": "customerguid",
+                    "description": "Fetch sales orders or quotes for a single customer with the supplied <em>customerguid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 36,
+                    "maxLength": 36
+                },
+                {
+                    "in": "query",
+                    "name": "returntype",
+                    "description": "Defines whether to return orders or quotes. Accepted values are <em>orders</em> or <em>quotes</em> only. These values are not case-sensitive. The default value is <em>orders</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 6
+                },
+                {
+                    "in": "query",
+                    "name": "orderby",
+                    "description": "Defines which database column to order results by. Accepted values are <em>orderid</em>, <em>quoteid</em>, <em>customerreference</em>, <em>date</em>, <em>status</em> or <em>value</em> only. These values are not case-sensitive. The default value is <em>salesorderid</em> or <em>quoteid</em> depending on <em>returntype</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 4,
+                    "maxLength": 17
+                },
+                {
+                    "in": "query",
+                    "name": "salesorderid",
+                    "description": "Fetch only the sales order with the supplied <em>salesorderid</em>. If <em>returntype</em> is set to <em>quotes</em>, this parameter will be ignored.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 15
+                },
+                {
+                    "in": "query",
+                    "name": "quoteid",
+                    "description": "Fetch only the quote with the supplied <em>quoteid</em>. If <em>returntype</em> is set to <em>orders</em>, this parameter will be ignored.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 15
+                },
+                {
+                    "in": "query",
+                    "name": "customerordernumber",
+                    "description": "Fetch only the sales order or quote (depending on <em>returntype</em>) with the supplied <em>customerordernumber</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50
+                },                                                                             
+                {
+                    "in": "query",
+                    "name": "website",
+                    "description": "The <em>website</em> the request is being made from (for authentication purposes only).",
+                    "required": true,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                },                
+                {
+                    "in": "query",
+                    "name": "page",
+                    "description": "Results are paginated. Fetch results from the specified page number. The default page is 1.",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0
+                },
+                {
+                    "in": "query",
+                    "name": "size",
+                    "description": "Results are paginated. Fetch the specified number of results per page. The default size is 10.",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0
+                }                         
+            ],
+            "responses": {
+                "200": {
+                    "description": "Query executed successfully.",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/CustomerOrder"
+                        },
+                        "xml": {
+                            "name": "CustomerOrders",
+                            "wrapped": true
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad input parameter.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
+                },
+                "401": {
+                    "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."
+                }                 
+            }
+        },
         "post": {
             "tags": [
                 "Sales Orders"

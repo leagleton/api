@@ -67,7 +67,7 @@ BEGIN
 			AND w.EcommerceWebsiteId = @website
 	)
 		BEGIN
-			SELECT 'ERROR: Scope not enabled for specified website.' AS ErrorMessage;
+			SELECT 'The relevant REST API scope is not enabled for the specified website.' AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
 		END;
@@ -87,7 +87,7 @@ BEGIN
 								STUFF(
 									(SELECT ',{
 										"DeliveryName":"' + REPLACE(del.DeliveryName, '"','&#34;') + '",
-										"Address":"' + REPLACE(REPLACE(REPLACE(del.[Address], CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+										"Address":"' + REPLACE(REPLACE(REPLACE(del.[Address], CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 										"City":"' + REPLACE(del.City, '"','&#34;') + '",
 										"Region":"' + REPLACE(del.Region, '"','&#34;') + '",
 										"PostalCode":"' + REPLACE(del.PostalCode, '"','&#34;') + '",
@@ -96,9 +96,9 @@ BEGIN
 										"LastName":"' + REPLACE(del.LastName, '"','&#34;') + '",
 										"FirstName":"' + REPLACE(del.FirstName, '"','&#34;') + '",
 										"Title":"' + REPLACE(del.Title, '"','&#34;') + '",
-										"Comments":"' + REPLACE(REPLACE(REPLACE(del.Comments, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+										"Comments":"' + REPLACE(REPLACE(REPLACE(del.Comments, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 										"EmailAddress":"' + REPLACE(del.EmailAddress, '"','&#34;') + '",
-										"Notes":"' + REPLACE(REPLACE(REPLACE(del.Notes, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+										"Notes":"' + REPLACE(REPLACE(REPLACE(del.Notes, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 										"SalesTaxExempt":' + CASE WHEN del.SalesTaxExempt = 1 THEN 'true' ELSE 'false' END + ',
 										"IsDefault":' + CASE WHEN cust.DeliveryAddress = del.DeliveryAddress THEN 'true' ELSE 'false' END																	
 									+ '}'
@@ -138,7 +138,7 @@ BEGIN
 			TYPE).value('.','nvarchar(max)'), 1, 1, '' 
 		)), '');
 
-	SELECT @results = REPLACE(REPLACE(REPLACE('{"CustomerDeliveryAddresses":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), '');
+	SELECT @results = REPLACE(REPLACE(REPLACE(REPLACE('{"CustomerDeliveryAddresses":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), ''), '\', '\\');
 
 	SELECT @results AS Results;
 

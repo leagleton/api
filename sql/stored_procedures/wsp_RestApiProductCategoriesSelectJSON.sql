@@ -75,7 +75,7 @@ BEGIN
 			AND w.EcommerceWebsiteId = @website
 	)
 		BEGIN
-			SELECT 'ERROR: Scope not enabled for specified website.' AS ErrorMessage;
+			SELECT 'The relevant REST API scope is not enabled for the specified website.' AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
 		END;	
@@ -134,7 +134,7 @@ BEGIN
 	CTE AS
 	(
 		SELECT
-			ROW_NUMBER() OVER (ORDER BY ProductCategory) AS RowNumber,
+			ROW_NUMBER() OVER (ORDER BY ProductCategory) AS rowNumber,
 			CategoryGUID,
 			ProductCategory,
 			CategoryPath,
@@ -169,13 +169,13 @@ BEGIN
             STUFF(
 				(SELECT ',{
 					"CategoryGuid":"' + CAST(CategoryGUID AS nvarchar(36)) + '",
-					"CategoryPath":"' + REPLACE(REPLACE(REPLACE(CategoryPath, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
-					"CategoryName":"' + REPLACE(REPLACE(REPLACE(CategoryName, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+					"CategoryPath":"' + REPLACE(REPLACE(REPLACE(CategoryPath, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
+					"CategoryName":"' + REPLACE(REPLACE(REPLACE(CategoryName, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 					"SortOrder":' + CAST(ProductCategoryTree.SortOrder AS nvarchar(20)) + ',
 					"CategoryImage":"' + dbo.wfn_RestApiGetImageString(CategoryImage) + '",
-					"MetaTitle":"' + REPLACE(REPLACE(REPLACE(MetaTitle, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
-					"MetaDescription":"' + REPLACE(REPLACE(REPLACE(MetaDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
-					"MetaKeywords":"' + REPLACE(REPLACE(REPLACE(MetaKeywords, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+					"MetaTitle":"' + REPLACE(REPLACE(REPLACE(MetaTitle, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
+					"MetaDescription":"' + REPLACE(REPLACE(REPLACE(MetaDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
+					"MetaKeywords":"' + REPLACE(REPLACE(REPLACE(MetaKeywords, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 					"Level":' + CAST([Level] AS nvarchar(10)) + ',
 					"Products":' +
 						COALESCE(
@@ -202,14 +202,12 @@ BEGIN
 					(rowNumber > @pageSize * (@pageNumber - 1) )
 					AND (rowNumber <= @pageSize * @pageNumber )
 				ORDER BY
-					RowNumber 
+					rowNumber 
 				FOR XML PATH(''), 
 				TYPE).value('.','nvarchar(max)'), 1, 1, '' 
 			)), '');
 
-	--OPTION (OPTIMIZE FOR (@guid UNKNOWN, @website UNKNOWN, @lastModifiedDate UNKNOWN));	
-
-	SELECT @results = REPLACE(REPLACE(REPLACE('{"ProductCategories":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), '');
+	SELECT @results = REPLACE(REPLACE(REPLACE(REPLACE('{"ProductCategories":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), ''), '\', '\\');
 
 	SELECT @results AS Results;
 

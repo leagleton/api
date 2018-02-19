@@ -5,7 +5,8 @@
         "required": [
             "DiscountId",
             "DiscountDescription",
-            "DiscountPercentage"
+            "DiscountPercentage",
+            "DiscountBreaks"
         ],             
         "xml": {
             "name": "Discount"

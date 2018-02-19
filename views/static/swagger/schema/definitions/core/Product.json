@@ -10,9 +10,13 @@
             "WebPrice",
             "Rrp",
             "Surcharge",
+            "ProductPricingClassification",
             "LongDescription",
             "ShortDescription",
             "Taxable",
+            "TaxCode",
+            "SalesDiscount",
+            "ProductPriceLists",
             "MetaTitle",
             "MetaKeywords",
             "MetaDescription",
@@ -24,6 +28,7 @@
             "UnitOfMeasure",
             "DimensionQuantity",
             "ConfigurableProduct",
+            "Brand",
             "Barcode",
             "CrossReference",
             "SalesLeadTime",
@@ -31,7 +36,13 @@
             "Notes",
             "PromptText",
             "Classification",
-            "LastModifiedDate"
+            "AlternativeProducts",
+            "RelatedProducts",
+            "SupersedingProduct",
+            "Warranties",
+            "ProductStatus",
+            "LastModifiedDate",
+            "CustomColumns"
         ],        
         "xml": {
             "name": "Product"

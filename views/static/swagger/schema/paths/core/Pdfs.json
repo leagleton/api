@@ -1,0 +1,107 @@
+{
+    "/pdfs": {
+        "get": {
+            "tags": [
+                "Customers"
+            ],
+            "summary": "Fetch a PDF order acknowledgement, quote, invoice or statement for a customer from WinMan.",
+            "operationId": "getPdfs",
+            "description": "<p>Fetch a PDF order acknowledgement, quote, invoice or statement for a customer from WinMan.</p>",
+            "produces": [
+                "application/json",
+                "application/xml"
+            ],
+            "parameters": [
+                {
+                    "in": "query",
+                    "name": "customerid",
+                    "description": "Fetch a PDF order acknowledgement, quote, invoice or statement for a single customer with the supplied <em>customerid</em>. Must be used in conjunction with <em>customerbranch</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 10
+                },
+                {
+                    "in": "query",
+                    "name": "customerbranch",
+                    "description": "Fetch a PDF order acknowledgement, quote, invoice or statement for a single customer with the supplied <em>customerbranch</em>. Must be used in conjunction with <em>customerid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4
+                },                
+                {
+                    "in": "query",
+                    "name": "customerguid",
+                    "description": "Fetch a PDF order acknowledgement, quote, invoice or statement for a single customer with the supplied <em>customerguid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 36,
+                    "maxLength": 36
+                },
+                {
+                    "in": "query",
+                    "name": "returntype",
+                    "description": "Defines whether to return an order acknowledgement, quote, invoice or statement. Accepted values are <em>salesorder</em>, <em>quote</em>, <em>statement</em> or <em>salesinvoice</em> only. These values are not case-sensitive. The default value is salesorder.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 12
+                },             
+                {
+                    "in": "query",
+                    "name": "salesorderid",
+                    "description": "Fetch the PDF of the sales order with the supplied <em>salesorderid</em>. If <em>returntype</em> is set to <em>quote</em>, <em>invoice</em> or <em>statement</em>, this parameter will be ignored. If <em>returntype</em> is set to <em>salesorder</em>, this field is required.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 15
+                },
+                {
+                    "in": "query",
+                    "name": "quoteid",
+                    "description": "Fetch the PDF of the quote with the supplied <em>quoteid</em>. If <em>returntype</em> is set to <em>salesorder</em>, <em>invoice</em> or <em>statement</em>, this parameter will be ignored. If <em>returntype</em> is set to <em>quote</em>, this field is required.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 15
+                },
+                {
+                    "in": "query",
+                    "name": "salesinvoiceid",
+                    "description": "Fetch the PDF of the sales invoice with the supplied <em>salesinvoiceid</em>. If <em>returntype</em> is set to <em>salesorder</em>, <em>quote</em> or <em>statement</em>, this parameter will be ignored. If <em>returntype</em> is set to <em>salesinvoice</em>, this field is required.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 25
+                },       
+                {
+                    "in": "query",
+                    "name": "website",
+                    "description": "The <em>website</em> the request is being made from (for authentication purposes only).",
+                    "required": true,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                }              
+            ],
+            "responses": {
+                "200": {
+                    "description": "Query executed successfully.",
+                    "schema": {
+                        "$ref": "#/definitions/Pdf"
+                    }
+                },
+                "400": {
+                    "description": "Bad input parameter.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
+                },
+                "401": {
+                    "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."
+                }                 
+            }
+        }
+    }
+}

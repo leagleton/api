@@ -20,6 +20,7 @@
  * 'uglify' is used for obfuscation.
  * 'minifyejs' is used for minifying our ejs files.
  * 'strip' is used for stripping out code comments.
+ * 'httpntlm' is used for encrypting the passwords for the reports servers.
  */
 const gulp = require('gulp');
 const pump = require('pump');
@@ -32,6 +33,7 @@ const sassLint = require('gulp-sass-lint');
 const uglify = require('gulp-uglify-es').default;
 const minifyejs = require('gulp-minify-ejs');
 const strip = require('gulp-strip-comments');
+const httpntlm = require('httpntlm');
 
 /**
  * Declare a global vairable for storing user input. 
@@ -72,7 +74,6 @@ gulp.task('copy', ['clean'], function () {
         gulp.src([
             '*.json',
             'certs/*',
-            'config/index.js.dist',
             'logs/.gitignore',
             'sessions/.gitignore',
             'routes/**/.gitignore',
@@ -181,6 +182,35 @@ gulp.task('config', ['ignore'], function (done) {
     },
     {
         type: 'input',
+        message: 'Live reports server username: ',
+        name: 'connection.reportsUserName',
+        validate: function (value) {
+            if (value === '?') {
+                return '\x1b[92mPlease enter the username of a Windows user\n   which has access to the live system\'s reports server.\x1b[37m';
+            }
+            if (!value) {
+                return '\x1b[31mPlease enter a valid username.\x1b[37m';
+            }
+            return true;
+        }
+    },
+    {
+        type: 'password',
+        message: 'Live reports server password (masked): ',
+        name: 'connection.nt_password',
+        mask: '*',
+        validate: function (value) {
+            if (value === '?') {
+                return '\x1b[92mPlease enter the password associated with the username you entered\n   for the previous question. The password will be masked as you type.\x1b[37m';
+            }
+            if (!value) {
+                return '\x1b[31mPlease enter a valid password.\x1b[37m';
+            }
+            return true;
+        }
+    },
+    {
+        type: 'input',
         message: 'Would you like to add a Training system? ',
         default: 'Y/N',
         name: 'training',
@@ -280,6 +310,49 @@ gulp.task('config', ['ignore'], function (done) {
     },
     {
         type: 'input',
+        message: 'Training reports server username: ',
+        name: 'connectionTraining.reportsUserName',
+        when: function (answers) {
+            if (answers.training.toLowerCase() === 'yes' || answers.training.toLowerCase() === 'y') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        validate: function (value) {
+            if (value === '?') {
+                return '\x1b[92mPlease enter the username of a Windows user\n   which has access to the training system\'s reports server.\x1b[37m';
+            }
+            if (!value) {
+                return '\x1b[31mPlease enter a valid username.\x1b[37m';
+            }
+            return true;
+        }
+    },
+    {
+        type: 'password',
+        message: 'Training reports server password (masked): ',
+        name: 'connectionTraining.nt_password',
+        mask: '*',
+        when: function (answers) {
+            if (answers.training.toLowerCase() === 'yes' || answers.training.toLowerCase() === 'y') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        validate: function (value) {
+            if (value === '?') {
+                return '\x1b[92mPlease enter the password associated with the username you entered\n   for the previous question. The password will be masked as you type.\x1b[37m';
+            }
+            if (!value) {
+                return '\x1b[31mPlease enter a valid password.\x1b[37m';
+            }
+            return true;
+        }
+    },
+    {
+        type: 'input',
         message: 'API URL: ',
         name: 'server.host',
         validate: function (value) {
@@ -321,12 +394,12 @@ gulp.task('config', ['ignore'], function (done) {
 });
 
 /**
- * Set the config settings based on user input.
+ * Set the deployment config settings based on user input.
  */
 gulp.task('generate', ['config'], function () {
     /**
      * Open index.js.dist as a writeable stream, set the config settings accordingly
-     * then save the file as dist/config/index.js.dist.
+     * then save the file as dist/config/index.js.
      */
     return gulp.src(['config/index.js.dist'])
         .pipe(replace("'serviceName': ''", "'serviceName': '" + settings.service.serviceName + "'"))
@@ -335,11 +408,22 @@ gulp.task('generate', ['config'], function () {
         .pipe(replace("'liveUserName': ''", "'userName': '" + settings.connection.userName + "'"))
         .pipe(replace("'livePassword': ''", "'password': '" + settings.connection.password + "'"))
         .pipe(replace("'liveDatabase': ''", "'database': '" + settings.connection.options.database + "'"))
-        .pipe(replace("'dual'", function () {
+        .pipe(replace("'liveReportsUserName': ''", "'reportsUserName': '" + settings.connection.reportsUserName + "'"))
+        .pipe(replace("'liveLm_password': ''", function () {
+            const lm_password = Array.prototype.slice.call(httpntlm.ntlm.create_LM_hashed_password(settings.connection.nt_password), 0);
+
+            return "'lm_password': new Buffer([" + lm_password + "])";
+        }))
+        .pipe(replace("'liveNt_password': ''", function () {
+            const nt_password = Array.prototype.slice.call(httpntlm.ntlm.create_NT_hashed_password(settings.connection.nt_password), 0);
+
+            return "'nt_password': new Buffer([" + nt_password + "])";
+        }))
+        .pipe(replace("= 'dual'", function () {
             if (settings.hasOwnProperty('connectionTraining')) {
-                return "'dual'";
+                return "= 'dual'";
             }
-            return "'single'";
+            return "= 'single'";
         }))
         .pipe(replace("'trainingServer': ''", function () {
             if (settings.hasOwnProperty('connectionTraining')) {
@@ -365,34 +449,113 @@ gulp.task('generate', ['config'], function () {
             }
             return "'database': ''";
         }))
+        .pipe(replace("'trainingLm_password': ''", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                const lm_password = Array.prototype.slice.call(httpntlm.ntlm.create_LM_hashed_password(settings.connectionTraining.nt_password), 0);
+
+                return "'lm_password': new Buffer([" + lm_password + "])";
+            }
+            return "'lm_password': ''";
+        }))
+        .pipe(replace("'trainingNt_password': ''", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                const nt_password = Array.prototype.slice.call(httpntlm.ntlm.create_NT_hashed_password(settings.connectionTraining.nt_password), 0);
+
+                return "'nt_password': new Buffer([" + nt_password + "])";
+            }
+            return "'nt_password': ''";
+        }))
         .pipe(replace("'host': ''", "'host': '" + settings.server.host + "'"))
         .pipe(replace("'port': ''", "'port': " + settings.server.port))
         .pipe(replace("'secret': ''", "'secret': '" + settings.session.secret + "'"))
+        .pipe(rename('index.js'))
+        .pipe(uglify())
         .pipe(gulp.dest('dist/config'));
 });
 
 /**
- * Create index.js from index.js.dist and obfuscate.
+ * Set the development config settings based on user input.
  */
-gulp.task('tidy', ['generate'], function () {
-    return gulp.src('dist/config/index.js.dist')
-        .pipe(rename('index.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('dist/config'));;
-});
+gulp.task('develop', ['config'], function () {
+    /**
+     * Open index.js.dist as a writeable stream, set the config settings accordingly
+     * then save the file as config/index.js.
+     */
+    return gulp.src(['config/index.js.dist'])
+        .pipe(replace("'serviceName': ''", "'serviceName': '" + settings.service.serviceName + "'"))
+        .pipe(replace("'displayName': ''", "'displayName': '" + settings.service.displayName + "'"))
+        .pipe(replace("'liveServer': ''", "'server': '" + settings.connection.server + "'"))
+        .pipe(replace("'liveUserName': ''", "'userName': '" + settings.connection.userName + "'"))
+        .pipe(replace("'livePassword': ''", "'password': '" + settings.connection.password + "'"))
+        .pipe(replace("'liveDatabase': ''", "'database': '" + settings.connection.options.database + "'"))
+        .pipe(replace("'liveReportsUserName': ''", "'reportsUserName': '" + settings.connection.reportsUserName + "'"))
+        .pipe(replace("'liveLm_password': ''", function () {
+            const lm_password = Array.prototype.slice.call(httpntlm.ntlm.create_LM_hashed_password(settings.connection.nt_password), 0);
 
-/**
- * Remove unnecessary index.js.dist file.
- */
-gulp.task('remove', ['tidy'], function () {
-    return gulp.src('dist/config/*.dist', { read: false })
-        .pipe(clean());
+            return "'lm_password': new Buffer([" + lm_password + "])";
+        }))
+        .pipe(replace("'liveNt_password': ''", function () {
+            const nt_password = Array.prototype.slice.call(httpntlm.ntlm.create_NT_hashed_password(settings.connection.nt_password), 0);
+
+            return "'nt_password': new Buffer([" + nt_password + "])";
+        }))
+        .pipe(replace("= 'dual'", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                return "= 'dual'";
+            }
+            return "= 'single'";
+        }))
+        .pipe(replace("'trainingServer': ''", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                return "'server': '" + settings.connectionTraining.server + "'";
+            }
+            return "'server': ''";
+        }))
+        .pipe(replace("'trainingUserName': ''", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                return "'userName': '" + settings.connectionTraining.userName + "'";
+            }
+            return "'userName': ''";
+        }))
+        .pipe(replace("'trainingPassword': ''", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                return "'password': '" + settings.connectionTraining.password + "'";
+            }
+            return "'password': ''";
+        }))
+        .pipe(replace("'trainingDatabase': ''", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                return "'database': '" + settings.connectionTraining.options.database + "'";
+            }
+            return "'database': ''";
+        }))
+        .pipe(replace("'trainingLm_password': ''", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                const lm_password = Array.prototype.slice.call(httpntlm.ntlm.create_LM_hashed_password(settings.connectionTraining.nt_password), 0);
+
+                return "'lm_password': new Buffer([" + lm_password + "])";
+            }
+            return "'lm_password': ''";
+        }))
+        .pipe(replace("'trainingNt_password': ''", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                const nt_password = Array.prototype.slice.call(httpntlm.ntlm.create_NT_hashed_password(settings.connectionTraining.nt_password), 0);
+
+                return "'nt_password': new Buffer([" + nt_password + "])";
+            }
+            return "'nt_password': ''";
+        }))
+        .pipe(replace("'host': ''", "'host': '" + settings.server.host + "'"))
+        .pipe(replace("'port': ''", "'port': " + settings.server.port))
+        .pipe(replace("'secret': ''", "'secret': '" + settings.session.secret + "'"))
+        .pipe(rename('index.js'))
+        .pipe(gulp.dest('config'));
 });
 
 /** 
  * Copy necessary JS files to the dist folder and obfuscate.
  */
-gulp.task('build', ['remove'], function () {
+gulp.task('build', ['generate'], function () {
     pump([
         gulp.src([
             'middleware/**/*.js',

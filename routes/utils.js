@@ -79,13 +79,14 @@ exports.reject = (res, req, reason, status = 400) => {
  * @param {Object} req    - The request.
  * @param {Object} object - The response to send.
  * @param {Number} status - The response status code, defaults to 200 OK.
+ * @param {String} parent - The name of the parent element for the reponse object.
  */
-exports.success = (res, req, object, status = 200) => {
+exports.success = (res, req, object, status = 200, parent = 'Response') => {
     res.status(status);
 
     if (req.accepts('application/xml')) {
         this.setContentType(res, contentTypes.xml);
-        let xmlResponse = '<Response>';
+        let xmlResponse = '<' + parent + '>';
 
         for (const item in object) {
             const element = {};
@@ -93,11 +94,13 @@ exports.success = (res, req, object, status = 200) => {
             xmlResponse += xml(element);
         }
 
-        xmlResponse += '</Response>';
+        xmlResponse += '</' + parent + '>';
         res.write(xmlResponse);
         res.end();
     } else {
-        res.json({ Response: object });
+        const response = {};
+        response[parent] = object;
+        res.json(response);
     }
 }
 

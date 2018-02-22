@@ -1,0 +1,87 @@
+{
+    "/invoices": {
+        "get": {
+            "tags": [
+                "Customers"
+            ],
+            "summary": "Fetch an invoice for a customer from WinMan.",
+            "operationId": "getInvoices",
+            "description": "<p>Fetch an invoice for a customer from WinMan.</p>",
+            "produces": [
+                "application/json",
+                "application/xml"
+            ],
+            "parameters": [
+                {
+                    "in": "query",
+                    "name": "customerid",
+                    "description": "Fetch an invoice for a single customer with the supplied <em>customerid</em>. Must be used in conjunction with <em>customerbranch</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 10
+                },
+                {
+                    "in": "query",
+                    "name": "customerbranch",
+                    "description": "Fetch an invoice for a single customer with the supplied <em>customerbranch</em>. Must be used in conjunction with <em>customerid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4
+                },                
+                {
+                    "in": "query",
+                    "name": "customerguid",
+                    "description": "Fetch an invoice for a single customer with the supplied <em>customerguid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 36,
+                    "maxLength": 36
+                },
+                {
+                    "in": "query",
+                    "name": "salesinvoiceid",
+                    "description": "Fetch the invoice with the supplied <em>salesinvoiceid</em>.",
+                    "required": true,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 25
+                },               
+                {
+                    "in": "query",
+                    "name": "website",
+                    "description": "The <em>website</em> the request is being made from (for authentication purposes only).",
+                    "required": true,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                }          
+            ],
+            "responses": {
+                "200": {
+                    "description": "Query executed successfully.",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/CustomerInvoice"
+                        },
+                        "xml": {
+                            "name": "CustomerInvoices",
+                            "wrapped": true
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad input parameter.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
+                },
+                "401": {
+                    "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."
+                }                 
+            }
+        }
+    }
+}

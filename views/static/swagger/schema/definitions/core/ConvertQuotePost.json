@@ -1,0 +1,59 @@
+{
+    "ConvertQuotePost": {
+        "type": "object",
+        "description": "The <strong>Data</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
+        "required": [
+            "Website",
+            "QuoteId",
+            "CustomerOrderNumber"
+        ],
+        "xml": {
+            "name": "Data"
+        },
+        "properties": {
+            "Website": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "example": "www.example.co.uk",
+                "description": "Maps to the field <em>EcommerceWebsites.EcommerceWebsiteId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "CustomerGuid": {
+                "type": "string",
+                "format": "uuid",
+                "minLength": 36,
+                "maxLength": 36,
+                "example": "CC5821D6-66C7-423B-A7EC-7EE1E838C69F",
+                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database.<br/>Null values: allowed if CustomerId and CustomerBranch are not null or empty<br/>Empty strings: allowed if CustomerId and CustomerBranch are not null or empty"
+            },
+            "CustomerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 10,
+                "example": "C00123",
+                "description": "Maps to the field <em>Customers.CustomerId</em> in your WinMan database. Must be used in conjunction with <em>CustomerBranch</em>.<br/>Null values: allowed if CustomerGuid is not null or empty<br/>Empty strings: allowed if CustomerGuid is not null or empty"
+            },
+            "CustomerBranch": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4,
+                "example": "0000",
+                "description": "Maps to the field <em>Customers.Branch</em> in your WinMan database. Must be used in conjunction with <em>CustomerId</em>.<br/>Null values: allowed if CustomerGuid is not null or empty<br/>Empty strings: allowed if CustomerGuid is not null or empty"
+            },
+            "QuoteId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 15,
+                "example": "SO-0000001",
+                "description": "Maps to the field <em>SalesOrders.SalesOrderId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "CustomerOrderNumber": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50,
+                "example": "WEB0000123",
+                "description": "Maps to the field <em>SalesOrders.CustomerOrderNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            }
+        }
+    }
+}

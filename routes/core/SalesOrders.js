@@ -15,6 +15,7 @@
  * 'logger' is used to define our custom logging functions.
  * 'config' refers to our application's config settings.
  * 'tp' is used for executing SQL queries.
+ * 'uuid' is used for generating a GUID.
  */
 const router = require('express').Router();
 const passport = require('passport');
@@ -22,6 +23,7 @@ const utils = require('../utils');
 const logger = require('../../middleware/logger');
 const config = require('../../config');
 const tp = require('tedious-promises');
+const uuid = require('uuid/v4');
 
 /**
  * Set the default tp promise library to es6 instead of Q.
@@ -154,7 +156,7 @@ function createCustomer(
         })
         .then((results) => {
             const customer = results;
-
+            
             return tp.sql("DECLARE @error nvarchar(1000);\
                             EXEC wsp_RestApiCustomerDeliveryAddressesInsert \
                                 @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
@@ -197,6 +199,55 @@ function createCustomer(
                 customerBranch: customerBranch,
                 errorMessage: error
             };
+        });
+}
+
+function getConfiguredItemValuesSql(salesOrderItem, guid) {
+    let sql = 'DECLARE @error nvarchar(1000);';
+
+    const salesOrderItemOptions = salesOrderItem.Options.map((option) => {
+        return new Promise((resolve, reject) => {
+            const optionId = option.OptionId || '';
+            const optionItemId = option.OptionItemId || '';
+            const optionItemPrice = option.OptionItemPrice || 0;
+
+            if (typeof option.OptionId === 'undefined') {
+                return reject(utils.reasons.requiredParam + ' OptionId.');
+            }
+
+            if (typeof option.OptionItemId === 'undefined') {
+                return reject(utils.reasons.requiredParam + ' OptionItemId.');
+            }
+
+            if (typeof option.OptionItemPrice === 'undefined') {
+                return reject(utils.reasons.requiredParam + ' OptionItemPrice.');
+            }
+
+            if (isNaN(parseFloat(optionItemPrice))) {
+                return reject(utils.reasons.invalidParam + ' OptionItemPrice. This field should be numeric but a ' + typeof optionItemPrice + ' was detected.');
+            }
+
+            sql = sql + "IF @error IS NULL OR @error = '' \
+                            BEGIN \
+                                EXEC wsp_RestApiConfiguredItemValuesInsert \
+                                    @configuration = '" + guid + "',\
+                                    @productId = '" + salesOrderItem.Sku + "',\
+                                    @configuredStructureOptionId = '" + optionId + "',\
+                                    @configuredItemId = '" + optionItemId + "',\
+                                    @price = " + optionItemPrice + ",\
+                                    @error = @error OUTPUT; \
+                            END;";
+
+            return resolve();
+        });
+    });
+
+    return Promise.all(salesOrderItemOptions)
+        .then(() => {
+            return sql;
+        })
+        .catch((message) => {
+            return message;
         });
 }
 
@@ -535,7 +586,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                                                 @delEmailAddress = '" + delEmailAddress + "',\
                                                 @freightMethodId = '" + freightMethodId + "',\
                                                 @curValue = " + shippingValue + ",\
-                                                @curTaxValue = " + shippingTaxValue)
+                                                @curTaxValue = " + shippingTaxValue + ";")
                         .execute();
                 })
                 .then((results) => {
@@ -550,26 +601,10 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                     const salesOrderItems = req.body.SalesOrderItems.map((salesOrderItem) => {
                         return new Promise((resolve, reject) => {
                             const sku = salesOrderItem.Sku || '';
-                            const quantity = salesOrderItem.Quantity || 0;
-
                             const curValue = salesOrderItem.OrderLineValue || 0;
                             const curTaxValue = salesOrderItem.OrderLineTaxValue || 0;
-
-                            if (!quantity) {
-                                return reject(utils.reasons.requiredParam + ' Quantity.');
-                            }
-
-                            if (isNaN(parseFloat(curTaxValue))) {
-                                return reject(utils.reasons.invalidParam + ' OrderLineTaxValue. ' + numeric + typeof salesOrderItem.OrderLineTaxValue + ' was detected.');
-                            }
-
-                            if (isNaN(parseFloat(quantity))) {
-                                return reject(utils.reasons.invalidParam + ' Quantity. ' + numeric + typeof salesOrderItem.Quantity + ' was detected.');
-                            }
-
-                            if (isNaN(parseFloat(curValue))) {
-                                return reject(utils.reasons.invalidParam + ' OrderLineValue. ' + numeric + typeof salesOrderItem.OrderLineValue + ' was detected.');
-                            }
+                            const quantity = salesOrderItem.Quantity || 0;
+                            const useConfigurator = salesOrderItem.UseConfigurator || false;
 
                             if (typeof salesOrderItem.Sku === 'undefined') {
                                 return reject(utils.reasons.requiredParam + ' Sku.');
@@ -583,26 +618,108 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                                 return reject(utils.reasons.requiredParam + ' OrderLineTaxValue.');
                             }
 
-                            sql = sql + "EXEC wsp_RestApiSalesOrderItemsInsert \
-                                            @salesOrder = " + salesOrder + ",\
-                                            @itemType = 'P',\
-                                            @sku = '" + sku + "',\
-                                            @quantity = " + quantity + ",\
-                                            @delName = '" + delName + "',\
-                                            @delTitle = '" + delTitle + "',\
-                                            @delFirstName = '" + delFirstName + "',\
-                                            @delLastName = '" + delLastName + "',\
-                                            @delAddress = '" + delAddress + "',\
-                                            @delCity = '" + delCity + "',\
-                                            @delRegion = '" + delRegion + "',\
-                                            @delPostalCode = '" + delPostalCode + "',\
-                                            @delCountryCode = '" + delCountryCode + "',\
-                                            @delPhoneNumber = '" + delPhoneNumber + "',\
-                                            @delEmailAddress = '" + delEmailAddress + "',\
-                                            @curValue = " + curValue + ",\
-                                            @curTaxValue = " + curTaxValue + ";";
+                            if (typeof salesOrderItem.Quantity === 'undefined') {
+                                return reject(utils.reasons.requiredParam + ' Quantity.');
+                            }
 
-                            return resolve();
+                            if (isNaN(parseFloat(curValue))) {
+                                return reject(utils.reasons.invalidParam + ' OrderLineValue. ' + numeric + typeof salesOrderItem.OrderLineValue + ' was detected.');
+                            }
+
+                            if (isNaN(parseFloat(curTaxValue))) {
+                                return reject(utils.reasons.invalidParam + ' OrderLineTaxValue. ' + numeric + typeof salesOrderItem.OrderLineTaxValue + ' was detected.');
+                            }
+
+                            if (isNaN(parseFloat(quantity))) {
+                                return reject(utils.reasons.invalidParam + ' Quantity. ' + numeric + typeof salesOrderItem.Quantity + ' was detected.');
+                            }
+
+                            if (typeof salesOrderItem.UseConfigurator !== 'undefined' && typeof salesOrderItem.UseConfigurator !== 'boolean') {
+                                return reject(utils.reasons.invalidParam + ' UseConfigurator. This field should be a boolean but a ' + typeof salesOrderItem.UseConfigurator + ' was detected.');
+                            }
+
+                            if (useConfigurator) {
+                                const configuredSku = salesOrderItem.ConfiguredSku || '';
+
+                                if (typeof salesOrderItem.ConfiguredSku === 'undefined') {
+                                    return reject(utils.reasons.requiredParam + ' ConfiguredSku.');
+                                }
+
+                                if (typeof salesOrderItem.Options === 'undefined') {
+                                    return reject(utils.reasons.requiredParam + ' Options.');
+                                }
+
+
+                                if (typeof salesOrderItem.Options !== 'object') {
+                                    return reject(utils.reasons.invalidParam
+                                        + ' Options. This field should be an array but a '
+                                        + typeof salesOrderItem.Options + ' was detected.');
+                                }
+
+                                if (Object.keys(salesOrderItem.Options).length === 0) {
+                                    return reject(utils.reasons.requiredParam + ' Options. The Options array cannot be empty but you have supplied an empty array.');
+                                }
+
+                                const guid = uuid();
+                                const itemValues = getConfiguredItemValuesSql(salesOrderItem, guid);
+
+                                itemValues.then((result) => {
+                                    if (result.indexOf('EXEC') === -1) {
+                                        reject(result);
+                                    }
+
+                                    sql = sql + result
+                                        + "IF @error IS NULL OR @error = '' \
+                                            BEGIN \
+                                                EXEC wsp_RestApiSalesOrderItemsInsert \
+                                                    @salesOrder = " + salesOrder + ",\
+                                                    @itemType = 'N',\
+                                                    @sku = '" + sku + "',\
+                                                    @quantity = " + quantity + ",\
+                                                    @delName = '" + delName + "',\
+                                                    @delTitle = '" + delTitle + "',\
+                                                    @delFirstName = '" + delFirstName + "',\
+                                                    @delLastName = '" + delLastName + "',\
+                                                    @delAddress = '" + delAddress + "',\
+                                                    @delCity = '" + delCity + "',\
+                                                    @delRegion = '" + delRegion + "',\
+                                                    @delPostalCode = '" + delPostalCode + "',\
+                                                    @delCountryCode = '" + delCountryCode + "',\
+                                                    @delPhoneNumber = '" + delPhoneNumber + "',\
+                                                    @delEmailAddress = '" + delEmailAddress + "',\
+                                                    @curValue = " + curValue + ",\
+                                                    @curTaxValue = " + curTaxValue + ", \
+                                                    @configuration = '" + guid + "', \
+                                                    @pseudoSku = '" + configuredSku + "'; \
+                                            END;";
+
+                                    return resolve();
+                                })
+                                    .catch((message) => {
+                                        reject(message);
+                                    });
+                            } else {
+                                sql = sql + "EXEC wsp_RestApiSalesOrderItemsInsert \
+                                                @salesOrder = " + salesOrder + ",\
+                                                @itemType = 'P',\
+                                                @sku = '" + sku + "',\
+                                                @quantity = " + quantity + ",\
+                                                @delName = '" + delName + "',\
+                                                @delTitle = '" + delTitle + "',\
+                                                @delFirstName = '" + delFirstName + "',\
+                                                @delLastName = '" + delLastName + "',\
+                                                @delAddress = '" + delAddress + "',\
+                                                @delCity = '" + delCity + "',\
+                                                @delRegion = '" + delRegion + "',\
+                                                @delPostalCode = '" + delPostalCode + "',\
+                                                @delCountryCode = '" + delCountryCode + "',\
+                                                @delPhoneNumber = '" + delPhoneNumber + "',\
+                                                @delEmailAddress = '" + delEmailAddress + "',\
+                                                @curValue = " + curValue + ",\
+                                                @curTaxValue = " + curTaxValue + ";";
+
+                                return resolve();
+                            }
                         });
                     });
 
@@ -617,6 +734,12 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                 .then((results) => {
                     result = results[0].ErrorMessage || '';
 
+                    results.map(qry => {
+                        if (qry.ErrorMessage !== 'undefined') {
+                            result = qry.ErrorMessage;
+                        }
+                    });
+
                     if (result !== '') {
                         throw new Error(result);
                     }
@@ -630,7 +753,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                                                     @salesOrder = " + salesOrder + ",\
                                                     @creditCardTypeId = '" + creditCardTypeId + "',\
                                                     @curTransactionValue = " + curTransactionValue + ",\
-                                                    @error = @error OUTPUT")
+                                                    @error = @error OUTPUT;")
                             .execute();
                     }
                 })

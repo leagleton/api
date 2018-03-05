@@ -1,0 +1,44 @@
+{
+    "OptionItem": {
+        "type": "object",
+        "description": "The <strong>OptionItems</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
+        "required": [
+            "OptionItemId",
+            "OptionItemDescription",
+            "OptionItemPrice",
+            "OptionItemDefault"
+        ],         
+        "xml": {
+            "name": "OptionItem"
+        },
+        "properties": {
+            "OptionItemId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "example": "RED",
+                "description": "Maps to the field <em>ConfiguredItems.ConfiguredItemId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "OptionItemDescription": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "example": "A red variant of this product.",
+                "description": "Maps to the field <em>ConfiguredItems.Description</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "OptionItemPrice": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 0.5001,
+                "description": "Maps to the field <em>ConfiguredItems.Price</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: not allowed"
+            },
+            "OptionItemDefault": {
+                "type": "string",
+                "minLength": 0,
+                "example": "RED",
+                "description": "Maps to the field <em>ConfiguredItems.Default</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            }
+        }
+    }
+}

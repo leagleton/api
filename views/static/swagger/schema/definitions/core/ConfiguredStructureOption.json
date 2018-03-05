@@ -1,0 +1,58 @@
+{
+    "ConfiguredStructureOption": {
+        "type": "object",
+        "description": "The <strong>ConfiguredStructureOptions</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
+        "required": [
+            "OptionId",
+            "OptionDescription",
+            "AllowMultipleSelection",
+            "AllowNoSelection",
+            "UseDropDown",
+            "OptionItems"
+        ],
+        "xml": {
+            "name": "ConfiguredStructureOption"
+        },
+        "properties": {
+            "OptionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "example": "COLOUR",
+                "description": "Maps to the field <em>ConfiguredStructureOptions.ConfiguredStructureOptionId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "OptionDescription": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "example": "Select a colour for your product.",
+                "description": "Maps to the field <em>ConfiguredStructureOptions.Description</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "AllowMultipleSelection": {
+                "type": "boolean",
+                "example": false,
+                "description": "Maps to the field <em>ConfiguredStructureOptions.AllowMultipleSelection</em> in your WinMan database.<br/>Null values: not allowed"
+            },
+            "AllowNoSelection": {
+                "type": "boolean",
+                "example": false,
+                "description": "Maps to the field <em>ConfiguredStructureOptions.AllowNoSelection</em> in your WinMan database.<br/>Null values: not allowed"
+            },
+            "UseDropDown": {
+                "type": "boolean",
+                "example": true,
+                "description": "Maps to the field <em>ConfiguredStructureOptions.UseDropDown</em> in your WinMan database.<br/>Null values: not allowed"
+            },
+            "OptionItems": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/OptionItem"
+                },
+                "xml": {
+                    "name": "OptionItems",
+                    "wrapped": true
+                }
+            }
+        }
+    }
+}

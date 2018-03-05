@@ -1,0 +1,121 @@
+{
+    "/statements": {
+        "get": {
+            "tags": [
+                "Customers"
+            ],
+            "summary": "Fetch statements for a customer from WinMan.",
+            "operationId": "getStatements",
+            "description": "<p>Fetch statements for a customer from WinMan.</p>",
+            "produces": [
+                "application/json",
+                "application/xml"
+            ],
+            "parameters": [
+                {
+                    "in": "query",
+                    "name": "customerid",
+                    "description": "Fetch statements for a single customer with the supplied <em>customerid</em>. Must be used in conjunction with <em>customerbranch</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 10
+                },
+                {
+                    "in": "query",
+                    "name": "customerbranch",
+                    "description": "Fetch statements for a single customer with the supplied <em>customerbranch</em>. Must be used in conjunction with <em>customerid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4
+                },                
+                {
+                    "in": "query",
+                    "name": "customerguid",
+                    "description": "Fetch statements for a single customer with the supplied <em>customerguid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 36,
+                    "maxLength": 36
+                },
+                {
+                    "in": "query",
+                    "name": "salesinvoiceid",
+                    "description": "Fetch only the statement line for the supplied <em>salesinvoiceid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 25
+                },
+                {
+                    "in": "query",
+                    "name": "orderby",
+                    "description": "Defines which database column to order results by. Accepted values are <em>salesinvoiceid</em>, <em>date</em>, <em>status</em> or <em>value</em> only. These values are not case-sensitive. The default value is <em>salesinvoiceid</em>.",
+                    "required": false,
+                    "type": "string",
+                    "minLength": 4,
+                    "maxLength": 17
+                },
+                {
+                    "in": "query",
+                    "name": "outstanding",
+                    "description": "Defines whether to fetch only statement lines which have a balance (<em>true</em>) or all statement lines (<em>false</em>). The default value is <em>false</em>.",
+                    "required": false,
+                    "type": "boolean"
+                },                
+                {
+                    "in": "query",
+                    "name": "website",
+                    "description": "The <em>website</em> the request is being made from (for authentication purposes only).",
+                    "required": true,
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                },
+                {
+                    "in": "query",
+                    "name": "page",
+                    "description": "Results are paginated. Fetch results from the specified page number. The default page is 1.",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0
+                },
+                {
+                    "in": "query",
+                    "name": "size",
+                    "description": "Results are paginated. Fetch the specified number of results per page. The default size is 20.",
+                    "required": false,
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0
+                }                
+            ],
+            "responses": {
+                "200": {
+                    "description": "Query executed successfully.",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/CustomerStatement"
+                        },
+                        "xml": {
+                            "name": "CustomerStatements",
+                            "wrapped": true
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad input parameter.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
+                },
+                "401": {
+                    "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."
+                }                 
+            }
+        }
+    }
+}

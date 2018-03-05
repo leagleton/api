@@ -1,0 +1,100 @@
+{
+    "OrderItem": {
+        "type": "object",
+        "description": "The <strong>OrderItems</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
+        "required": [
+            "UnitPrice",
+            "Quantity",
+            "LineValue",
+            "LineTaxValue",
+            "DiscountAmount"
+        ],        
+        "xml": {
+            "name": "OrderItem"
+        },
+        "properties": {
+            "Sku": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "example": "ABC00123",
+                "description": "Maps to the field <em>Products.ProductId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "ProductName": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 300,
+                "example": "Display stand with 3 shelves",
+                "description": "Maps to the field <em>Products.ProductDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "FreightMethodId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 15,
+                "example": "NEXT DAY",
+                "description": "Maps to the field <em>FreightMethods.FreightMethodId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "SundryId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "example": "ABC00123",
+                "description": "Maps to the field <em>Sundries.SundryId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "FreeTextItem": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "example": "ABC00123",
+                "description": "Maps to the field <em>SalesOrderItems.FreeTextItem</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "Description": {
+                "type": "string",
+                "minLength": 1,
+                "example": "A metal display stand which includes 3 shelves made of glass.",
+                "description": "Maps to the field <em>SalesOrderItems.ItemDescription</em> or <em>SalesOrderItems.Notes</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "ShortDescription": {
+                "type": "string",
+                "minLength": 0,
+                "example": "A display stand with 3 shelves.",
+                "description": "Maps to the field <em>Products.WebSummary</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "UnitPrice": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.000001,
+                "example": 5.990005,
+                "description": "Maps to the field <em>SalesOrderItems.CurPrice</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "Quantity": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.00001,
+                "example": 1.00005,
+                "description": "Maps to the field <em>SalesOrderItems.Quantity</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "LineValue": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 79.9999,
+                "description": "A calculated value from the fields <em>SalesOrderItems.CurItemValue</em> and <em>SalesOrderItems.CurTaxValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "LineTaxValue": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 12.0009,
+                "description": "Maps to the field <em>SalesOrderItems.CurTaxValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "DiscountAmount": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 5.9905,
+                "description": "Maps to the field <em>SalesOrderItems.CurDiscountValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            }
+        }
+    }
+}

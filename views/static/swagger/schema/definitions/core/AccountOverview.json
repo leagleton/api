@@ -1,0 +1,62 @@
+{
+    "AccountOverview": {
+        "type": "object",
+        "description": "The <strong>AccountOverviews</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
+        "required": [
+            "CustomerGuid",
+            "CustomerId",
+            "CustomerBranch",
+            "AccountStatus",
+            "AccountBalance",
+            "OverdueBalance"
+        ],    
+        "xml": {
+            "name": "AccountOverview"
+        },
+        "properties": {
+            "CustomerGuid": {
+                "type": "string",
+                "format": "uuid",
+                "minLength": 36,
+                "maxLength": 36,
+                "example": "CC5821D6-66C7-423B-A7EC-7EE1E838C69F",
+                "description": "Maps to the field <em>Customers.CustomerGUID</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "CustomerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 10,
+                "example": "C00123",
+                "description": "Maps to the field <em>Customers.CustomerId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "CustomerBranch": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4,
+                "example": "0000",
+                "description": "Maps to the field <em>Customers.Branch</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "AccountStatus": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 15,
+                "example": "30 DAYS",
+                "description": "Maps to the field <em>CreditTerms.CreditTermsId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "AccountBalance": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.9999,
+                "description": "A calculated value from the field <em>SalesInvoices.CurInvoiceValueOutstanding</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "OverdueBalance": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.9999,
+                "description": "A calculated value from the fields <em>SalesInvoices.CurInvoiceValueOutstanding</em> and <em>SalesOrderItems.CurTaxValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            }
+        }
+    }
+}

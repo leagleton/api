@@ -1,0 +1,92 @@
+{
+    "CustomerStatement": {
+        "type": "object",
+        "description": "The <strong>CustomerStatements</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
+        "required": [
+            "Date",
+            "StatementLineType",
+            "Currency",
+            "Status",
+            "InvoiceId",
+            "SalesOrderId",
+            "CustomerOrderNumber",
+            "PaymentType",
+            "Debit",
+            "Credit"
+        ],
+        "xml": {
+            "name": "CustomerStatement"
+        },
+        "properties": {
+            "Date": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2017-08-31T10:48:06.200",
+                "description": "Maps to the field <em>SalesInvoices.EffectiveDate</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "StatementLineType": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 7,
+                "example": "Invoice",
+                "description": "A calculated value from the field <em>SalesInvoices.SourceType</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "Currency": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3,
+                "example": "GBP",
+                "description": "Maps to the field <em>Currencies.CurrencyId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "Status": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 11,
+                "example": "Outstanding",
+                "description": "A calculated value from the fields <em>SalesInvoices.CurInvoiceValueOutstanding</em> and <em>SalesInvoices.DueDate</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "InvoiceId": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 25,
+                "example": "INV0000001",
+                "description": "Maps to the field <em>SalesInvoices.SalesInvoiceId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "SalesOrderId": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 15,
+                "example": "SO-0000001",
+                "description": "Maps to the field <em>SalesOrders.SalesOrderId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },            
+            "CustomerOrderNumber": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "WEB0000123",
+                "description": "Maps to the field <em>SalesOrders.CustomerOrderNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "PaymentType": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 11,
+                "example": "Credit Card",
+                "description": "A calculated value from multiple fields in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "Debit": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.9999,
+                "description": "Maps to the field <em>SalesInvoices.CurInvoiceValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "Credit": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": -29.9999,
+                "description": "Maps to the field <em>SalesInvoices.CurInvoiceValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            }
+        }
+    }
+}

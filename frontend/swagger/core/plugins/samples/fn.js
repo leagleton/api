@@ -68,7 +68,7 @@ export const sampleFromSchema = (schema, config = {}) => {
       }
     }
     var name = (xml.hasOwnProperty('name')) ? xml.name : '';
-    if (name === "Response" || name === "Data") {
+    if (name === "Response" || name === "Data" || name === "Pdf") {
       let newObj = {}
       newObj[xml.name] = obj
       return newObj

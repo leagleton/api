@@ -1,0 +1,47 @@
+{
+    "/convertquotes": {
+        "put": {
+            "tags": [
+                "Customers"
+            ],
+            "summary": "Convert a quote to an order in WinMan.",
+            "operationId": "putConvertQuotes",
+            "description": "<p>Convert a quote to an order in WinMan.<p>",
+            "consumes": [
+                "application/json",
+                "application/xml"
+            ],
+            "produces": [
+                "application/json",
+                "application/xml"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "data",
+                    "description": "<p>The quote information. Please check the Model for required fields.</p>",
+                    "schema": {
+                        "$ref": "#/definitions/ConvertQuotePost"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Query executed successfully.",
+                    "schema": {
+                        "$ref": "#/definitions/SuccessResponse"
+                    }
+                },
+                "400": {
+                    "description": "Bad input parameter.",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
+                },
+                "401": {
+                    "description": "Unauthorised. Access token may be invalid, expired or not supplied in the request."
+                }
+            }
+        }
+    }
+}

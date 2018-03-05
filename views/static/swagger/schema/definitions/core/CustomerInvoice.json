@@ -1,0 +1,278 @@
+{
+    "CustomerInvoice": {
+        "type": "object",
+        "description": "The <strong>CustomerInvoices</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
+        "required": [
+            "InvoiceId",
+            "InvoiceDate",
+            "DueDate",
+            "Status",
+            "InvoiceTotal",
+            "OutstandingBalance",
+            "CustomerOrderNumber",
+            "FreightMethodId",
+            "ShippingValue",
+            "ShippingTaxValue",
+            "TotalOrderValue",
+            "TotalTaxValue",
+            "Currency",
+            "ShippingName",
+            "ShippingAddress",
+            "ShippingTitle",
+            "ShippingFirstName",
+            "ShippingLastName",
+            "ShippingCity",
+            "ShippingRegion",
+            "ShippingPostalCode",
+            "ShippingCountryCode",
+            "ShippingPhoneNumber",
+            "ShippingEmailAddress",
+            "BillingName",
+            "BillingAddress",
+            "BillingCity",
+            "BillingRegion",
+            "BillingPostalCode",
+            "BillingCountryCode",
+            "BillingPhoneNumber",
+            "BillingEmailAddress",
+            "OrderItems"
+        ],
+        "xml": {
+            "name": "CustomerOrder"
+        },
+        "properties": {
+            "InvoiceId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 15,
+                "example": "SO-0000001",
+                "description": "Maps to the field <em>SalesInvoices.SalesInvoiceId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "InvoiceDate": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2017-07-31T10:48:06.200",
+                "description": "Maps to the field <em>SalesInvoices.EffectiveDate</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "DueDate": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2017-08-31T10:48:06.200",
+                "description": "Maps to the field <em>SalesInvoices.DueDate</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "Status": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 11,
+                "example": "Outstanding",
+                "description": "A calculated value from the fields <em>SalesInvoices.CurInvoiceValueOutstanding</em> and <em>SalesInvoices.DueDate</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "InvoiceTotal": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.9999,
+                "description": "Maps to the field <em>SalesInvoices.CurInvoiceValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "OutstandingBalance": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.9999,
+                "description": "Maps to the field <em>SalesInvoices.CurInvoiceValueOutstanding</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "CustomerOrderNumber": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "WEB0000123",
+                "description": "Maps to the field <em>SalesOrders.CustomerOrderNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "FreightMethodId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 15,
+                "example": "NEXT DAY",
+                "description": "Maps to the field <em>FreightMethods.FreightMethodId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "ShippingValue": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.9999,
+                "description": "A calculated value from the fields <em>SalesOrderItems.CurItemValue</em> and <em>SalesOrderItems.CurTaxValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "ShippingTaxValue": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 4.9999,
+                "description": "A calculated value from the field <em>SalesOrderItems.CurTaxValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "TotalOrderValue": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.9999,
+                "description": "A calculated value from the fields <em>SalesOrderItems.CurItemValue</em> and <em>SalesOrderItems.CurTaxValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "TotalTaxValue": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 29.9999,
+                "description": "A calculated value from the field <em>SalesOrderItems.CurTaxValue</em> in your WinMan database.<br/>Null values: not allowed<br/>Zero values: allowed"
+            },
+            "Currency": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3,
+                "example": "GBP",
+                "description": "Maps to the field <em>Currencies.CurrencyId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "ShippingName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50,
+                "example": "Systemware Service Ltd.",
+                "description": "Maps to the field <em>DeliveryAddresses.DeliveryName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "ShippingAddress": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "example": "1 Industrial Drive",
+                "description": "Maps to the field <em>DeliveryAddresses.Address</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "ShippingTitle": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 5,
+                "example": "Mr",
+                "description": "Maps to the field <em>DeliveryAddresses.Title</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "ShippingFirstName": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 25,
+                "example": "John",
+                "description": "Maps to the field <em>DeliveryAddresses.FirstName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "ShippingLastName": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 25,
+                "example": "Smith",
+                "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "ShippingCity": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "Birmingham",
+                "description": "Maps to the field <em>DeliveryAddresses.City</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "ShippingRegion": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "West Midlands",
+                "description": "Maps to the field <em>DeliveryAddresses.Region</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "ShippingPostalCode": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 20,
+                "example": "B24 6GH",
+                "description": "Maps to the field <em>DeliveryAddresses.PostalCode</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "ShippingCountryCode": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3,
+                "example": "GBR",
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "ShippingPhoneNumber": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 30,
+                "example": "+44 (0)121 123 4567",
+                "description": "Maps to the field <em>DeliveryAddresses.PhoneNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "ShippingEmailAddress": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 450,
+                "example": "jsmith@email.com",
+                "description": "Maps to the field <em>DeliveryAddresses.EmailAddress</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "BillingName": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "Systemware Services Ltd.",
+                "description": "Maps to the field <em>Customers.CustomerName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "BillingAddress": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "example": "1 Industrial Drive",
+                "description": "Maps to the field <em>Customers.Address</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "BillingCity": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "Birmingham",
+                "description": "Maps to the field <em>Customers.City</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "BillingRegion": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "West Midlands",
+                "description": "Maps to the field <em>Customers.Region</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "BillingPostalCode": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 20,
+                "example": "B24 6GH",
+                "description": "Maps to the field <em>Customers.PostalCode</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "BillingCountryCode": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3,
+                "example": "GBR",
+                "description": "Maps to the field <em>Countries.ISO3Chars</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "BillingPhoneNumber": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 30,
+                "example": "+44 (0)121 123 4567",
+                "description": "Maps to the field <em>Customers.PhoneNumber</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "BillingEmailAddress": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 450,
+                "example": "jsmith@email.com",
+                "description": "Maps to the field <em>Customers.EmailAddress</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "OrderItems": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/OrderItem"
+                },
+                "xml": {
+                    "name": "OrderItems",
+                    "wrapped": true
+                }
+            }
+        }
+    }
+}

@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "build": "npm run compile && gulp build",
-    "compile": "webpack --config webpack.config.js --colors && gulp uglify && gulp sass"
+    "compile": "webpack --config webpack.config.js --colors && gulp uglify && gulp sass",
+    "develop": "gulp develop",
+    "sass": "gulp sass"
   },
   "description": "winman-rest-api",
   "author": {
@@ -22,6 +24,7 @@
     "express": "^4.15.4",
     "express-session": "^1.15.5",
     "fs": "^0.0.1-security",
+    "httpntlm": "1.7.5",
     "https": "^1.0.0",
     "jsonwebtoken": "^7.4.3",
     "oauth2orize": "^1.10.0",

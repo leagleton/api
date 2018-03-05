@@ -1,0 +1,21 @@
+{
+    "Pdf": {
+        "type": "object",
+        "description": "The <strong>Pdf</strong> object <strong>cannot</strong> be null and <strong>cannot</strong> be an empty object.",
+        "required": [
+            "Data"
+        ],        
+        "xml": {
+            "name": "Pdf"
+        },
+        "properties": {
+            "Data": {
+                "type": "string",
+                "format": "byte",
+                "minLength": 1,
+                "example": "R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=",
+                "description": "The base64-encoded string of the requested PDF file.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            }
+        }
+    }
+}

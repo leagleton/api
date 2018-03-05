@@ -7,6 +7,7 @@
             "CategoryPath",
             "CategoryName",
             "SortOrder",
+            "CategoryImage",
             "MetaTitle",
             "MetaDescription",
             "MetaKeywords",

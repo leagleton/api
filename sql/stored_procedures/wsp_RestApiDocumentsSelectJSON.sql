@@ -67,7 +67,7 @@ BEGIN
 			AND w.EcommerceWebsiteId = @website
 	)
 		BEGIN
-			SELECT 'ERROR: Scope not enabled for specified website.' AS ErrorMessage;
+			SELECT 'The relevant REST API scope is not enabled for the specified website.' AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
 		END;	
@@ -114,11 +114,9 @@ BEGIN
 					p.ProductId
 				FOR XML PATH(''), 
 						TYPE).value('.','nvarchar(max)'), 1, 1, '' 
-			)), '')
+			)), '');	
 
-	--OPTION (OPTIMIZE FOR (@sku UNKNOWN, @lastModifiedDate UNKNOWN, @website UNKNOWN));	
-
-	SELECT @results = REPLACE(REPLACE(REPLACE('{"ProductAttachments":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), '');
+	SELECT @results = REPLACE(REPLACE(REPLACE(REPLACE('{"ProductAttachments":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), ''), '\', '\\');
 
 	SELECT @results AS Results;
 

@@ -130,7 +130,7 @@ export default class Oauth2 extends React.Component {
         {
           (flow === ACCESS_CODE && isAuthorized) ? null
             : <Row>
-              <label htmlFor="website">Website:</label>
+              <label htmlFor="website">Website<span style={{ color: "red" }}>&nbsp;*</span></label>
               <Col tablet={10} desktop={10}>
                 <select id="website"
                   type="text"
@@ -145,7 +145,7 @@ export default class Oauth2 extends React.Component {
         {
           (flow === ACCESS_CODE && isAuthorized) ? null
             : <Row>
-              <label htmlFor="client_id">Client ID:</label>
+              <label htmlFor="client_id">Client ID<span style={{ color: "red" }}>&nbsp;*</span></label>
               <Col tablet={10} desktop={10}>
                 <input id="client_id"
                   type="text"
@@ -158,11 +158,12 @@ export default class Oauth2 extends React.Component {
         {
           (flow === ACCESS_CODE && isAuthorized) ? null
             : <Row>
-              <label htmlFor="client_secret">Client Secret:</label>
+              <label htmlFor="client_secret">Client Secret<span style={{ color: "red" }}>&nbsp;*</span></label>
               <Col tablet={10} desktop={10}>
                 <input id="client_secret"
                   value={this.state.clientSecret}
                   type="text"
+                  required="required"
                   data-name="clientSecret"
                   onChange={this.onInputChange} />
               </Col>

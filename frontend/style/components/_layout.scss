@@ -387,6 +387,10 @@ body {
 
     select {
       @include rem(margin, 3px 0 0 0);
+
+      @include breakpoint('phablet') {
+        @include rem(width, 250px);
+      }
     }
   }
 }
@@ -407,7 +411,9 @@ body {
 
   .response-undocumented {
     @include rem(font-size, 11px);
+    @include rem(padding, 0 5px 0 0);
     @include text_code($colour-darkgray);
+    word-wrap: break-word;
   }
 }
 

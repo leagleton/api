@@ -130,6 +130,11 @@
           "from": "content-type@>=1.0.4 <1.1.0",
           "resolved": "https://registry.npmjs.org/content-type/-/content-type-1.0.4.tgz"
         },
+        "debug": {
+          "version": "2.6.8",
+          "from": "debug@2.6.8",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.6.8.tgz"
+        },
         "iconv-lite": {
           "version": "0.4.19",
           "from": "iconv-lite@0.4.19",
@@ -206,6 +211,11 @@
           "version": "2.5.0",
           "from": "bytes@2.5.0",
           "resolved": "https://registry.npmjs.org/bytes/-/bytes-2.5.0.tgz"
+        },
+        "debug": {
+          "version": "2.6.8",
+          "from": "debug@2.6.8",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.6.8.tgz"
         }
       }
     },
@@ -286,6 +296,11 @@
         }
       }
     },
+    "debug": {
+      "version": "2.6.9",
+      "from": "debug@>=2.2.0 <3.0.0",
+      "resolved": "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz"
+    },
     "deep-extend": {
       "version": "0.4.2",
       "from": "deep-extend@>=0.4.0 <0.5.0",
@@ -357,6 +372,11 @@
       "from": "express@4.15.4",
       "resolved": "https://registry.npmjs.org/express/-/express-4.15.4.tgz",
       "dependencies": {
+        "debug": {
+          "version": "2.6.8",
+          "from": "debug@2.6.8",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.6.8.tgz"
+        },
         "qs": {
           "version": "6.5.0",
           "from": "qs@6.5.0",
@@ -367,7 +387,14 @@
     "express-session": {
       "version": "1.15.5",
       "from": "express-session@latest",
-      "resolved": "https://registry.npmjs.org/express-session/-/express-session-1.15.5.tgz"
+      "resolved": "https://registry.npmjs.org/express-session/-/express-session-1.15.5.tgz",
+      "dependencies": {
+        "debug": {
+          "version": "2.6.8",
+          "from": "debug@2.6.8",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.6.8.tgz"
+        }
+      }
     },
     "extend": {
       "version": "3.0.1",
@@ -387,7 +414,14 @@
     "finalhandler": {
       "version": "1.0.4",
       "from": "finalhandler@>=1.0.4 <1.1.0",
-      "resolved": "https://registry.npmjs.org/finalhandler/-/finalhandler-1.0.4.tgz"
+      "resolved": "https://registry.npmjs.org/finalhandler/-/finalhandler-1.0.4.tgz",
+      "dependencies": {
+        "debug": {
+          "version": "2.6.8",
+          "from": "debug@2.6.8",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.6.8.tgz"
+        }
+      }
     },
     "forever-agent": {
       "version": "0.6.1",
@@ -490,6 +524,16 @@
       "version": "1.1.1",
       "from": "http-signature@>=1.1.0 <1.2.0",
       "resolved": "https://registry.npmjs.org/http-signature/-/http-signature-1.1.1.tgz"
+    },
+    "httpntlm": {
+      "version": "1.7.5",
+      "from": "httpntlm@latest",
+      "resolved": "https://registry.npmjs.org/httpntlm/-/httpntlm-1.7.5.tgz"
+    },
+    "httpreq": {
+      "version": "0.4.24",
+      "from": "httpreq@>=0.4.22",
+      "resolved": "https://registry.npmjs.org/httpreq/-/httpreq-0.4.24.tgz"
     },
     "https": {
       "version": "1.0.0",
@@ -892,7 +936,7 @@
     },
     "request": {
       "version": "2.81.0",
-      "from": "request@>=2.0.0 <3.0.0",
+      "from": "https://registry.npmjs.org/request/-/request-2.81.0.tgz",
       "resolved": "https://registry.npmjs.org/request/-/request-2.81.0.tgz"
     },
     "retry": {
@@ -923,7 +967,14 @@
     "send": {
       "version": "0.15.4",
       "from": "send@0.15.4",
-      "resolved": "https://registry.npmjs.org/send/-/send-0.15.4.tgz"
+      "resolved": "https://registry.npmjs.org/send/-/send-0.15.4.tgz",
+      "dependencies": {
+        "debug": {
+          "version": "2.6.8",
+          "from": "debug@2.6.8",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.6.8.tgz"
+        }
+      }
     },
     "serve-static": {
       "version": "1.12.4",
@@ -1091,6 +1142,11 @@
       "version": "0.0.3",
       "from": "uid2@>=0.0.0 <0.1.0",
       "resolved": "https://registry.npmjs.org/uid2/-/uid2-0.0.3.tgz"
+    },
+    "underscore": {
+      "version": "1.7.0",
+      "from": "underscore@>=1.7.0 <1.8.0",
+      "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.7.0.tgz"
     },
     "universalify": {
       "version": "0.1.1",

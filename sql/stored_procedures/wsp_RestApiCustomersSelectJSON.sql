@@ -71,7 +71,7 @@ BEGIN
 			AND w.EcommerceWebsiteId = @website
 	)
 		BEGIN
-			SELECT 'ERROR: Scope not enabled for specified website.' AS ErrorMessage;
+			SELECT 'The relevant REST API scope is not enabled for the specified website.' AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
 		END;	
@@ -169,7 +169,7 @@ BEGIN
 						"Site":' + CASE WHEN dbo.wfn_RestApiGetSiteName(cust.[Site]) IS NULL THEN 'null' ELSE '"' + dbo.wfn_RestApiGetSiteName(cust.[Site]) + '"' END + ',
 						"CustomerId":"' + REPLACE(cust.CustomerId, '"','&#34;') + '",
 						"Branch":"' + REPLACE(cust.Branch, '"','&#34;') + '",
-						"Address":"' + REPLACE(REPLACE(REPLACE(cust.[Address], CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+						"Address":"' + REPLACE(REPLACE(REPLACE(cust.[Address], CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 						"City":"' + REPLACE(cust.City, '"','&#34;') + '",
 						"Region":"' + REPLACE(cust.Region, '"','&#34;') + '",
 						"PostalCode":"' + REPLACE(cust.PostalCode, '"','&#34;') + '",
@@ -187,7 +187,7 @@ BEGIN
 									STUFF(
 										(SELECT ',{
 											"CurrencyId":"' + REPLACE(CurrencyId, '"','&#34;') + '",
-											"CurrencyDescription":"' + REPLACE(REPLACE(REPLACE(CurrencyDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+											"CurrencyDescription":"' + REPLACE(REPLACE(REPLACE(CurrencyDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 											"ActualRate":' + CAST(ActualRate AS nvarchar(20)) + ',
 											"StandardRate":' + CAST(StandardRate AS nvarchar(20)) + '
 										}' FROM Currencies
@@ -203,7 +203,7 @@ BEGIN
 									STUFF(
 										(SELECT ',{
 											"CreditTermsId":"' + REPLACE(CreditTermsId, '"','&#34;') + '",
-											"CreditTermsDescription":"' + REPLACE(REPLACE(REPLACE(CreditTermsDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+											"CreditTermsDescription":"' + REPLACE(REPLACE(REPLACE(CreditTermsDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 											"TriggerDate":"' + TriggerDate + '",
 											"EndOfMonth":' + CASE WHEN EndOfMonth = 1 THEN 'true' ELSE 'false' END + ',
 											"PaymentPeriod":' + CAST(PaymentUnits AS nvarchar(20)) + ',
@@ -222,7 +222,7 @@ BEGIN
 									STUFF(
 										(SELECT ',{
 											"DiscountId":"' + REPLACE(DiscountId, '"','&#34;') + '",
-											"DiscountDescription":"' + REPLACE(REPLACE(REPLACE(DiscountDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+											"DiscountDescription":"' + REPLACE(REPLACE(REPLACE(DiscountDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 											"DiscountPercentage":' + CAST(DiscountPercentage AS nvarchar(20)) + ',
 											"DiscountBreaks":' + COALESCE((SELECT '[' + STUFF(
 											(SELECT ',{
@@ -247,7 +247,7 @@ BEGIN
 									STUFF(
 										(SELECT ',{
 											"TaxCodeId":"' + REPLACE(TaxCodeId, '"','&#34;') + '",
-											"TaxCodeDescription":"' + REPLACE(REPLACE(REPLACE(TaxCodeDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+											"TaxCodeDescription":"' + REPLACE(REPLACE(REPLACE(TaxCodeDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 											"TaxRate":' + CAST(TaxRate AS nvarchar(20)) + '
 										}' FROM TaxCodes
 										WHERE cust.TaxCode = TaxCodes.TaxCode
@@ -262,7 +262,7 @@ BEGIN
 									STUFF(
 										(SELECT ',{
 											"TaxCodeId":"' + REPLACE(TaxCodeId, '"','&#34;') + '",
-											"TaxCodeDescription":"' + REPLACE(REPLACE(REPLACE(TaxCodeDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+											"TaxCodeDescription":"' + REPLACE(REPLACE(REPLACE(TaxCodeDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 											"TaxRate":' + CAST(TaxRate AS nvarchar(20)) + '
 										}' FROM TaxCodes
 										WHERE cust.TaxCodeSecondary = TaxCodes.TaxCode
@@ -277,7 +277,7 @@ BEGIN
 									STUFF(
 										(SELECT ',{
 											"IndustryId":"' + REPLACE(IndustryId, '"','&#34;') + '",
-											"IndustryDescription":"' + REPLACE(REPLACE(REPLACE(IndustryDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '"
+											"IndustryDescription":"' + REPLACE(REPLACE(REPLACE(IndustryDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '"
 										}' FROM Industries
 										WHERE cust.Industry = Industries.Industry
 										FOR XML PATH(''),
@@ -293,7 +293,7 @@ BEGIN
 											"CommissionAgentId":"' + REPLACE(CommissionAgentId, '"','&#34;') + '",
 											"DefaultPercentage":' + CAST(CustomerCommissionAgents.DefaultPercentage AS nvarchar(20)) + ',
 											"SupplierName":"' + REPLACE(Suppliers.SupplierName, '"','&#34;') + '",
-											"Address":"' + REPLACE(REPLACE(REPLACE(Suppliers.Address, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
+											"Address":"' + REPLACE(REPLACE(REPLACE(Suppliers.Address, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
 											"City":"' + REPLACE(Suppliers.City, '"','&#34;') + '",
 											"Region":"' + REPLACE(Suppliers.Region, '"','&#34;') + '",
 											"PostalCode":"' + REPLACE(Suppliers.PostalCode, '"','&#34;') + '",
@@ -397,8 +397,8 @@ BEGIN
 								+ ']'),
 							'[]')					 
 						 + ',
-						 "Notes":"' + REPLACE(REPLACE(REPLACE(cust.Notes, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '",
-						 "PromptText":"' + REPLACE(REPLACE(REPLACE(cust.PromptText, CHAR(13),'&#xD;'), CHAR(10),'&#xA'), '"','&#34;') + '"
+						 "Notes":"' + REPLACE(REPLACE(REPLACE(cust.Notes, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
+						 "PromptText":"' + REPLACE(REPLACE(REPLACE(cust.PromptText, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '"
 					}' 
 					FROM 
 						CTE AS cust
@@ -406,14 +406,12 @@ BEGIN
 						(rowNumber > @pageSize * (@pageNumber - 1) )
 						AND (rowNumber <= @pageSize * @pageNumber )
 					ORDER BY
-						RowNumber 
+						rowNumber 
 					FOR XML PATH(''), 
 			TYPE).value('.','nvarchar(max)'), 1, 1, '' 
 			)), '');
 
-	--OPTION (OPTIMIZE FOR (@guid UNKNOWN, @website UNKNOWN, @lastModifiedDate UNKNOWN));
-
-	SELECT @results = REPLACE(REPLACE(REPLACE('{"Customers":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), '');
+	SELECT @results = REPLACE(REPLACE(REPLACE(REPLACE('{"Customers":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), ''), '\', '\\');
 
 	SELECT @results AS Results;
 

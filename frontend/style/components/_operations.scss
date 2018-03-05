@@ -26,6 +26,10 @@
     a {
       overflow: hidden;
       text-overflow: ellipsis;
+
+      span {
+        cursor: pointer;
+      }
     }
   }
 

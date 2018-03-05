@@ -6,7 +6,10 @@
             "ProductSku",
             "CustomersPartNumber",
             "CustomersDescription",
-            "IgnorePrice"
+            "MinimumOrderQuantity",
+            "IgnorePrice",
+            "Price",
+            "Discount"
         ],
         "xml": {
             "name": "CrossReference"

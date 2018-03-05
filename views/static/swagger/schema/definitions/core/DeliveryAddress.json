@@ -28,7 +28,7 @@
                 "minLength": 1,
                 "maxLength": 50,
                 "example": "Systemware Service Ltd.",
-                "description": "Maps to the field <em>DeliveryAddresses.Address</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+                "description": "Maps to the field <em>DeliveryAddresses.DeliveryName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "Address": {
                 "type": "string",
@@ -76,20 +76,20 @@
                 "type": "string",
                 "minLength": 0,
                 "maxLength": 25,
-                "example": "John",
+                "example": "Smith",
                 "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "FirstName": {
                 "type": "string",
                 "minLength": 0,
                 "maxLength": 25,
-                "example": "Smith",
+                "example": "John",
                 "description": "Maps to the field <em>DeliveryAddresses.FirstName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "Title": {
                 "type": "string",
                 "minLength": 0,
-                "maxLength": 25,
+                "maxLength": 5,
                 "example": "Mr",
                 "description": "Maps to the field <em>DeliveryAddresses.Title</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
@@ -98,7 +98,7 @@
                 "minLength": 0,
                 "maxLength": 500,
                 "example": "Email communication preferred.",
-                "description": "Maps to the field <em>Discounts.DiscountDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+                "description": "Maps to the field <em>DeliveryAddresses.Comments</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "EmailAddress": {
                 "type": "string",
@@ -112,7 +112,7 @@
                 "minLength": 0,
                 "maxLength": 250,
                 "example": "Email communication preferred.",
-                "description": "Maps to the field <em>Discounts.DiscountDescription</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+                "description": "Maps to the field <em>DeliveryAddresses.Notes</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
             "SalesTaxExempt": {
                 "type": "boolean",

@@ -4,7 +4,8 @@
         "description": "The <strong>Manufacturer</strong> object <strong>cannot</strong> be null but <strong>can</strong> be an empty object.",
         "required": [
             "ManufacturerId",
-            "ManufacturerDescription"
+            "ManufacturerDescription",
+            "ManufacturerLogo"
         ],          
         "xml": {
             "name": "Brand"

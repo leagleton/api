@@ -3,7 +3,8 @@
         "type": "object",
         "description": "The <strong>ProductAttachments</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
-            "ProductSku"
+            "ProductSku",
+            "Attachments"
         ],         
         "xml": {
             "name": "ProductAttachment"

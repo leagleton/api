@@ -69,7 +69,7 @@ BEGIN
 			AND w.EcommerceWebsiteId = @website
 	)
 		BEGIN
-			SELECT 'ERROR: Scope not enabled for specified website.' AS ErrorMessage;
+			SELECT 'The relevant REST API scope is not enabled for the specified website.' AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
 		END;	
@@ -77,7 +77,7 @@ BEGIN
 	WITH CTE AS
 	(
 		SELECT
-			ROW_NUMBER() OVER (ORDER BY p.Product) AS RowNumber,
+			ROW_NUMBER() OVER (ORDER BY p.Product) AS rowNumber,
 			p.ProductId,
 			p.Product
 		FROM
@@ -122,10 +122,8 @@ BEGIN
 			(rowNumber > @pageSize * (@pageNumber - 1))
 			AND (rowNumber <= @pageSize * @pageNumber)
 		ORDER BY
-			RowNumber
-		FOR XML PATH('Inventory'), TYPE));
-
-	--OPTION (OPTIMIZE FOR (@sku UNKNOWN, @website UNKNOWN));	
+			rowNumber
+		FOR XML PATH('Inventory'), TYPE));	
 
 	IF @results IS NOT NULL AND @results <> ''
 		BEGIN

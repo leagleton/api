@@ -60,6 +60,7 @@ exports.reject = (res, req, reason, status = 400) => {
         xmlResponse += reason;
         xmlResponse += '</StatusMessage></Response>';
 
+        res.write('<?xml version="1.0" encoding="UTF-8"?>');
         res.write(xmlResponse);
         res.end();
     } else {
@@ -95,6 +96,7 @@ exports.success = (res, req, object, status = 200, parent = 'Response') => {
         }
 
         xmlResponse += '</' + parent + '>';
+        res.write('<?xml version="1.0" encoding="UTF-8"?>');
         res.write(xmlResponse);
         res.end();
     } else {
@@ -112,10 +114,6 @@ exports.success = (res, req, object, status = 200, parent = 'Response') => {
  */
 exports.setContentType = (res, contentType) => {
     res.set('Content-Type', contentType);
-
-    if (contentType == contentTypes.xml) {
-        res.write('<?xml version="1.0" encoding="UTF-8"?>');
-    }
 }
 
 /**
@@ -180,6 +178,7 @@ exports.executeSelect = (res, req, params) => {
                     /**
                      * For XML responses, we need to explicitly write and then end the response body.
                      */
+                    res.write('<?xml version="1.0" encoding="UTF-8"?>');
                     res.write(results[0].Results);
                     res.end();
                 } else {

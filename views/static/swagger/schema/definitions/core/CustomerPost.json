@@ -37,6 +37,13 @@
                 "example": "Smith",
                 "description": "Maps to the field <em>CRMContacts.LastName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
+            "CompanyName": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 50,
+                "example": "Systemware Services Ltd.",
+                "description": "Maps to the field <em>CRMCompanies.CompanyName</em> in your WinMan database.<br/>Null values: allowed<br/>Empty strings: allowed"
+            },            
             "WorkPhoneNumber": {
                 "type": "string",
                 "minLength": 0,

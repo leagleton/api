@@ -107,6 +107,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
     const eCommerceWebsiteId = req.body.Website || '';
     const firstName = req.body.FirstName || '';
     const lastName = req.body.LastName || '';
+    const companyName = req.body.CompanyName || '';
     const workPhoneNumber = req.body.WorkPhoneNumber || '';
     const homePhoneNumber = req.body.HomePhoneNumber || '';
     const mobilePhoneNumber = req.body.MobilePhoneNumber || '';
@@ -122,13 +123,50 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
     const postalCode = req.body.PostalCode || '';
     const countryCode = req.body.CountryCode || '';
 
-    if (!eCommerceWebsiteId || !firstName || !lastName ||
-        !address || !postalCode || !countryCode) {
-        return utils.reject(res, req, utils.reasons.requiredParam);
+    if (typeof req.body.Website === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' Website.');
+    }
+
+    if (typeof req.body.FirstName === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' FirstName.');
+    }
+
+    if (typeof req.body.LastName === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' LastName.');
+    }
+
+    if (typeof req.body.WebsiteUserName === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' WebsiteUserName.');
+    }
+
+    if (typeof req.body.Address === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' Address.');
+    }
+
+    if (typeof req.body.PostalCode === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' PostalCode.');
+    }
+
+    if (typeof req.body.CountryCode === 'undefined') {
+        return utils.reject(res, req, utils.reasons.requiredParam + ' CountryCode.');
     }
 
     if (typeof req.body.AllowCommunication === 'undefined') {
-        return utils.reject(res, req, utils.reasons.requiredParam);
+        return utils.reject(res, req, utils.reasons.requiredParam + ' AllowCommunication.');
+    } else {
+        try {
+            const allow = JSON.parse(String(req.body.AllowCommunication).toLowerCase());
+
+            if (typeof allow !== 'boolean') {
+                throw typeof allow;
+            }
+        } catch (e) {
+            const type = (e instanceof SyntaxError) ? typeof req.body.AllowCommunication : e;
+
+            return utils.reject(res, req, utils.reasons.invalidParam
+                + ' AllowCommunication. This field should be a boolean but a '
+                + type + ' was detected.');
+        }
     }
 
     allowCommunication = (allowCommunication) ? 1 : 0;
@@ -141,6 +179,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function (
                 @eCommerceWebsiteId = '" + eCommerceWebsiteId + "',\
                 @firstName = '" + firstName + "',\
                 @lastName = '" + lastName + "',\
+                @companyName = '" + companyName + "',\
                 @workPhoneNumber = '" + workPhoneNumber + "',\
                 @homePhoneNumber = '" + homePhoneNumber + "',\
                 @mobilePhoneNumber = '" + mobilePhoneNumber + "',\

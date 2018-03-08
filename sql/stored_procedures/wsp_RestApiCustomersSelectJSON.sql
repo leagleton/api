@@ -165,7 +165,7 @@ BEGIN
 			STUFF( 
 				(SELECT ',{
 						"Guid":"' + CAST(cust.CustomerGUID AS nvarchar(36)) + '",
-						"CustomerName":"' + cust.CustomerName + '",						
+						"CustomerName":"' + REPLACE(cust.CustomerName, '"','&#34;') + '",						
 						"Site":' + CASE WHEN dbo.wfn_RestApiGetSiteName(cust.[Site]) IS NULL THEN 'null' ELSE '"' + dbo.wfn_RestApiGetSiteName(cust.[Site]) + '"' END + ',
 						"CustomerId":"' + REPLACE(cust.CustomerId, '"','&#34;') + '",
 						"Branch":"' + REPLACE(cust.Branch, '"','&#34;') + '",
@@ -232,7 +232,7 @@ BEGIN
 											"DiscountBreakType":"' + DiscountBreakType + '",
 											"DiscountBreakValue":' + CAST(DiscountBreakValue AS NVARCHAR(20)) + '
 											}' FROM DiscountBreaks WHERE DiscountBreaks.Discount = Discounts.Discount FOR XML PATH(''), TYPE)											
-											.value('.','NVARCHAR(max)'), 1, 1, '') + ']'), '""')
+											.value('.','nvarchar(max)'), 1, 1, '') + ']'), '""')
 											 + '
 										}' FROM Discounts
 										WHERE cust.Discount = Discounts.Discount

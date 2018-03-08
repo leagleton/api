@@ -143,7 +143,7 @@ BEGIN
 
 	IF @crmCompany IS NULL
 		BEGIN
-			SET @error = 'Could not find a CRM Company with the specified company name (BillingName) belinging to the specified customer. Please check your input data.';
+			SET @error = 'Could not find a CRM Company with the specified company name (BillingName) belonging to the specified customer. Please check your input data.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;

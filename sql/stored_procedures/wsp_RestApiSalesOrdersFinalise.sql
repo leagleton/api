@@ -30,6 +30,8 @@ IF NOT EXISTS
 	END;
 GO
 
+-- 09Mar18 LAE Do not return sales order comments as an error message so that the sales order is still accepted #0000140025
+
 ALTER PROCEDURE dbo.wsp_RestApiSalesOrdersFinalise
 	@salesOrder bigint,
 	@totalOrderValue money,
@@ -49,8 +51,12 @@ BEGIN
 	SET NOCOUNT ON;
 
 	DECLARE	@systemOrderValue money;
+	-- 09Mar18 LAE
+	DECLARE @comments nvarchar(500);
 		
 	SET @error = '';
+	-- 09Mar18 LAE
+	SET @comments = '';
 
 	SELECT
 		@systemOrderValue = ROUND(SUM(CurItemValue) + SUM(CurTaxValue), 2)
@@ -61,7 +67,11 @@ BEGIN
 
 	IF @totalOrderValue <> @systemOrderValue
 		BEGIN;
-			SET @error = @error + CHAR(13) + CHAR(10) + 'The sum of the OrderLineValues + ShippingValue comes to ' + CAST(@systemOrderValue AS nvarchar(100)) + ', but the TotalOrderValue was specified as ' + CAST(@totalOrderValue AS nvarchar(100)) + '. These values do not match. Please check your input data.';		
+			-- 09Mar18 LAE
+			--SET @error = @error + CHAR(13) + CHAR(10) + 'The sum of the OrderLineValues + ShippingValue comes to ' + CAST(@systemOrderValue AS nvarchar(100)) + ', but the TotalOrderValue was specified as ' + CAST(@totalOrderValue AS nvarchar(100)) + '. These values do not match. Please check your input data.';
+			SET @error = 'The sum of the OrderLineValues + ShippingValue comes to ' + CAST(@systemOrderValue AS nvarchar(100)) + ', but the TotalOrderValue was specified as ' + CAST(@totalOrderValue AS nvarchar(100)) + '. These values do not match. Please check your input data.';			
+			SELECT @error AS ErrorMessage;
+			RETURN;
 		END;
 
 	DECLARE @customer bigint;
@@ -77,20 +87,28 @@ BEGIN
 
 	IF @underLimit = 0
 		BEGIN
-			SET @error = @error + CHAR(13) + CHAR(10) + 'Customer has exceeded their credit limit.';
+			-- 09Mar18 LAE
+			--SET @error = @error + CHAR(13) + CHAR(10) + 'Customer has exceeded their credit limit.';
+			SET @comments = @comments + 'Customer has exceeded their credit limit.' + CHAR(13) + CHAR(10);
 		END;
 
 	IF @tradingStatus = 'S'
 		BEGIN
-			SET @error = @error + CHAR(13) + CHAR(10) + 'Customer is on stop.';
+			-- 09Mar18 LAE
+			--SET @error = @error + CHAR(13) + CHAR(10) + 'Customer is on stop.';
+			SET @comments = @comments + 'Customer is on stop.'+ CHAR(13) + CHAR(10);
 		END;
 
 	IF @tradingStatus = 'H'
 		BEGIN
-			SET @error = @error + CHAR(13) + CHAR(10) + 'Customer is on hold.';
+			-- 09Mar18 LAE
+			--SET @error = @error + CHAR(13) + CHAR(10) + 'Customer is on hold.';
+			SET @comments = @comments + 'Customer is on hold.'+ CHAR(13) + CHAR(10);
 		END;
 
-	IF @error <> ''
+	-- 09Mar18 LAE
+	--IF @error <> ''
+	IF @comments <> ''
 		BEGIN
 			UPDATE 
 				SalesOrders
@@ -98,12 +116,15 @@ BEGIN
 				SystemType = 'H',
 				LastModifiedDate = GETDATE(),
 				LastModifiedUser = 'WinMan REST API',
-				Comments = Comments + CHAR(13) + CHAR(10) + @error
+				-- 09Mar18 LAE
+				--Comments = Comments + CHAR(13) + CHAR(10) + @error
+				Comments = CASE WHEN Comments <> '' THEN Comments + CHAR(13) + CHAR(10) + @comments ELSE @comments END
 			WHERE
 				SalesOrder = @salesOrder;
 		END;
 
-	SELECT @error = REPLACE(REPLACE(@error, CHAR(13), ''), CHAR(10), '');		
+	-- 09Mar18 LAE
+	--SELECT @error = REPLACE(REPLACE(@error, CHAR(13), ''), CHAR(10), '');		
 
 	SELECT @error AS ErrorMessage;
 

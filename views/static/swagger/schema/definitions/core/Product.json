@@ -197,9 +197,19 @@
             },
             "ConfigurableProduct": {
                 "type": "boolean",
-                "example": false,
+                "example": true,
                 "description": "Maps to the field <em>Products.ConfiguratorOption</em> in your WinMan database.<br/>Null values: not allowed"
             },
+            "ConfiguredStructureOptions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ConfiguredStructureOption"
+                },
+                "xml": {
+                    "name": "ConfiguredStructureOptions",
+                    "wrapped": true
+                }
+            },            
             "Brand": {
                 "$ref": "#/definitions/Manufacturer"
             },

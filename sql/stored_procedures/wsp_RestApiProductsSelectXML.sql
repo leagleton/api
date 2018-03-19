@@ -255,6 +255,56 @@ BEGIN
 			FOR XML PATH(''), TYPE) AS UnitOfMeasure,
 			Products.DimensionQuantity,
 			CASE WHEN Products.ConfiguratorOption = 1 THEN 'true' ELSE 'false' END AS ConfigurableProduct,
+			CASE WHEN Products.ConfiguratorOption = 1 THEN
+				(SELECT
+					ConfiguredStructureOptions.ConfiguredStructureOptionId AS OptionId,
+					ConfiguredStructureOptions.[Description] AS OptionDescription,
+					CASE WHEN ConfiguredStructureOptions.AllowMultipleSelection = 'true' THEN 'true' ELSE 'false' END AS AllowMultipleSelection,
+					CASE WHEN ConfiguredStructureOptions.AllowNoSelection = 'true' THEN 'true' ELSE 'false' END AS AllowNoSelection,
+					CASE WHEN ConfiguredStructureOptions.UseDropDown = 'false' THEN 'false' ELSE 'true' END AS UseDropDown,
+					(SELECT
+						ConfiguredItems.ConfiguredItemId AS OptionItemId,
+						ConfiguredItems.[Description] AS OptionItemDescription,
+						ConfiguredItems.Price AS OptionItemPrice,
+						ConfiguredItems.[Default] AS OptionItemDefault
+					FROM
+						ConfiguredItems
+					WHERE
+						ConfiguredItems.ConfiguredStructureOption = ConfiguredStructureOptions.ConfiguredStructureOption
+						AND ConfiguredItems.[Enabled] <> 'false'
+						AND ConfiguredItems.Calculation = ''
+					GROUP BY
+						ConfiguredItems.ConfiguredItemId,
+						ConfiguredItems.[Description],
+						ConfiguredItems.Price,
+						ConfiguredItems.[Default],
+						ConfiguredItems.ItemPosition
+					HAVING
+						ISNUMERIC(ConfiguredItems.Price) <> 0
+					ORDER BY
+						ConfiguredItems.ItemPosition
+					FOR XML PATH('OptionItem'), TYPE) AS OptionItems
+				FROM
+					ConfiguredStructureOptions
+					INNER JOIN ConfiguredStructures ON ConfiguredStructures.ConfiguredStructure = ConfiguredStructureOptions.ConfiguredStructure
+					INNER JOIN Products p ON p.Product = ConfiguredStructures.Product
+											WHERE 
+												p.ProductId = Products.ProductId
+												AND ConfiguredStructureOptions.SubConfiguratorCalculation = ''
+												AND EXISTS (SELECT ConfiguredItemId FROM ConfiguredItems WHERE ConfiguredItems.ConfiguredStructureOption = ConfiguredStructureOptions.ConfiguredStructureOption)
+											GROUP BY
+												ConfiguredStructureOptions.ConfiguredStructureOption,
+												ConfiguredStructureOptions.ConfiguredStructureOptionId,
+												ConfiguredStructureOptions.[Description],
+												ConfiguredStructureOptions.AllowMultipleSelection,
+												ConfiguredStructureOptions.AllowNoSelection,
+												ConfiguredStructureOptions.UseDropDown,
+												ConfiguredStructureOptions.OptionPosition
+											ORDER BY
+												ConfiguredStructureOptions.OptionPosition
+											FOR XML PATH('ConfiguredStructureOption'), TYPE)
+			END AS ConfiguredStructureOptions,
+			CASE WHEN Products.ConfiguratorOption = 1 THEN '' END AS ConfiguredStructureOptions,
 			(SELECT
 				ManufacturerId,
 				ManufacturerDescription,

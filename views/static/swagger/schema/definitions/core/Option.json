@@ -1,0 +1,37 @@
+{
+    "Option": {
+        "type": "object",
+        "description": "The <strong>Option</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array. If <em>UseConfigurator</em> is set to <em>true</em>, this array is required.",
+        "required": [
+            "OptionId",
+            "OptionItemId",
+            "OptionItemPrice"
+        ],
+        "xml": {
+            "name": "Option"
+        },
+        "properties": {
+            "OptionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "example": "COLOUR",
+                "description": "Maps to the field <em>ConfiguredStructureOptions.ConfiguredStructureOptionId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "OptionItemId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "example": "RED",
+                "description": "Maps to the field <em>ConfiguredItems.ConfiguredItemId</em> in your WinMan database. <br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "OptionItemPrice": {
+                "type": "number",
+                "format": "float",
+                "multipleOf": 0.0001,
+                "example": 0.5001,
+                "description": "Maps to the field <em>ConfiguredItems.Price</em> in your WinMan database. This is the price of a single unit of the specified <em>OptionItemId</em>, before discounts, excluding tax.<br/>Null values: not allowed<br/>Zero values: allowed"
+            }
+        }
+    }
+}

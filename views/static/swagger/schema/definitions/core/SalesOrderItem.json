@@ -39,7 +39,29 @@
                 "multipleOf": 0.0001,
                 "example": 4.9451,
                 "description": "The total amount of tax due in the customer's currency for the <em>Sku</em>. For example, if the <em>OrderLineValue</em> is 3.00 and tax is 20%, <em>OrderLineTaxValue</em> will be 0.50.<br/>Null values: not allowed<br/>Zero values: allowed"
-            }            
+            },
+            "UseConfigurator": {
+                "type": "boolean",
+                "example": true,
+                "description": "Specifies whether or not the specified <em>Sku</em> is a configurable product. If omitted, a value of <em>false</em> will be used.<br/>Null values: not allowed"
+            },
+            "ConfiguredSku": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "example": "ABC00123-RED-SMALL",
+                "description": "Maps to the field <em>SalesOrderItems.ItemDescription</em> in your WinMan database. This is the final Sku of the configured product which shows on the customer's order history on the eCommerce website, and may or may not be different to the <em>Sku</em>. If <em>UseConfigurator</em> is set to <em>true</em>, this field is required.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "Options": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Option"
+                },
+                "xml": {
+                    "name": "Options",
+                    "wrapped": true
+                }
+            }
         }
     }
 }

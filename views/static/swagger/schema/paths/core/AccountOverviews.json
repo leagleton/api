@@ -55,10 +55,10 @@
                     "schema": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/AccountOverview"
+                            "$ref": "#/definitions/CustomerAccountOverview"
                         },
                         "xml": {
-                            "name": "AccountOverviews",
+                            "name": "CustomerAccountOverviews",
                             "wrapped": true
                         }
                     }

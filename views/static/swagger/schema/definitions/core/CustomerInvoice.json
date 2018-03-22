@@ -4,9 +4,10 @@
         "description": "The <strong>CustomerInvoices</strong> array <strong>cannot</strong> be null but <strong>can</strong> be an empty array.",
         "required": [
             "InvoiceId",
+            "SalesOrderId",
             "InvoiceDate",
-            "DueDate",
-            "Status",
+            "InvoiceDueDate",
+            "InvoiceStatus",
             "InvoiceTotal",
             "OutstandingBalance",
             "CustomerOrderNumber",
@@ -17,10 +18,10 @@
             "TotalTaxValue",
             "Currency",
             "ShippingName",
-            "ShippingAddress",
             "ShippingTitle",
             "ShippingFirstName",
             "ShippingLastName",
+            "ShippingAddress",
             "ShippingCity",
             "ShippingRegion",
             "ShippingPostalCode",
@@ -45,8 +46,15 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 15,
-                "example": "SO-0000001",
+                "example": "INV-0000001",
                 "description": "Maps to the field <em>SalesInvoices.SalesInvoiceId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
+            },
+            "SalesOrderId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "example": "SO-0000001",
+                "description": "Maps to the field <em>SalesOrders.SalesOrderId</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "InvoiceDate": {
                 "type": "string",
@@ -54,13 +62,13 @@
                 "example": "2017-07-31T10:48:06.200",
                 "description": "Maps to the field <em>SalesInvoices.EffectiveDate</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
-            "DueDate": {
+            "InvoiceDueDate": {
                 "type": "string",
                 "format": "date-time",
                 "example": "2017-08-31T10:48:06.200",
                 "description": "Maps to the field <em>SalesInvoices.DueDate</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
-            "Status": {
+            "InvoiceStatus": {
                 "type": "string",
                 "minLength": 0,
                 "maxLength": 11,
@@ -137,13 +145,6 @@
                 "example": "Systemware Service Ltd.",
                 "description": "Maps to the field <em>DeliveryAddresses.DeliveryName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
-            "ShippingAddress": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 200,
-                "example": "1 Industrial Drive",
-                "description": "Maps to the field <em>DeliveryAddresses.Address</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
-            },
             "ShippingTitle": {
                 "type": "string",
                 "minLength": 0,
@@ -164,6 +165,13 @@
                 "maxLength": 25,
                 "example": "Smith",
                 "description": "Maps to the field <em>DeliveryAddresses.LastName</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
+            },
+            "ShippingAddress": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "example": "1 Industrial Drive",
+                "description": "Maps to the field <em>DeliveryAddresses.Address</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: not allowed"
             },
             "ShippingCity": {
                 "type": "string",
@@ -263,13 +271,13 @@
                 "example": "jsmith@email.com",
                 "description": "Maps to the field <em>Customers.EmailAddress</em> in your WinMan database.<br/>Null values: not allowed<br/>Empty strings: allowed"
             },
-            "OrderItems": {
+            "InvoiceItems": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/OrderItem"
+                    "$ref": "#/definitions/InvoiceItem"
                 },
                 "xml": {
-                    "name": "OrderItems",
+                    "name": "InvoiceItems",
                     "wrapped": true
                 }
             }

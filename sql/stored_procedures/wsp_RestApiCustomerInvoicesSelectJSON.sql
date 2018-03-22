@@ -142,6 +142,7 @@ BEGIN
 			STUFF( 
 				(SELECT ',{
                         "InvoiceId":"' + REPLACE(SalesInvoices.SalesInvoiceId, '"','&#34;') + '",
+						"SalesOrderId":"' + REPLACE(SalesOrders.SalesOrderId, '"','&#34;') + '",
                         "InvoiceDate":"' + CONVERT(nvarchar(23), SalesInvoices.EffectiveDate, 126) + '",
                         "InvoiceDueDate":"' + CONVERT(nvarchar(23), SalesInvoices.DueDate, 126) + '",
                         "InvoiceStatus":"' + CASE
@@ -153,10 +154,10 @@ BEGIN
                         "OutstandingBalance":' + CAST(ISNULL(SalesInvoices.CurInvoiceValueOutstanding, 0) AS nvarchar(23)) + ',
                         "CustomerOrderNumber":"' + REPLACE(REPLACE(REPLACE(SalesOrders.CustomerOrderNumber, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",
                         "FreightMethodId":"' + REPLACE(FreightMethods.FreightMethodId, '"','&#34;') + '",
-						"ShippingValue":' + CAST(ISNULL((SELECT (SUM(CurItemValue) + SUM(CurTaxValue)) FROM SalesOrderItems WHERE SalesOrder = SalesOrders.SalesOrder AND ItemType = 'F'), 0) AS nvarchar(23)) + ',
-						"ShippingTaxValue":' + CAST(ISNULL((SELECT SUM(CurTaxValue) FROM SalesOrderItems WHERE SalesOrder = SalesOrders.SalesOrder AND ItemType = 'F'), 0) AS nvarchar(23)) + ',
-                        "TotalOrderValue":' + CAST(ISNULL((SELECT (SUM(CurItemValue) + SUM(CurTaxValue)) FROM SalesOrderItems WHERE SalesOrder = SalesOrders.SalesOrder), 0) AS nvarchar(23)) + ',
-						"TotalTaxValue":' + CAST(ISNULL((SELECT SUM(CurTaxValue) FROM SalesOrderItems WHERE SalesOrder = SalesOrders.SalesOrder), 0) AS nvarchar(23)) + ',
+						"ShippingValue":' + CAST(ISNULL((SELECT (SUM(CurItemValue) + SUM(CurTaxValue)) FROM SalesInvoiceItems WHERE SalesInvoice = SalesInvoices.SalesInvoice AND ItemType = 'F'), 0) AS nvarchar(23)) + ',
+						"ShippingTaxValue":' + CAST(ISNULL((SELECT SUM(CurTaxValue) FROM SalesInvoiceItems WHERE SalesInvoice = SalesInvoices.SalesInvoice AND ItemType = 'F'), 0) AS nvarchar(23)) + ',
+                        "TotalOrderValue":' + CAST(ISNULL((SELECT (SUM(CurItemValue) + SUM(CurTaxValue)) FROM SalesInvoiceItems WHERE SalesInvoice = SalesInvoices.SalesInvoice AND ItemType <> 'T'), 0) AS nvarchar(23)) + ',
+						"TotalTaxValue":' + CAST(ISNULL((SELECT SUM(CurTaxValue) FROM SalesInvoiceItems WHERE SalesInvoice = SalesInvoices.SalesInvoice), 0) AS nvarchar(23)) + ',
 						"Currency":"' + (SELECT CurrencyId FROM Currencies WHERE Currency = SalesOrders.Currency) + '",'
 						+ (SELECT STUFF((SELECT '
 												"ShippingName":"' + REPLACE(DeliveryAddresses.DeliveryName, '"','&#34;') + '",
@@ -189,48 +190,47 @@ BEGIN
 												Customers
 												INNER JOIN Countries ON Customers.Country = Countries.Country
 											WHERE Customer = SalesOrders.Customer), 1, 0, '')) + '
-						"OrderItems":' + 
+						"InvoiceItems":' + 
 							COALESCE(
 								(SELECT '[' +
 									STUFF(
 										(SELECT ',{' + 
-											CASE WHEN SalesOrderItems.ItemType = 'P'
+											CASE WHEN SalesInvoiceItems.ItemType = 'P'
 												THEN 
 													'"Sku":"' + REPLACE(Products.ProductId, '"','&#34;') + '",' +
 													'"ProductName":"' + REPLACE(REPLACE(REPLACE(Products.ProductDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",'
 												ELSE ''
 												END +
-											CASE WHEN SalesOrderItems.ItemType = 'F'
+											CASE WHEN SalesInvoiceItems.ItemType = 'F'
 												THEN '"FreightMethodId":"' + REPLACE(FreightMethods.FreightMethodId, '"','&#34;') + '",'
 												ELSE ''
 												END +
-											CASE WHEN SalesOrderItems.ItemType = 'S'
+											CASE WHEN SalesInvoiceItems.ItemType = 'S'
 												THEN '"SundryId":"' + REPLACE(Sundries.SundryId, '"','&#34;') + '",'
 												ELSE ''
 												END +
-											CASE WHEN SalesOrderItems.ItemType = 'N'
-												THEN '"FreeTextItem":"' + REPLACE(SalesOrderItems.FreeTextItem, '"','&#34;') + '",'
+											CASE WHEN SalesInvoiceItems.ItemType = 'N'
+												THEN '"FreeTextItem":"' + REPLACE(SalesInvoiceItems.FreeTextItem, '"','&#34;') + '",'
 												ELSE ''
 												END +
-											CASE SalesOrderItems.ItemType
-												WHEN 'N' THEN '"Description":"' + REPLACE(REPLACE(REPLACE(SalesOrderItems.Notes, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",'
+											CASE SalesInvoiceItems.ItemType
 												WHEN 'P' THEN '"ShortDescription":"' + REPLACE(REPLACE(REPLACE(Products.WebSummary, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",'
-												ELSE '"Description":"' + REPLACE(REPLACE(REPLACE(SalesOrderItems.ItemDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",'
+												ELSE '"Description":"' + REPLACE(REPLACE(REPLACE(SalesInvoiceItems.ItemDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",'
 												END + '
-											"UnitPrice":' + CAST(SalesOrderItems.CurPrice AS nvarchar(23)) + ',
-											"Quantity":' + CAST(SalesOrderItems.Quantity AS nvarchar(23)) + ',
-											"LineValue":' + CAST(SalesOrderItems.CurItemValue + SalesOrderItems.CurTaxValue AS nvarchar(23)) + ',
-											"LineTaxValue":' + CAST(SalesOrderItems.CurTaxValue AS nvarchar(23)) + ',
-											"DiscountAmount":' + CAST(SalesOrderItems.CurDiscountValue AS nvarchar(23)) + '
+											"UnitPrice":' + CAST(SalesInvoiceItems.CurPrice AS nvarchar(23)) + ',
+											"Quantity":' + CAST(SalesInvoiceItems.Quantity AS nvarchar(23)) + ',
+											"LineValue":' + CAST(SalesInvoiceItems.CurItemValue + SalesInvoiceItems.CurTaxValue AS nvarchar(23)) + ',
+											"LineTaxValue":' + CAST(SalesInvoiceItems.CurTaxValue AS nvarchar(23)) + ',
+											"DiscountAmount":' + CAST(SalesInvoiceItems.CurDiscountValue AS nvarchar(23)) + '
 										}' FROM 
-											SalesOrderItems
-											LEFT JOIN Products ON Products.Product = SalesOrderItems.Product
-											LEFT JOIN FreightMethods ON FreightMethods.FreightMethod = SalesOrderItems.FreightMethod
-											LEFT JOIN Sundries ON Sundries.Sundry = SalesOrderItems.Sundry
+											SalesInvoiceItems
+											LEFT JOIN Products ON Products.Product = SalesInvoiceItems.Product
+											LEFT JOIN FreightMethods ON FreightMethods.FreightMethod = SalesInvoiceItems.FreightMethod
+											LEFT JOIN Sundries ON Sundries.Sundry = SalesInvoiceItems.Sundry
 										WHERE 
-											SalesOrderItems.SalesOrder = SalesOrders.SalesOrder
+											SalesInvoiceItems.SalesInvoice = SalesInvoices.SalesInvoice
 										ORDER BY
-											SalesOrderItems.PrintSequence
+											SalesInvoiceItems.PrintSequence
 										FOR XML PATH(''),
 										TYPE).value('.','nvarchar(max)'), 1, 1, '')
 								+ ']'),

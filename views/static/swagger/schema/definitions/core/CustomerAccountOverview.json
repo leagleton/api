@@ -1,7 +1,7 @@
 {
-    "AccountOverview": {
+    "CustomerAccountOverview": {
         "type": "object",
-        "description": "The <strong>AccountOverviews</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
+        "description": "The <strong>CustomerAccountOverviews</strong> array <strong>cannot</strong> be null and <strong>cannot</strong> be an empty array.",
         "required": [
             "CustomerGuid",
             "CustomerId",
@@ -11,7 +11,7 @@
             "OverdueBalance"
         ],    
         "xml": {
-            "name": "AccountOverview"
+            "name": "CustomerAccountOverview"
         },
         "properties": {
             "CustomerGuid": {

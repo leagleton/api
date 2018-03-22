@@ -51,7 +51,7 @@
                 {
                     "in": "query",
                     "name": "orderby",
-                    "description": "Defines which database column to order results by. Accepted values are <em>orderid</em>, <em>quoteid</em>, <em>customerreference</em>, <em>date</em>, <em>status</em> or <em>value</em> only. These values are not case-sensitive. The default value is <em>salesorderid</em> or <em>quoteid</em> depending on <em>returntype</em>.",
+                    "description": "Defines which database column to order results by. Accepted values are <em>salesorderid</em>, <em>quoteid</em>, <em>customerreference</em>, <em>date</em>, <em>status</em> or <em>value</em> only. These values are not case-sensitive. The default value is <em>salesorderid</em> or <em>quoteid</em> depending on <em>returntype</em>.",
                     "required": false,
                     "type": "string",
                     "minLength": 4,

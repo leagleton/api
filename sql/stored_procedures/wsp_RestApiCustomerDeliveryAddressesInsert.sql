@@ -30,6 +30,8 @@ IF NOT EXISTS
 	END;
 GO
 
+-- 23Mar18 LAE Remove the check against CRM Company Name #0000140113
+
 ALTER PROCEDURE [dbo].[wsp_RestApiCustomerDeliveryAddressesInsert]
 	@eCommerceWebsiteId nvarchar(100) = null,
     @customerGuid nvarchar(36) = null,
@@ -37,7 +39,8 @@ ALTER PROCEDURE [dbo].[wsp_RestApiCustomerDeliveryAddressesInsert]
 	@firstName nvarchar(25) = null,
 	@lastName nvarchar(25) = null,
 	@deliveryName nvarchar(50) = null,
-    @companyName nvarchar(50) = null,
+	-- 23Mar18 LAE
+    --@companyName nvarchar(50) = null,
 	@address nvarchar(200) = null,
 	@city nvarchar(50) = null,
 	@region nvarchar(50) = null,
@@ -60,7 +63,8 @@ BEGIN
                 @firstName = @firstName,
                 @lastName = @lastName,
                 @deliveryName = @deliveryName,
-                @companyName = @companyName,
+				-- 23Mar18 LAE
+                --@companyName = @companyName,
                 @address = @address,
                 @city = @city,
                 @region = @region,
@@ -129,21 +133,24 @@ BEGIN
 
     DECLARE @crmCompany bigint;
 
-    IF @companyName IS NULL OR @companyName = ''
-        BEGIN
-            SET @error = 'A required parameter is missing: BillingName.';
-            SELECT @error AS ErrorMessage;
-            ROLLBACK TRANSACTION;
-            RETURN;
-        END;
-    ELSE
-        BEGIN
-            SET @crmCompany = (SELECT CRMCompany FROM CRMCompanies WHERE Customer = @customer AND CompanyName = @companyName);
-        END;
+    --IF @companyName IS NULL OR @companyName = ''
+    --    BEGIN
+    --        SET @error = 'A required parameter is missing: BillingName.';
+    --        SELECT @error AS ErrorMessage;
+    --        ROLLBACK TRANSACTION;
+    --        RETURN;
+    --    END;
+    --ELSE
+    --    BEGIN
+    --        SET @crmCompany = (SELECT CRMCompany FROM CRMCompanies WHERE Customer = @customer AND CompanyName = @companyName);
+    --    END;
+	SET @crmCompany = (SELECT TOP 1 CRMCompany FROM CRMCompanies WHERE Customer = @customer);
 
 	IF @crmCompany IS NULL
 		BEGIN
-			SET @error = 'Could not find a CRM Company with the specified company name (BillingName) belonging to the specified customer. Please check your input data.';
+			-- 23Mar18 LAE
+			--SET @error = 'Could not find a CRM Company with the specified company name (BillingName) belonging to the specified customer. Please check your input data.';
+			SET @error = 'Could not find a CRM Company belonging to the specified customer. Please check your input data.';
 			SELECT @error AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;

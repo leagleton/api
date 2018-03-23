@@ -165,7 +165,6 @@ function createCustomer(
                                 @firstName = '" + deliveryFirstName + "',\
                                 @lastName = '" + deliveryLastName + "',\
                                 @deliveryName = '" + deliveryName + "',\
-                                @companyName = '" + companyName + "',\
                                 @address = '" + deliveryAddress + "',\
                                 @city = '" + deliveryCity + "',\
                                 @region = '" + deliveryRegion + "',\

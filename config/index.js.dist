@@ -23,6 +23,7 @@ exports.mode = 'dual';
  */
 exports.connection = {
   'liveServer': '',
+  'liveInstanceName': '',
   'liveUserName': '',
   'livePassword': '',
   'options': { 'encrypt': true, 'liveDatabase': '', 'requestTimeout': 0, 'rowCollectionOnRequestCompletion': false },
@@ -37,6 +38,7 @@ exports.connection = {
  */
 exports.connectionTraining = {
   'trainingServer': '',
+  'trainingInstanceName': '',
   'trainingUserName': '',
   'trainingPassword': '',
   'options': { 'encrypt': true, 'trainingDatabase': '', 'requestTimeout': 0, 'rowCollectionOnRequestCompletion': false },

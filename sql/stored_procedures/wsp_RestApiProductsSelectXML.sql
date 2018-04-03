@@ -30,6 +30,8 @@ IF NOT EXISTS
 	END;
 GO
 
+-- 03Apr18 LAE Added total row count.
+
 ALTER PROCEDURE dbo.wsp_RestApiProductsSelectXML
 	@pageNumber int = 1,
 	@pageSize int = 10,
@@ -79,6 +81,9 @@ BEGIN
 			ROLLBACK TRANSACTION;
 			RETURN;
 		END;
+
+	-- 03Apr18 LAE
+	DECLARE @total int;		
 
 	WITH CTE AS
 	(
@@ -389,7 +394,9 @@ BEGIN
 				AND (rowNumber <= @pageSize * @pageNumber )
 			ORDER BY
 				rowNumber 
-		FOR XML PATH('Product'), TYPE));
+		-- 03Apr18 LAE
+		--FOR XML PATH('Product'), TYPE));
+		FOR XML PATH('Product'), TYPE)), @total = (SELECT COUNT(*) FROM CTE);	
 
 	IF @results IS NOT NULL AND @results <> ''
 		BEGIN
@@ -400,7 +407,9 @@ BEGIN
 			SELECT @results = '<Products/>';
 		END;
 
-	SELECT @results AS Results;
+	-- 03Apr18 LAE
+	--SELECT @results AS Results;
+	SELECT @results AS Results, @total AS TotalCount;
 
 	COMMIT TRANSACTION;
 

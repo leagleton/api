@@ -141,6 +141,17 @@ gulp.task('config', ['ignore'], function (done) {
     },
     {
         type: 'input',
+        message: 'Live SQL server instance name (if applicable): ',
+        name: 'connection.instanceName',
+        validate: function (value) {
+            if (value === '?') {
+                return '\x1b[92mPlease enter the SQL server instance name of the customer\'s Live system (if applicable).\x1b[37m';
+            }
+            return true;
+        }
+    },    
+    {
+        type: 'input',
         message: 'Live SQL server username: ',
         name: 'connection.userName',
         validate: function (value) {
@@ -246,6 +257,24 @@ gulp.task('config', ['ignore'], function (done) {
             return true;
         }
     },
+    {
+        type: 'input',
+        message: 'Training SQL server instance name (if applicable): ',
+        name: 'connectionTraining.instanceName',
+        when: function (answers) {
+            if (answers.training.toLowerCase() === 'yes' || answers.training.toLowerCase() === 'y') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        validate: function (value) {
+            if (value === '?') {
+                return '\x1b[92mPlease enter the SQL server instance name of the customer\'s Training system\n   (if applicable). It is highly likely that this will be the same as the\n   Live SQL server instance name.\x1b[37m';
+            }
+            return true;
+        }
+    },    
     {
         type: 'input',
         message: 'Training SQL server username: ',
@@ -405,6 +434,7 @@ gulp.task('generate', ['config'], function () {
         .pipe(replace("'serviceName': ''", "'serviceName': '" + settings.service.serviceName + "'"))
         .pipe(replace("'displayName': ''", "'displayName': '" + settings.service.displayName + "'"))
         .pipe(replace("'liveServer': ''", "'server': '" + settings.connection.server + "'"))
+        .pipe(replace("'liveInstanceName': ''", "'instanceName': '" + settings.connection.instanceName + "'"))         
         .pipe(replace("'liveUserName': ''", "'userName': '" + settings.connection.userName + "'"))
         .pipe(replace("'livePassword': ''", "'password': '" + settings.connection.password + "'"))
         .pipe(replace("'liveDatabase': ''", "'database': '" + settings.connection.options.database + "'"))
@@ -431,6 +461,12 @@ gulp.task('generate', ['config'], function () {
             }
             return "'server': ''";
         }))
+        .pipe(replace("'trainingInstanceName': ''", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                return "'instanceName': '" + settings.connectionTraining.instanceName + "'";
+            }
+            return "'instanceName': ''";
+        }))         
         .pipe(replace("'trainingUserName': ''", function () {
             if (settings.hasOwnProperty('connectionTraining')) {
                 return "'userName': '" + settings.connectionTraining.userName + "'";
@@ -485,6 +521,7 @@ gulp.task('develop', ['config'], function () {
         .pipe(replace("'serviceName': ''", "'serviceName': '" + settings.service.serviceName + "'"))
         .pipe(replace("'displayName': ''", "'displayName': '" + settings.service.displayName + "'"))
         .pipe(replace("'liveServer': ''", "'server': '" + settings.connection.server + "'"))
+        .pipe(replace("'liveInstanceName': ''", "'instanceName': '" + settings.connection.instanceName + "'"))        
         .pipe(replace("'liveUserName': ''", "'userName': '" + settings.connection.userName + "'"))
         .pipe(replace("'livePassword': ''", "'password': '" + settings.connection.password + "'"))
         .pipe(replace("'liveDatabase': ''", "'database': '" + settings.connection.options.database + "'"))
@@ -511,6 +548,12 @@ gulp.task('develop', ['config'], function () {
             }
             return "'server': ''";
         }))
+        .pipe(replace("'trainingInstanceName': ''", function () {
+            if (settings.hasOwnProperty('connectionTraining')) {
+                return "'instanceName': '" + settings.connectionTraining.instanceName + "'";
+            }
+            return "'instanceName': ''";
+        }))        
         .pipe(replace("'trainingUserName': ''", function () {
             if (settings.hasOwnProperty('connectionTraining')) {
                 return "'userName': '" + settings.connectionTraining.userName + "'";

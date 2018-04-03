@@ -107,9 +107,9 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectURI, done) => {
       };
 
       if (source == "swagger") {
-        dbAuthorisationCode.lifetime = 3600
+        dbAuthorisationCode.accessTokenLifetime = config.token.expiresIn;
       } else {
-        dbAuthorisationCode.lifetime = 31536000
+        dbAuthorisationCode.accessTokenLifetime = 31536000;
       }
 
       tp.sql("EXEC wsp_RestApiAuthorisationCodesDelete @uuid = '" + uuid + "'")
@@ -117,7 +117,6 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectURI, done) => {
         .catch(err => done(err, false, false));
 
       return dbAuthorisationCode;
-
     })
     .then(dbAuthorisationCode => validate.authCode(code, dbAuthorisationCode, client, redirectURI))
     .then(authCode => validate.generateToken(authCode))

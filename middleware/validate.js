@@ -98,13 +98,16 @@ exports.authCode = (code, authCode, client, redirectURI) => {
 /**
  * Given an auth code this will generate an access token, save that token and then return it.
  * 
- * @param   {Number}   user   - The user number.
- * @param   {Number}   client - The client number.
- * @param   {String}   scope  - The allowed scope(s).
+ * @param   {Number}   user                - The user number.
+ * @param   {Number}   client              - The client number.
+ * @param   {String}   scope               - The allowed scope(s).
+ * @param   {Number}   accessTokenLifetime - The lifetime of the access token to be created (in seconds).
+ * @param   {String}   source              - The source of the request.
+ * @param   {String}   website             - The website the access token is to be bound to.
  * @returns {Promise}  The resolved access token after saving.
  */
-exports.generateToken = ({ user, client, scope, lifetime, source, website }) => {
-  const expires = config.token.calculateExpirationDate(lifetime);
+exports.generateToken = ({ user, client, scope, accessTokenLifetime, source, website }) => {
+  const expires = config.token.calculateExpirationDate(accessTokenLifetime);
   const expiresIn = parseInt(Date.parse(expires) / 1000);
 
   const token = utils.createToken({ sub: user, exp: expiresIn, src: source, scp: scope });

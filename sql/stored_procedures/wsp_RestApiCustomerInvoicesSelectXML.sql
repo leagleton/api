@@ -140,6 +140,7 @@ BEGIN
 	SELECT @results = 
 		CONVERT(nvarchar(max), (SELECT
             SalesInvoices.SalesInvoiceId AS InvoiceId,
+			SalesOrders.SalesOrderId AS SalesOrderId,
             SalesInvoices.EffectiveDate AS InvoiceDate,
             SalesInvoices.DueDate AS InvoiceDueDate,
             CASE
@@ -151,10 +152,10 @@ BEGIN
             ISNULL(SalesInvoices.CurInvoiceValueOutstanding, 0) AS OutstandingBalance,
             SalesOrders.CustomerOrderNumber,
             FreightMethods.FreightMethodId,
-			ISNULL((SELECT (SUM(CurItemValue) + SUM(CurTaxValue)) FROM SalesOrderItems WHERE SalesOrder = SalesOrders.SalesOrder AND ItemType = 'F'), 0) AS ShippingValue,
-			ISNULL((SELECT SUM(CurTaxValue) FROM SalesOrderItems WHERE SalesOrder = SalesOrders.SalesOrder AND ItemType = 'F'), 0) AS ShippingTaxValue,
-			ISNULL((SELECT (SUM(CurItemValue) + SUM(CurTaxValue)) FROM SalesOrderItems WHERE SalesOrder = SalesOrders.SalesOrder), 0) AS TotalOrderValue,
-			ISNULL((SELECT SUM(CurTaxValue) FROM SalesOrderItems WHERE SalesOrder = SalesOrders.SalesOrder), 0) AS TotalTaxValue,             
+			ISNULL((SELECT (SUM(CurItemValue) + SUM(CurTaxValue)) FROM SalesInvoiceItems WHERE SalesInvoice = SalesInvoices.SalesInvoice AND ItemType = 'F'), 0) AS ShippingValue,
+			ISNULL((SELECT SUM(CurTaxValue) FROM SalesInvoiceItems WHERE SalesInvoice = SalesInvoices.SalesInvoice AND ItemType = 'F'), 0) AS ShippingTaxValue,
+			ISNULL((SELECT (SUM(CurItemValue) + SUM(CurTaxValue)) FROM SalesInvoiceItems WHERE SalesInvoice = SalesInvoices.SalesInvoice AND ItemType <> 'T'), 0) AS TotalOrderValue,
+			ISNULL((SELECT SUM(CurTaxValue) FROM SalesInvoiceItems WHERE SalesInvoice = SalesInvoices.SalesInvoice), 0) AS TotalTaxValue,             
             (SELECT CurrencyId FROM Currencies WHERE Currency = SalesOrders.Currency) AS Currency,
             DeliveryAddresses.DeliveryName AS ShippingName,
 			DeliveryAddresses.[Address] AS ShippingAddress,
@@ -176,46 +177,43 @@ BEGIN
 			Customers.PhoneNumber AS BillingPhoneNumber,
 			Customers.EmailAddress AS BillingEmailAddress,
 			(SELECT
-				CASE WHEN SalesOrderItems.ItemType = 'P'
+				CASE WHEN SalesInvoiceItems.ItemType = 'P'
 					THEN Products.ProductId
 				END AS Sku,
-				CASE WHEN SalesOrderItems.ItemType = 'P'
+				CASE WHEN SalesInvoiceItems.ItemType = 'P'
 					THEN Products.ProductDescription
 				END AS ProductName,	
-				CASE WHEN SalesOrderItems.ItemType = 'F'
+				CASE WHEN SalesInvoiceItems.ItemType = 'F'
 					THEN FreightMethods.FreightMethodId
 				END AS FreightMethodId,
-				CASE WHEN SalesOrderItems.ItemType = 'S'
+				CASE WHEN SalesInvoiceItems.ItemType = 'S'
 					THEN Sundries.SundryId
 				END AS SundryId,
-				CASE WHEN SalesOrderItems.ItemType = 'N'
-					THEN SalesOrderItems.FreeTextItem
+				CASE WHEN SalesInvoiceItems.ItemType = 'N'
+					THEN SalesInvoiceItems.FreeTextItem
 				END AS FreeTextItem,
-				CASE WHEN SalesOrderItems.ItemType LIKE '[FS]'
-					THEN SalesOrderItems.ItemDescription
+				CASE WHEN SalesInvoiceItems.ItemType LIKE '[FSN]'
+					THEN SalesInvoiceItems.ItemDescription
 				END AS [Description],
-				CASE WHEN SalesOrderItems.ItemType = 'N'
-					THEN SalesOrderItems.Notes
-				END AS [Description],
-				CASE WHEN SalesOrderItems.ItemType = 'P'
+				CASE WHEN SalesInvoiceItems.ItemType = 'P'
 					THEN Products.WebSummary
 				END AS ShortDescription,		
-				SalesOrderItems.CurPrice AS UnitPrice,
-				SalesOrderItems.Quantity AS Quantity,
-				(SalesOrderItems.CurItemValue + SalesOrderItems.CurTaxValue) AS LineValue,
-				SalesOrderItems.CurTaxValue AS LineTaxValue,
-				SalesOrderItems.CurDiscountValue AS DiscountAmount
+				SalesInvoiceItems.CurPrice AS UnitPrice,
+				SalesInvoiceItems.Quantity AS Quantity,
+				(SalesInvoiceItems.CurItemValue + SalesInvoiceItems.CurTaxValue) AS LineValue,
+				SalesInvoiceItems.CurTaxValue AS LineTaxValue,
+				SalesInvoiceItems.CurDiscountValue AS DiscountAmount
 			FROM
-				SalesOrderItems
-				LEFT JOIN Products ON Products.Product = SalesOrderItems.Product
-				LEFT JOIN FreightMethods ON FreightMethods.FreightMethod = SalesOrderItems.FreightMethod
-				LEFT JOIN Sundries ON Sundries.Sundry = SalesOrderItems.Sundry
+				SalesInvoiceItems
+				LEFT JOIN Products ON Products.Product = SalesInvoiceItems.Product
+				LEFT JOIN FreightMethods ON FreightMethods.FreightMethod = SalesInvoiceItems.FreightMethod
+				LEFT JOIN Sundries ON Sundries.Sundry = SalesInvoiceItems.Sundry
 			WHERE
-				SalesOrderItems.SalesOrder = SalesOrders.SalesOrder
+				SalesInvoiceItems.SalesInvoice = SalesInvoices.SalesInvoice
 			ORDER BY
-				SalesOrderItems.PrintSequence
-			FOR XML PATH('OrderItem'), TYPE) AS OrderItems,
-			'' AS OrderItems		
+				SalesInvoiceItems.PrintSequence
+			FOR XML PATH('InvoiceItem'), TYPE) AS InvoiceItems,
+			'' AS InvoiceItems		
 		FROM
 			SalesInvoices
             INNER JOIN SalesOrders ON SalesOrders.SalesOrder = SalesInvoices.SalesOrder

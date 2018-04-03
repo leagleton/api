@@ -30,6 +30,8 @@ IF NOT EXISTS
 	END;
 GO
 
+-- 21Mar18 LAE Added total row count and changed ordering to DESC.
+
 ALTER PROCEDURE [dbo].[wsp_RestApiSalesOrdersSelectJSON]
 	@pageNumber int = 1,
 	@pageSize int = 10,
@@ -120,7 +122,10 @@ BEGIN
 			SELECT 'Could not find specified customer. Please check your input data.' AS ErrorMessage;
             ROLLBACK TRANSACTION;
 			RETURN;		
-		END;        
+		END;
+
+	-- 21Mar18 LAE
+	DECLARE @total int;
 
 	WITH CTE AS
 	(
@@ -128,11 +133,13 @@ BEGIN
 			ROW_NUMBER() OVER (ORDER BY 
                                 CASE @orderBy
                                     WHEN 'CustomerOrderNumber' THEN so.CustomerOrderNumber
-                                    WHEN 'EffectiveDate' THEN CAST(so.EffectiveDate AS nvarchar(23))
+                                    WHEN 'EffectiveDate' THEN CONVERT(nvarchar(23), so.EffectiveDate, 126)
                                     WHEN 'SystemType' THEN so.SystemType
-                                    WHEN 'OrderValue' THEN CAST(so.OrderValue AS nvarchar(25))
+                                    WHEN 'OrderValue' THEN CAST(so.OrderValue AS nvarchar(23))
                                     ELSE so.SalesOrderId
-                                END) AS rowNumber,
+								-- 21Mar18 LAE
+								--END) AS rowNumber,
+                                END DESC) AS rowNumber,
 			so.SalesOrderId,
             so.SalesOrder,
             so.CustomerOrderNumber,
@@ -147,8 +154,9 @@ BEGIN
 			so.DeliveryAddress
 		FROM 
 			SalesOrders so
-		WHERE 
-			so.Customer = @customer
+		WHERE
+			so.SalesOrderId = COALESCE(@salesOrderId, so.SalesOrderId)
+			AND so.Customer = @customer
 			AND so.SystemType LIKE CASE WHEN @systemType = 'Q' THEN 'Q' ELSE '[^Q]' END
 		GROUP BY
 			so.SalesOrderId,
@@ -186,10 +194,11 @@ BEGIN
 									ELSE ''
                                     END
                                 + '",'
+							ELSE ''
                         	END
                         + CASE WHEN @systemType = 'Q' 
                             THEN '"QuoteStatus":"' 
-                                + CASE WHEN so.QuoteExpiry <= GETDATE()
+                                + CASE WHEN (DAY(so.QuoteExpiry) < DAY(GETDATE()))
                                     THEN 'Expired'
 									ELSE 'Active'
                                     END
@@ -285,7 +294,6 @@ BEGIN
 												ELSE ''
 												END +
 											CASE SalesOrderItems.ItemType
-												WHEN 'N' THEN '"Description":"' + REPLACE(REPLACE(REPLACE(SalesOrderItems.Notes, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",'
 												WHEN 'P' THEN '"ShortDescription":"' + REPLACE(REPLACE(REPLACE(Products.WebSummary, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",'
 												ELSE '"Description":"' + REPLACE(REPLACE(REPLACE(SalesOrderItems.ItemDescription, CHAR(13),'&#xD;'), CHAR(10),'&#xA;'), '"','&#34;') + '",'
 												END + '
@@ -318,11 +326,15 @@ BEGIN
 						rowNumber 
 					FOR XML PATH(''), 
 			TYPE).value('.','nvarchar(max)'), 1, 1, '' 
-			)), '');
+			-- 21Mar18 LAE
+			--)), '');
+			)), ''), @total = (SELECT COUNT(*) FROM CTE);
 
 	SELECT @results = REPLACE(REPLACE(REPLACE(REPLACE('{"CustomerOrders":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), ''), '\', '\\');
 
-	SELECT @results AS Results;
+	-- 21Mar18 LAE
+	--SELECT @results AS Results;
+	SELECT @results AS Results, @total AS TotalCount;
 
 	COMMIT TRANSACTION;
 

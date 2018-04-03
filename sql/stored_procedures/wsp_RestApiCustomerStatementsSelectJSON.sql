@@ -30,6 +30,8 @@ IF NOT EXISTS
 	END;
 GO
 
+-- 27Mar18 LAE Added total row count and changed ordering to DESC.
+
 ALTER PROCEDURE [dbo].[wsp_RestApiCustomerStatementsSelectJSON]
 	@pageNumber int = 1,
 	@pageSize int = 20,
@@ -117,7 +119,10 @@ BEGIN
 			SELECT 'Could not find specified customer. Please check your input data.' AS ErrorMessage;
             ROLLBACK TRANSACTION;
 			RETURN;		
-		END;        
+		END;
+
+	-- 27Mar18 LAE
+	DECLARE @total int;		
 
 	WITH CTE AS
 	(
@@ -216,11 +221,13 @@ BEGIN
 		SELECT
 			ROW_NUMBER() OVER (ORDER BY 
                                 CASE @orderBy
-                                    WHEN 'EffectiveDate' THEN CAST(SalesInvoices.EffectiveDate AS nvarchar(23))
+                                    WHEN 'EffectiveDate' THEN CONVERT(nvarchar(23), CTE.EffectiveDate, 126)
 									WHEN 'CurInvoiceValue' THEN CAST(SalesInvoices.CurInvoiceValue AS nvarchar(23))
 									WHEN 'InvoiceStatus' THEN CTE.InvoiceStatus
                                     ELSE CTE.InvoiceId
-                                END) AS rowNumber,
+								-- 27Mar18 LAE
+								--END) AS rowNumber,
+                                END DESC) AS rowNumber,
 			CTE.EffectiveDate,
 			CTE.CurrencyId,
 			CTE.ItemType,
@@ -260,12 +267,16 @@ BEGIN
 					ORDER BY
 						rowNumber 
 					FOR XML PATH(''), 
-			TYPE).value('.','nvarchar(max)'), 1, 1, '' 
-			)), '');
+			TYPE).value('.','nvarchar(max)'), 1, 1, ''
+			-- 27Mar18 LAE
+			--)), '');
+			)), ''), @total = (SELECT COUNT(*) FROM Statements);
 
 	SELECT @results = REPLACE(REPLACE(REPLACE(REPLACE('{"CustomerStatements":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), ''), '\', '\\');
 
-	SELECT @results AS Results;
+	-- 27Mar18 LAE
+	--SELECT @results AS Results;
+	SELECT @results AS Results, @total AS TotalCount;
 
 	COMMIT TRANSACTION;
 

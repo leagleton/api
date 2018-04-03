@@ -178,6 +178,9 @@ exports.executeSelect = (res, req, params) => {
                     /**
                      * For XML responses, we need to explicitly write and then end the response body.
                      */
+                    if (results[0].hasOwnProperty('TotalCount')) {
+                        res.set('x-total-count', results[0].TotalCount);
+                    }                    
                     res.write('<?xml version="1.0" encoding="UTF-8"?>');
                     res.write(results[0].Results);
                     res.end();
@@ -185,6 +188,9 @@ exports.executeSelect = (res, req, params) => {
                     /**
                      * For JSON response, we can simply send the response.
                      */
+                    if (results[0].hasOwnProperty('TotalCount')) {
+                        res.set('x-total-count', results[0].TotalCount);
+                    }
                     res.send(results[0].Results);
                 }
             }

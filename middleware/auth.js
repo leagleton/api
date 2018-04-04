@@ -115,7 +115,8 @@ passport.use(new LocalStrategy({ passReqToCallback: true }, (req, RestApiUserId,
             return done(null, dbUser);
           } else if (err) {
             message = (env == 'development') ? err.stack : message;
-            return done(err, false, req.flash('message', message));
+            logger.error(message);
+            return done(null, false, req.flash('message', message));
           } else {
             message = (env == 'development') ? 'Incorrect password entered.' : 'Incorrect username or password entered. Please try again';
             return done(null, false, req.flash('message', message));
@@ -172,7 +173,10 @@ passport.use(new ClientPasswordStrategy({ passReqToCallback: true }, (req, RestA
       }
 
     })
-    .catch(err => done(err, false));
+    .catch(err => {
+      logger.error(err);
+      return done(null, false);
+    });
 }));
 
 /**
@@ -188,8 +192,16 @@ passport.use(new BearerStrategy({ passReqToCallback: true }, (req, accessToken, 
 
   this.system(req);
 
-  const uuid = jwt.decode(accessToken).jti;
-  const allowedScopes = jwt.decode(accessToken).scp;
+  const decodedToken = jwt.decode(accessToken);
+
+  if (decodedToken === null) {
+    const err = new Error('Unable to decode access token. Access token may be invalid.');
+    logger.error(err);
+    return done(null, false);
+  }
+
+  const uuid = decodedToken.jti;
+  const allowedScopes = decodedToken.scp;
   let eCommerceWebsite = '';
 
   if (req.body.hasOwnProperty('Data')) {
@@ -213,11 +225,15 @@ passport.use(new BearerStrategy({ passReqToCallback: true }, (req, accessToken, 
         return validate.token(dbAccessToken, accessToken);
       } else {
         const err = new Error('No matching access token found.');
-        return done(err, false);
+        logger.error(err);
+        return done(null, false);
       }
     })
     .then(token => done(null, token, { scope: allowedScopes }))
-    .catch(err => done(err, false));
+    .catch(err => {
+      logger.error(err);
+      return done(null, false);
+    });
 }));
 
 /**
@@ -251,8 +267,12 @@ passport.deserializeUser((req, user, done) => {
         return done(null, user);
       } else {
         const err = new Error("No user found with supplied user number.");
-        return done(err, false);
+        logger.error(err);
+        return done(null, false);
       }
     })
-    .catch(err => done(err, false));
+    .catch(err => {
+      logger.error(err);
+      return done(null, false);
+    });
 });

@@ -30,6 +30,8 @@ IF NOT EXISTS
 	END;
 GO
 
+-- 03Apr18 LAE Added total row count.
+
 ALTER PROCEDURE [dbo].[wsp_RestApiCustomersSelectJSON]
 	@pageNumber int = 1,
 	@pageSize int = 10,
@@ -79,6 +81,9 @@ BEGIN
 	DECLARE @lastModifiedDate datetime;
 
 	SET @lastModifiedDate = (SELECT DATEADD(second,-@seconds,GETDATE()));
+
+	-- 03Apr18 LAE
+	DECLARE @total int;
 
 	WITH CTE AS
 	(
@@ -409,11 +414,15 @@ BEGIN
 						rowNumber 
 					FOR XML PATH(''), 
 			TYPE).value('.','nvarchar(max)'), 1, 1, '' 
-			)), '');
+			-- 03Apr18 LAE
+			--)), '');
+			)), ''), @total = (SELECT COUNT(*) FROM CTE);
 
 	SELECT @results = REPLACE(REPLACE(REPLACE(REPLACE('{"Customers":[' + @results + ']}', CHAR(13),''), CHAR(10),''), CHAR(9), ''), '\', '\\');
 
-	SELECT @results AS Results;
+	-- 03Apr18 LAE
+	--SELECT @results AS Results;
+	SELECT @results AS Results, @total AS TotalCount;
 
 	COMMIT TRANSACTION;
 

@@ -30,6 +30,8 @@ IF NOT EXISTS
 	END;
 GO
 
+-- 03Apr18 LAE Added total row count.
+
 ALTER PROCEDURE [dbo].[wsp_RestApiInventoriesSelectXML]
 	@pageNumber int = 1,
 	@pageSize int = 10,
@@ -72,7 +74,10 @@ BEGIN
 			SELECT 'The relevant REST API scope is not enabled for the specified website.' AS ErrorMessage;
 			ROLLBACK TRANSACTION;
 			RETURN;
-		END;	
+		END;
+
+	-- 03Apr18 LAE
+	DECLARE @total int;			
 
 	WITH CTE AS
 	(
@@ -123,7 +128,9 @@ BEGIN
 			AND (rowNumber <= @pageSize * @pageNumber)
 		ORDER BY
 			rowNumber
-		FOR XML PATH('Inventory'), TYPE));	
+		-- 03Apr18 LAE
+		--FOR XML PATH('Inventory'), TYPE));
+		FOR XML PATH('Inventory'), TYPE)), @total = (SELECT COUNT(*) FROM CTE);		
 
 	IF @results IS NOT NULL AND @results <> ''
 		BEGIN
@@ -134,7 +141,9 @@ BEGIN
 			SELECT @results = '<Inventories/>';
 		END;
 
-	SELECT @results AS Results;
+	-- 03Apr18 LAE
+	--SELECT @results AS Results;
+	SELECT @results AS Results, @total AS TotalCount;
 
 	COMMIT TRANSACTION;
 

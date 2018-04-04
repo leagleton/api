@@ -112,8 +112,10 @@ function fetchAccessTokens() {
             let tokens = '<thead><tr><th>Client ID</th><th>Expires</th><th class="actions">Actions</th></tr></thead>';
 
             const dbTokens = results.map((result) => {
+                let date = new Date(result.Expires).toString();
+
                 return new Promise((resolve) => {
-                    tokens += '<tr data-token="' + result.RestApiAccessToken + '" class="tokenRow"><td>' + result.RestApiClientId + '</td><td class="expires">' + result.Expires + '</td><td class="actions"><button class="btn btn-danger">Revoke</button></td></tr>';
+                    tokens += '<tr data-token="' + result.RestApiAccessToken + '" class="tokenRow"><td>' + result.RestApiClientId + '</td><td class="expires">' + date.substring(0, 24) + '</td><td class="actions"><button class="btn btn-danger">Revoke</button></td></tr>';
 
                     resolve();
                 });
@@ -164,9 +166,11 @@ function getAccessToken(code, client) {
         }
     })
         .done(function (results) {
+            let date = new Date(results.expires).toString();
+
             $("#requestTokenModal").modal('hide');
             $('#token').html(results.access_token);
-            $('#expires').html(results.expires);
+            $('#expires').html(date.substring(0, 24));
             $("#tokenModal").modal('show');
 
             fetchAccessTokens();

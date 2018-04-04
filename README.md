@@ -2,7 +2,7 @@
 
 ## Quick Start Guide
 
-For a full list of prerequisites and installation instructions, please see the WinMan REST API Installation Guide which is available in Dropbox -> WinMan Team Folder -> Help -> REST API and Magento 2 Bridge.
+This Quick Start Guide covers the basics of installing the WinMan REST API. For a full list of prerequisites and in-depth installation instructions, please see the WinMan REST API Installation Guide which is available in Dropbox -> WinMan Team Folder -> Help -> REST API and Magento 2 Bridge.
 
 ## Installing the API
 
@@ -11,7 +11,7 @@ For a full list of prerequisites and installation instructions, please see the W
     ```BASH
     npm install --global --production windows-build-tools
     ```
-    This command will take approximately 5-10 minutes to complete.
+    This command can take approximately 5-10 minutes to complete.
 4. After the previous command has completed, issue the following command:
     ```BASH
     npm install --global node-gyp
@@ -25,11 +25,11 @@ For a full list of prerequisites and installation instructions, please see the W
       Variable Value: **production**
       
     The Python executable is downloaded by the command in step 3, and the path to your `python.exe` will usually be something like `C:\Users\Admin-Winman\.windows-build-tools\python27\python.exe`.
-6. Back in your elevated command prompt, `cd` to your `winman-rest-api` directory then issue the following command:
+6. In a new **elevated** command prompt, `cd` to your `winman-rest-api` directory then issue the following command:
     ```BASH
     npm install
     ```
-    This commmand will download and install the necessary Node modules.
+    This commmand will download and install the necessary Node modules. Please note that you need to open a new **elevated** command prompt so that the new environment variables take effect.
 7. After the previous command has completed, your API has been successfully installed.
 
 ## Adding the Windows service
@@ -85,7 +85,7 @@ For a full list of prerequisites and installation instructions, please see the W
     
 ## Removing the Windows service
 
-1. Follow the steps above to stop the Windows service. **This step is important! See Troubleshooting Guide if you ommitted it.**
+1. Follow the steps above to stop the Windows service. **This step is important! See Troubleshooting Guide if you omitted it.**
 2. In an **elevated** command prompt, `cd` to your `winman-rest-api` directory and enter the following command:
     ```BASH
     node winman-rest --delete

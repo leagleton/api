@@ -200,8 +200,8 @@ passport.use(new BearerStrategy({ passReqToCallback: true }, (req, accessToken, 
     return done(null, false);
   }
 
-  const uuid = jwt.decode(accessToken).jti;
-  const allowedScopes = jwt.decode(accessToken).scp;
+  const uuid = decodedToken.jti;
+  const allowedScopes = decodedToken.scp;
   let eCommerceWebsite = '';
 
   if (req.body.hasOwnProperty('Data')) {

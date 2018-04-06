@@ -23,10 +23,9 @@ exports.mode = 'dual';
  */
 exports.connection = {
   'liveServer': '',
-  'liveInstanceName': '',
   'liveUserName': '',
   'livePassword': '',
-  'options': { 'encrypt': true, 'liveDatabase': '', 'requestTimeout': 0, 'rowCollectionOnRequestCompletion': false },
+  'options': { 'liveInstanceName': '', 'encrypt': true, 'liveDatabase': '', 'requestTimeout': 0, 'rowCollectionOnRequestCompletion': false },
   'liveReportsUserName': '',
   'liveLm_password': '',
   'liveNt_password': ''
@@ -38,10 +37,9 @@ exports.connection = {
  */
 exports.connectionTraining = {
   'trainingServer': '',
-  'trainingInstanceName': '',
   'trainingUserName': '',
   'trainingPassword': '',
-  'options': { 'encrypt': true, 'trainingDatabase': '', 'requestTimeout': 0, 'rowCollectionOnRequestCompletion': false },
+  'options': { 'trainingInstanceName': '', 'encrypt': true, 'trainingDatabase': '', 'requestTimeout': 0, 'rowCollectionOnRequestCompletion': false },
   'trainingReportsUserName': '',
   'trainingLm_password': '',
   'trainingNt_password': ''

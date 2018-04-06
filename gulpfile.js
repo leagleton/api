@@ -149,7 +149,7 @@ gulp.task('config', ['ignore'], function (done) {
             }
             return true;
         }
-    },    
+    },
     {
         type: 'input',
         message: 'Live SQL server username: ',
@@ -274,7 +274,7 @@ gulp.task('config', ['ignore'], function (done) {
             }
             return true;
         }
-    },    
+    },
     {
         type: 'input',
         message: 'Training SQL server username: ',
@@ -434,7 +434,12 @@ gulp.task('generate', ['config'], function () {
         .pipe(replace("'serviceName': ''", "'serviceName': '" + settings.service.serviceName + "'"))
         .pipe(replace("'displayName': ''", "'displayName': '" + settings.service.displayName + "'"))
         .pipe(replace("'liveServer': ''", "'server': '" + settings.connection.server + "'"))
-        .pipe(replace("'liveInstanceName': ''", "'instanceName': '" + settings.connection.instanceName + "'"))         
+        .pipe(replace("'liveInstanceName': '',", function () {
+            if (settings.connection.instanceName) {
+                return "'instanceName': '" + settings.connection.instanceName + "',";
+            }
+            return "";
+        }))
         .pipe(replace("'liveUserName': ''", "'userName': '" + settings.connection.userName + "'"))
         .pipe(replace("'livePassword': ''", "'password': '" + settings.connection.password + "'"))
         .pipe(replace("'liveDatabase': ''", "'database': '" + settings.connection.options.database + "'"))
@@ -461,12 +466,14 @@ gulp.task('generate', ['config'], function () {
             }
             return "'server': ''";
         }))
-        .pipe(replace("'trainingInstanceName': ''", function () {
+        .pipe(replace("'trainingInstanceName': '',", function () {
             if (settings.hasOwnProperty('connectionTraining')) {
-                return "'instanceName': '" + settings.connectionTraining.instanceName + "'";
+                if (settings.connectionTraining.instanceName) {
+                    return "'instanceName': '" + settings.connectionTraining.instanceName + "',";
+                }
             }
-            return "'instanceName': ''";
-        }))         
+            return "";
+        }))
         .pipe(replace("'trainingUserName': ''", function () {
             if (settings.hasOwnProperty('connectionTraining')) {
                 return "'userName': '" + settings.connectionTraining.userName + "'";
@@ -521,7 +528,12 @@ gulp.task('develop', ['config'], function () {
         .pipe(replace("'serviceName': ''", "'serviceName': '" + settings.service.serviceName + "'"))
         .pipe(replace("'displayName': ''", "'displayName': '" + settings.service.displayName + "'"))
         .pipe(replace("'liveServer': ''", "'server': '" + settings.connection.server + "'"))
-        .pipe(replace("'liveInstanceName': ''", "'instanceName': '" + settings.connection.instanceName + "'"))        
+        .pipe(replace("'liveInstanceName': '',", function () {
+            if (settings.connection.instanceName) {
+                return "'instanceName': '" + settings.connection.instanceName + "',";
+            }
+            return "";
+        }))
         .pipe(replace("'liveUserName': ''", "'userName': '" + settings.connection.userName + "'"))
         .pipe(replace("'livePassword': ''", "'password': '" + settings.connection.password + "'"))
         .pipe(replace("'liveDatabase': ''", "'database': '" + settings.connection.options.database + "'"))
@@ -548,12 +560,14 @@ gulp.task('develop', ['config'], function () {
             }
             return "'server': ''";
         }))
-        .pipe(replace("'trainingInstanceName': ''", function () {
+        .pipe(replace("'trainingInstanceName': '',", function () {
             if (settings.hasOwnProperty('connectionTraining')) {
-                return "'instanceName': '" + settings.connectionTraining.instanceName + "'";
+                if (settings.connectionTraining.instanceName) {
+                    return "'instanceName': '" + settings.connectionTraining.instanceName + "',";
+                }
             }
-            return "'instanceName': ''";
-        }))        
+            return "";
+        }))
         .pipe(replace("'trainingUserName': ''", function () {
             if (settings.hasOwnProperty('connectionTraining')) {
                 return "'userName': '" + settings.connectionTraining.userName + "'";

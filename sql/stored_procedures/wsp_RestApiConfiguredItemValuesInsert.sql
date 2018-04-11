@@ -77,7 +77,7 @@ BEGIN
 			RETURN;		
 		END;
 	
-	IF @useConfigurator = 1
+	IF @useConfigurator <> 1
 		BEGIN
 			SET @error = 'The product ' + @productId + 'is not a configurable product, but you have specified option information. Please check your input data.';
 			SELECT @error AS ErrorMessage;	
